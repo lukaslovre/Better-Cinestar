@@ -120,28 +120,42 @@
 
     <div id="movieCardsContainer">
       <% movies.forEach(movie=>{ %>
-      <div class="movieCard">
+      <div
+        class="movieCard"
+        style="
+          background-image: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0.85),
+              rgba(0, 0, 0, 0.85)
+            ),
+            url('<%= movie.backgroundImage %>');
+        "
+      >
         <div class="movieCardHeading">
-          <p class="movieTitle"><%= movie.originalTitle.trim() %></p>
+          <p class="movieTitle"><%= movie.originalTitle %></p>
           <div class="movieStats">
-            <p><%= movie.genres[0] %></p>
+            <p><%= movie.englishCategories %></p>
             <p>·</p>
-            <p>2h 20m</p>
+            <p><%= movie.duration %></p>
             <p>·</p>
-            <p>94%</p>
+            <p><%= movie.letterboxdRating %>/5</p>
+            <p>·</p>
+            <p><%= movie.imdbRating %>/10</p>
           </div>
         </div>
 
         <div class="movieCardInfo">
           <div class="infoContainer">
             <p class="infoLabel">Direktori</p>
-            <p class="infoText"><%= movie.director %></p>
+            <p class="infoText"><%= movie.englishDirectors.join(", ") %></p>
           </div>
           <div class="infoContainer">
             <p class="infoLabel">Opis</p>
-            <p class="infoText"><%= movie.synopsis %></p>
+            <p class="infoText"><%= movie.englishSynopsis %></p>
           </div>
-          <div class="trailerButton">Trailer</div>
+          <div class="trailerButton" data-trailer-link="<%= movie.trailerLink %>">
+            Trailer
+          </div>
         </div>
 
         <div class="movieCardPerformancesContainer">

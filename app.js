@@ -4,7 +4,10 @@ const port = 3000;
 const fs = require("fs");
 
 const { getAllMovies, getPerformanceTimesFor } = require("./cinestarFunctions.js");
-const { fillMoviesWithLetterboxdData } = require("./scraperFunctions.js");
+const {
+  fillMoviesWithLetterboxdData,
+  fillMoviesWithImdbData,
+} = require("./scraperFunctions.js");
 const { writeFile } = require("fs/promises");
 
 app.use(express.static("public"));
@@ -95,11 +98,16 @@ const cinemas = [
 let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
 const performances = JSON.parse(fs.readFileSync("./data/performances.json"));
 
-app.get("/", async (req, res) => {
+app.get("/", (req, res) => {
   // TODO: formatirati sta se salje da ima svamo informacije koje treba i
-  //res.render("index", { movies, performances });
+  res.render("index", { movies, performances });
+});
+
+app.get("/fillWithExternalData", async (req, res) => {
+  // TODO: formatirati sta se salje da ima svamo informacije koje treba i
   res.end();
-  movies = await fillMoviesWithLetterboxdData(movies);
+  //movies = await fillMoviesWithLetterboxdData(movies);
+  movies = await fillMoviesWithImdbData(movies);
   fs.writeFileSync("./data/movies.json", JSON.stringify(movies));
 });
 

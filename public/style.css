@@ -159,8 +159,10 @@ nav img {
   background-size: cover;
   background-position: center;
   box-shadow: 0.375rem 0.375rem 0.25rem rgba(0, 0, 0, 0.25);
+  transition: all 200ms ease-out;
 }
 #movieCardsContainer .movieCard .movieCardHeading .movieTitle {
+  margin-bottom: 0.25rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: #ffffff;
@@ -171,6 +173,7 @@ nav img {
   column-gap: 0.325rem;
   font-size: 0.75rem;
   font-weight: 500;
+  text-transform: capitalize;
   color: #9d9d9d;
 }
 #movieCardsContainer .movieCard .movieCardInfo {
@@ -221,7 +224,7 @@ nav img {
 }
 #movieCardsContainer .movieCard .movieCardPerformancesContainer .performanceList .performanceCard .performanceTime {
   margin-bottom: 0.5rem;
-  color: #9d9d9d;
+  color: #cdcdcd;
   font-size: 0.75rem;
 }
 #movieCardsContainer .movieCard .movieCardPerformancesContainer .performanceList .performanceCard .performanceFeature {

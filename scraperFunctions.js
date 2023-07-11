@@ -47,21 +47,17 @@ async function fillMoviesWithLetterboxdData(movies) {
   return movies;
 }
 
-async function fillCinestarDataWithImdb(cinestarData) {
-  if (!Array.isArray(cinestarData)) cinestarData = [cinestarData];
+async function fillMoviesWithImdbData(movies) {
+  if (!Array.isArray(movies)) movies = [movies];
 
-  for (const movie of cinestarData) {
-    // ako je proslo vise od 1.5h od zadnjeg update-a ratinga
-    if (Date.now() < movie.imdbLastEdited + 5400000) continue;
-
+  for (const movie of movies) {
     if (!movie.imdbUrl) continue;
 
     const imdbOcjena = await getImdbDataFromUrl(movie.imdbUrl);
-    if (imdbOcjena) movie.imdbRating = imdbOcjena;
-    movie.imdbLastEdited = Date.now();
+    movie.imdbRating = imdbOcjena;
   }
 
-  return cinestarData;
+  return movies;
 }
 
 //radi (moze se jos poboljsati)
@@ -137,12 +133,15 @@ async function getLetterboxdDataFromUrl(url) {
     const englishDirectors = $('[name="twitter:data1"]').attr("content").split(",");
     const backgroundImage = $('[name="twitter:image"]').attr("content");
     const englishSynopsis = $(".truncate > *").prop("innerText");
-    const englishCategories = $("#tab-genres .text-slug").prop("innerText");
+    const englishCategories = $("#tab-genres .text-slug").prop("innerText").cap;
     const trailer = $('[data-track-category="Trailer"]').attr("href");
-    const trailerId = trailer.slice(trailer.indexOf("embed/") + 6, trailer.indexOf("?"));
+    const trailerId =
+      "www.youtube.com/watch?v=" +
+      trailer.slice(trailer.indexOf("embed/") + 6, trailer.indexOf("?"));
     let duration = $(".text-footer").prop("innerText");
     const indexOfMins = duration.indexOf("mins");
     duration = duration.slice(indexOfMins - 4, indexOfMins - 1);
+    duration = Math.floor(duration / 60) + "h " + (duration % 60) + "m";
 
     return {
       letterboxdRating: letterboxdRating ? parseFloat(letterboxdRating).toFixed(1) : null,
@@ -159,7 +158,7 @@ async function getLetterboxdDataFromUrl(url) {
     return defaultData;
   }
 }
-
+// radi (valjda)
 async function getImdbDataFromUrl(url) {
   if (!url) {
     return null;
@@ -170,6 +169,9 @@ async function getImdbDataFromUrl(url) {
     const movieDataHtml = await movieDataResponse.text();
     const $ = cheerio.load(movieDataHtml);
 
+    const ocjena = JSON.parse($('[type="application/ld+json"]').text()).aggregateRating
+      .ratingValue;
+    /*
     const ocjena = $(".ipc-btn__text #iconContext-star")
       .first()
       .parent()
@@ -177,6 +179,7 @@ async function getImdbDataFromUrl(url) {
       .find("span")
       .first()
       .text();
+*/
 
     if (ocjena) {
       return ocjena;
@@ -191,4 +194,5 @@ async function getImdbDataFromUrl(url) {
 
 module.exports = {
   fillMoviesWithLetterboxdData,
+  fillMoviesWithImdbData,
 };

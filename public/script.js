@@ -85,3 +85,19 @@ function getOptionsWithoutChildren() {
   }
   return withoutChildren;
 }
+
+// prosirivanje carda na klik
+const movieCardsContainer = document.getElementById("movieCardsContainer");
+for (const card of movieCardsContainer.children) {
+  card.addEventListener("click", expandCard);
+}
+
+function expandCard(e) {
+  const movieCardInfo = e.currentTarget.querySelector(".movieCardInfo");
+  const currentStyle = movieCardInfo.style.display;
+  if (currentStyle == "" || currentStyle == "none") {
+    movieCardInfo.style.display = "flex";
+  } else {
+    movieCardInfo.style.display = "none";
+  }
+}

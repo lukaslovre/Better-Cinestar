@@ -179,8 +179,10 @@ nav {
     background-position: center;
     box-shadow: 0.375rem 0.375rem 0.25rem rgba(0, 0, 0, 0.25);
 
+    transition: all 200ms ease-out;
     .movieCardHeading {
       .movieTitle {
+        margin-bottom: 0.25rem;
         font-size: 0.875rem;
         font-weight: 600;
         color: #ffffff;
@@ -192,6 +194,7 @@ nav {
 
         font-size: 0.75rem;
         font-weight: 500;
+        text-transform: capitalize;
         color: #9d9d9d;
       }
     }
@@ -201,7 +204,6 @@ nav {
       flex-direction: column;
       align-items: flex-start;
       row-gap: 1rem;
-
       .infoContainer {
         .infoLabel {
           color: #cdcdcd;
@@ -248,7 +250,7 @@ nav {
 
           .performanceTime {
             margin-bottom: 0.5rem;
-            color: #9d9d9d;
+            color: #cdcdcd;
             font-size: 0.75rem;
           }
           .performanceFeature {
