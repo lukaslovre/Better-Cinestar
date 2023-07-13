@@ -134,50 +134,68 @@
         <div class="movieCardHeading">
           <p class="movieTitle"><%= movie.originalTitle %></p>
           <div class="movieStats">
+            <% if(movie.englishCategories){ %>
             <p><%= movie.englishCategories %></p>
+            <% }else{ %>
+            <p><%= movie.genres[0] %></p>
+            <% } %> <% if(movie.duration){ %>
             <p>·</p>
             <p><%= movie.duration %></p>
+            <% } %> <% if(movie.letterboxdRating){ %>
             <p>·</p>
-            <p><%= movie.letterboxdRating %>/5</p>
+            <div class="ratingIconAndValue">
+              <img src="images/letterboxdIcon.png" alt="letterboxd icon" />
+              <p><%= movie.letterboxdRating %>/5</p>
+            </div>
+            <% } %> <% if(movie.imdbRating){ %>
             <p>·</p>
-            <p><%= movie.imdbRating %>/10</p>
+            <div class="ratingIconAndValue">
+              <img src="images/imdbIcon.png" alt="imdb icon" />
+              <p><%= movie.imdbRating %>/10 %></p>
+            </div>
+            <% } %>
           </div>
         </div>
 
         <div class="movieCardInfo">
           <div class="infoContainer">
             <p class="infoLabel">Direktori</p>
+            <% if(movie.englishDirectors){ %>
             <p class="infoText"><%= movie.englishDirectors.join(", ") %></p>
+            <% }else{ %>
+            <p class="infoText"><%= movie.director %></p>
+            <% } %>
           </div>
           <div class="infoContainer">
             <p class="infoLabel">Opis</p>
+            <% if(movie.englishSynopsis){ %>
             <p class="infoText"><%= movie.englishSynopsis %></p>
+            <% }else{ %>
+            <p class="infoText"><%= movie.synopsis %></p>
+            <% } %>
           </div>
-          <div class="trailerButton" data-trailer-link="<%= movie.trailerLink %>">
+          <% if(movie.trailerLink){ %>
+          <a
+            href="<%= movie.trailerLink %>"
+            class="trailerButton"
+            data-trailer-link="<%= movie.trailerLink %>"
+          >
             Trailer
-          </div>
+          </a>
+          <% }%>
         </div>
 
         <div class="movieCardPerformancesContainer">
           <div class="performanceslabel">Danas</div>
           <div class="performanceList">
+            <% movie.performances.forEach(performance=>{ %>
             <div class="performanceCard">
-              <p class="performanceTime">16:30</p>
-              <p class="performanceFeature">2D</p>
-              <p class="performanceFeature">TITL</p>
-              <p class="performanceFeature">IMAX</p>
+              <p class="performanceTime"><%= performance.performanceTime %></p>
+              <% performance.performanceFeatures.forEach(feature=>{ %>
+              <p class="performanceFeature"><%= feature %></p>
+              <% }) %>
             </div>
-            <div class="performanceCard">
-              <p class="performanceTime">16:45</p>
-              <p class="performanceFeature">2D</p>
-              <p class="performanceFeature">TITL</p>
-              <p class="performanceFeature">IMAX</p>
-            </div>
-            <div class="performanceCard">
-              <p class="performanceTime">18:00</p>
-              <p class="performanceFeature">2D</p>
-              <p class="performanceFeature">TITL</p>
-            </div>
+            <% }) %>
           </div>
         </div>
       </div>

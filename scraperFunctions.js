@@ -133,10 +133,10 @@ async function getLetterboxdDataFromUrl(url) {
     const englishDirectors = $('[name="twitter:data1"]').attr("content").split(",");
     const backgroundImage = $('[name="twitter:image"]').attr("content");
     const englishSynopsis = $(".truncate > *").prop("innerText");
-    const englishCategories = $("#tab-genres .text-slug").prop("innerText").cap;
+    const englishCategories = $("#tab-genres .text-slug").first().prop("innerText");
     const trailer = $('[data-track-category="Trailer"]').attr("href");
     const trailerId =
-      "www.youtube.com/watch?v=" +
+      "https://www.youtube.com/watch?v=" +
       trailer.slice(trailer.indexOf("embed/") + 6, trailer.indexOf("?"));
     let duration = $(".text-footer").prop("innerText");
     const indexOfMins = duration.indexOf("mins");
@@ -169,8 +169,9 @@ async function getImdbDataFromUrl(url) {
     const movieDataHtml = await movieDataResponse.text();
     const $ = cheerio.load(movieDataHtml);
 
-    const ocjena = JSON.parse($('[type="application/ld+json"]').text()).aggregateRating
-      .ratingValue;
+    const imdbData = JSON.parse($('[type="application/ld+json"]').text());
+    if (!imdbData.aggregateRating) return null;
+    const ocjena = imdbData.aggregateRating.ratingValue;
     /*
     const ocjena = $(".ipc-btn__text #iconContext-star")
       .first()

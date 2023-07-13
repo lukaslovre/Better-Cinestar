@@ -190,12 +190,22 @@ nav {
       .movieStats {
         display: flex;
         align-items: center;
-        column-gap: 0.325rem;
+        column-gap: 0.375rem;
 
         font-size: 0.75rem;
         font-weight: 500;
         text-transform: capitalize;
         color: #9d9d9d;
+
+        .ratingIconAndValue {
+          display: flex;
+          align-items: center;
+          column-gap: 0.1875rem;
+
+          & > img {
+            height: 1rem;
+          }
+        }
       }
     }
     .movieCardInfo {
@@ -204,6 +214,7 @@ nav {
       flex-direction: column;
       align-items: flex-start;
       row-gap: 1rem;
+
       .infoContainer {
         .infoLabel {
           color: #cdcdcd;
@@ -218,6 +229,7 @@ nav {
         }
       }
       .trailerButton {
+        text-decoration: none;
         padding: 0.375rem 0.875rem;
         border-radius: 0.25rem;
         background-color: #19284d;
@@ -238,7 +250,6 @@ nav {
       }
       .performanceList {
         display: flex;
-        align-items: flex-start;
         column-gap: 0.5rem;
 
         .performanceCard {

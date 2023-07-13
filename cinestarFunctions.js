@@ -17,7 +17,7 @@ async function cinestarApi(endpoint, cinema) {
   const response = await fetch(url, { headers });
   const data = await response.json();
 
-  console.log(data.length);
+  //console.log(data.length);
   return data;
 }
 
@@ -53,22 +53,28 @@ async function getAllMovies(cinema) {
     }
   );
 
-  fs.writeFileSync("./data/movies.json", JSON.stringify(moviesFormatted));
-  //return moviesWithoutPerformances;
+  //fs.writeFileSync("./data/movies.json", JSON.stringify(moviesFormatted));
+  return moviesFormatted;
 }
 
 async function getPerformanceTimesFor(filmId, cinema) {
   //https://shop.cinestarcinemas.hr/api/films/0A510000012FEPADHG
   const data = await cinestarApi("/films/" + filmId, cinema);
-  const filmNumber = data.filmNumber;
+  if (data.errorMessage) return null;
 
+  const filmNumber = data.filmNumber;
   // filmReleaseTypeName i onda ga splitati po '/', GC je goldclass
   const formattedPerformances = data.performances.map(
     ({ id, performanceDateTime, releaseTypeName, filmId }) => {
+      const d = new Date(performanceDateTime);
       return {
         id,
         performanceDateTime,
-        releaseTypeName,
+        performanceTime:
+          d.getHours().toString.padStart(2, "0") +
+          ":" +
+          d.getMinutes().toString.padStart(2, "0"),
+        performanceFeatures: releaseTypeName.split("/"),
         filmId,
         filmNumber,
         cinemaOid: cinema.cinemaOid,
@@ -76,11 +82,9 @@ async function getPerformanceTimesFor(filmId, cinema) {
     }
   );
 
-  fs.writeFileSync("./data/performances.json", JSON.stringify(formattedPerformances));
-
-  //return formattedPerformances;
+  //fs.writeFileSync("./data/performances.json", JSON.stringify(formattedPerformances));
+  return formattedPerformances;
 }
-//getPerformanceTimesFor("0A510000012FEPADHG");
 
 function getSeating() {
   ///api/performances/50C20000023VITSDHB/seatingplan
