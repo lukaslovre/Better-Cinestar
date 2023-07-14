@@ -3,112 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <script src="script.js" defer></script>
+    <script src="/script.js" defer></script>
     <title>Better Cinestar</title>
   </head>
   <body>
-    <nav><img src="images/logo4x.png" alt="Better CineStar logo" /></nav>
+    <nav><img src="/images/logo4x.png" alt="Better CineStar logo" /></nav>
+
+    <%- include("locationDropdown"); %>
 
     <div class="input-container">
       <div class="label">
-        <img class="label-icon" src="images/locationIcon.svg" alt="location icon" />
-        <p class="label-text">Lokacija kina</p>
-      </div>
-      <div id="movieLocationDropdown" class="input-element primary-input gap-in-input">
-        <p class="selectedValue">Zagreb</p>
-        <svg
-          class="fill"
-          width="10"
-          height="9"
-          viewBox="0 0 10 9"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M5.64952 7.875C5.36084 8.375 4.63916 8.375 4.35048 7.875L0.453368 1.125C0.164693 0.624999 0.525536 -9.15707e-07 1.10289 -8.65233e-07L8.89712 -1.8384e-07C9.47447 -1.33367e-07 9.83531 0.625 9.54663 1.125L5.64952 7.875Z"
-            fill="#8F95A3"
-          />
-        </svg>
-      </div>
-      <div class="dropdown-options-container">
-        <div id="movieCityOptions" class="dropdown-options input-element primary-input">
-          <div data-suboption-index="0" class="option">
-            <p>Zagreb</p>
-            <svg
-              class="stroke"
-              width="7"
-              height="13"
-              viewBox="0 0 7 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1L5.38848 5.82733C5.73523 6.20875 5.73523 6.79125 5.38848 7.17267L1 12"
-                stroke="#454954"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <div data-suboption-index="1" class="option">
-            <p>Split</p>
-            <svg
-              class="stroke"
-              width="7"
-              height="13"
-              viewBox="0 0 7 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 1L5.38848 5.82733C5.73523 6.20875 5.73523 6.79125 5.38848 7.17267L1 12"
-                stroke="#454954"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <div class="option"><p>Dubrovnik</p></div>
-          <div class="option"><p>Osijek</p></div>
-          <div class="option"><p>Pula</p></div>
-          <div class="option"><p>Rijeka</p></div>
-          <div class="option"><p>Slavonski brod</p></div>
-          <div class="option"><p>Varaždin</p></div>
-          <div class="option"><p>Vukovar</p></div>
-          <div class="option"><p>Zadar</p></div>
-          <div class="option"><p>Šibenik</p></div>
-        </div>
-        <div class="dropdown-options input-element primary-input movieCitySuboptions">
-          <p>Avenue mall</p>
-          <p>Branimir mingle mall</p>
-          <p>Kaptol boutique</p>
-          <p>Z centar</p>
-          <p>Arena centar</p>
-        </div>
-        <div class="dropdown-options input-element primary-input movieCitySuboptions">
-          <p>Joker centar</p>
-          <p>Mall of Split</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="input-container">
-      <div class="label">
-        <img class="label-icon" src="images/sortIcon.svg" alt="sort icon" />
+        <img class="label-icon" src="/images/sortIcon.svg" alt="sort icon" />
         <p class="label-text">Sortiranje</p>
       </div>
 
       <div id="sortFieldAndOrderContainer">
         <div class="input-element secondary-input gap-in-input">
           <p class="selectedValue">IMDB ocjena</p>
-          <img src="images/dropdownArrow.svg" alt="dropdown arrow" />
+          <img src="/images/dropdownArrow.svg" alt="dropdown arrow" />
         </div>
         <div class="input-element secondary-input" id="changeOrderButton">
           <div class="icon-line ascOrder"></div>
@@ -121,13 +40,10 @@
     <div id="movieCardsContainer">
       <% movies.forEach(movie=>{ %>
       <div
+        data-background-image="<%= movie.backgroundImage %>"
         class="movieCard"
         style="
-          background-image: linear-gradient(
-              0deg,
-              rgba(0, 0, 0, 0.85),
-              rgba(0, 0, 0, 0.85)
-            ),
+          background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
             url('<%= movie.backgroundImage %>');
         "
       >
@@ -144,13 +60,13 @@
             <% } %> <% if(movie.letterboxdRating){ %>
             <p>·</p>
             <div class="ratingIconAndValue">
-              <img src="images/letterboxdIcon.png" alt="letterboxd icon" />
+              <img src="/images/letterboxdIcon.png" alt="letterboxd icon" />
               <p><%= movie.letterboxdRating %>/5</p>
             </div>
             <% } %> <% if(movie.imdbRating){ %>
             <p>·</p>
             <div class="ratingIconAndValue">
-              <img src="images/imdbIcon.png" alt="imdb icon" />
+              <img src="/images/imdbIcon.png" alt="imdb icon" />
               <p><%= movie.imdbRating %>/10 %></p>
             </div>
             <% } %>
@@ -175,13 +91,7 @@
             <% } %>
           </div>
           <% if(movie.trailerLink){ %>
-          <a
-            href="<%= movie.trailerLink %>"
-            class="trailerButton"
-            data-trailer-link="<%= movie.trailerLink %>"
-          >
-            Trailer
-          </a>
+          <a href="<%= movie.trailerLink %>" class="trailerButton"> Trailer </a>
           <% }%>
         </div>
 

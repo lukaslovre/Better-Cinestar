@@ -44,7 +44,7 @@ nav {
     font-size: 1rem;
     cursor: pointer;
 
-    transition: all 250ms ease-out;
+    transition: all 350ms ease-out;
   }
 
   .primary-input {
@@ -133,7 +133,7 @@ nav {
       border-radius: 1rem;
       height: 0.2rem;
 
-      transition: width 150ms ease-out;
+      transition: width 200ms ease-out;
 
       &:nth-of-type(1) {
         width: 100%;
@@ -172,14 +172,14 @@ nav {
 
     padding: 1.25rem;
     border-radius: 0.5rem;
-
-    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+    /*
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
       url("https://a.ltrbxd.com/resized/sm/upload/22/gj/k3/ql/spider-verse-960-960-540-540-crop-000000.jpg?v=259dfdc695");
+    */
     background-size: cover;
-    background-position: center;
+    background-position: top;
     box-shadow: 0.375rem 0.375rem 0.25rem rgba(0, 0, 0, 0.25);
 
-    transition: all 200ms ease-out;
     .movieCardHeading {
       .movieTitle {
         margin-bottom: 0.25rem;
