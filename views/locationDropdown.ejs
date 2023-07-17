@@ -1,9 +1,11 @@
 <div class="input-container">
+  <!-- Label -->
   <div class="label">
     <img class="label-icon" src="/images/locationIcon.svg" alt="location icon" />
     <p class="label-text">Lokacija kina</p>
   </div>
-  <div id="movieLocationDropdown" class="input-element primary-input gap-in-input">
+  <!-- Dropdown element -->
+  <div id="movieLocationDropdown" class="dropdown-element primary-color-scheme">
     <p class="selectedValue">Zagreb</p>
     <svg
       class="fill"
@@ -19,8 +21,9 @@
       />
     </svg>
   </div>
+  <!-- Dropdown options -->
   <div class="dropdown-options-container">
-    <div id="movieCityOptions" class="dropdown-options input-element primary-input">
+    <div id="movieLocationOptions" class="dropdown-options primary-color-scheme">
       <% cinemaCities.forEach(city=>{ %> <% if(city.cinemas.length > 1){ %>
       <div class="option">
         <p><%= city.city %></p>
@@ -46,13 +49,16 @@
       </div>
       <% } %> <% }) %>
     </div>
+    <!-- Dropdown sub-options -->
     <% cinemaCities.forEach(city=>{ %> <% if(city.cinemas.length > 1){ %>
     <div
       data-city="<%= city.city %>"
-      class="dropdown-options input-element primary-input movieCitySuboptions"
+      class="dropdown-options primary-color-scheme dropdown-suboptions"
     >
       <% city.cinemas.forEach(cinema=>{ %>
-      <p data-cinema-oid="<%= cinema.cinemaOid %>"><%= cinema.cinemaName %></p>
+      <div class="option">
+        <p data-cinema-oid="<%= cinema.cinemaOid %>"><%= cinema.cinemaName %></p>
+      </div>
       <% }) %>
     </div>
     <% } %> <% }) %>

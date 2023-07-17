@@ -1,37 +1,36 @@
+// DOM elementi
+// Lokacija kina dropdown
+const locationDropdownElement = document.getElementById("movieLocationDropdown");
+const locationDropdownOptions = document.getElementById("movieLocationOptions");
+const locationDropdownSuboptions = locationDropdownElement
+  .closest(".input-container")
+  .querySelectorAll(".dropdown-suboptions");
+const expandableOptions = locationDropdownOptions.querySelectorAll("svg");
+const nonExpandableOptions = getOptionsWithoutChildren();
+// Sortiranje dropdown
 const changeOrderButton = document.getElementById("changeOrderButton");
-const linije = document.querySelectorAll(".icon-line");
-changeOrderButton.addEventListener("click", (e) => {
-  linije.forEach((linija) => {
-    linija.classList.toggle("ascOrder");
-  });
-});
+const linije = changeOrderButton.querySelectorAll(".icon-line");
 
-// Prva razina (samo input)
-const movieLocationDropdown = document.getElementById("movieLocationDropdown");
-// Druga razina (gradovi)
-const movieCityOptions = document.getElementById("movieCityOptions");
-// Treca razina (imena kina)
-const movieCitySuboptions = document.querySelectorAll(".movieCitySuboptions");
-// gradovi koji nisu finalni (ima vise kina u gradu)
-const movieCityExpandableOptions = movieCityOptions.querySelectorAll("svg");
-//listovi dropdown-ova (gradovi i imena kina)
-const dropdownCinemas = getOptionsWithoutChildren();
+// Cards
+const movieCardsContainer = document.getElementById("movieCardsContainer");
 
-const selectedCinemas = [];
+// Globalne varijable
+let selectedCinemas = [];
 
+// Event listeneri
 // Otvaranje 1. levela dropdowna
-movieLocationDropdown.addEventListener("click", () => {
-  const dropdownDisplay = movieCityOptions.style.display;
+locationDropdownElement.addEventListener("click", () => {
+  const dropdownDisplay = locationDropdownOptions.style.display;
   if (dropdownDisplay.length == 0 || dropdownDisplay === "none") {
-    movieCityOptions.style.display = "flex";
-    movieLocationDropdown.classList.add("fadeout-1-input");
+    locationDropdownOptions.style.display = "flex";
+    locationDropdownElement.classList.add("fadeout-1-input");
   } else {
-    movieLocationDropdown.classList.remove("fadeout-1-input");
-    movieLocationDropdown.classList.remove("fadeout-2-input");
-    movieCityOptions.classList.remove("fadeout-1-input");
+    locationDropdownElement.classList.remove("fadeout-1-input");
+    locationDropdownElement.classList.remove("fadeout-2-input");
+    locationDropdownOptions.classList.remove("fadeout-1-input");
 
-    movieCityOptions.style.display = "none";
-    movieCitySuboptions.forEach((suboption) => {
+    locationDropdownOptions.style.display = "none";
+    locationDropdownSuboptions.forEach((suboption) => {
       suboption.style.display = "none";
     });
 
@@ -44,7 +43,7 @@ movieLocationDropdown.addEventListener("click", () => {
   }
 });
 // Otvaranje 2. levela dropdowna
-movieCityExpandableOptions.forEach((svg) => {
+expandableOptions.forEach((svg) => {
   const option = svg.parentNode;
   option.addEventListener("click", (e) => {
     const optionValue = e.currentTarget.querySelector("p").textContent;
@@ -52,40 +51,54 @@ movieCityExpandableOptions.forEach((svg) => {
 
     const dropdownDisplay = correspondingDropdown.style.display;
     if (dropdownDisplay.length == 0 || dropdownDisplay === "none") {
-      movieLocationDropdown.classList.add("fadeout-2-input");
-      movieCityOptions.classList.add("fadeout-1-input");
-      movieCitySuboptions.forEach((suboption) => {
+      locationDropdownElement.classList.add("fadeout-2-input");
+      locationDropdownOptions.classList.add("fadeout-1-input");
+      locationDropdownSuboptions.forEach((suboption) => {
         suboption.style.display = "none";
       });
       correspondingDropdown.style.display = "flex";
     } else {
-      movieLocationDropdown.classList.remove("fadeout-2-input");
-      movieCityOptions.classList.remove("fadeout-1-input");
+      locationDropdownElement.classList.remove("fadeout-2-input");
+      locationDropdownOptions.classList.remove("fadeout-1-input");
       correspondingDropdown.style.display = "none";
     }
   });
 });
-function getSuboptionsFor(city) {
-  for (const suboptions of movieCitySuboptions) {
-    if (suboptions.dataset.city === city) return suboptions;
-  }
-}
-
 // Oznacavanje kina
-dropdownCinemas.forEach((cinema) => {
+nonExpandableOptions.forEach((cinema) => {
   cinema.addEventListener("click", (e) => {
-    e.currentTarget.style.color = "#E8C547";
-    if (e.currentTarget.classList.contains("option")) {
-      selectedCinemas.push(e.currentTarget.querySelector("p").dataset.cinemaOid);
+    const selectedCinemaOid = e.currentTarget.querySelector("p").dataset.cinemaOid;
+    console.log(selectedCinemas.includes(selectedCinemaOid));
+    if (selectedCinemas.includes(selectedCinemaOid)) {
+      e.currentTarget.style.color = "";
+      selectedCinemas = selectedCinemas.filter((oid) => oid !== selectedCinemaOid);
     } else {
-      selectedCinemas.push(e.currentTarget.dataset.cinemaOid);
+      e.currentTarget.style.color = "#E8C547";
+      selectedCinemas.push(selectedCinemaOid);
     }
+
     console.log(selectedCinemas);
   });
 });
+// prosirivanje carda na klik
+for (const card of movieCardsContainer.children) {
+  card.addEventListener("click", expandCard);
+}
+// animiranje order buttona
+changeOrderButton.addEventListener("click", (e) => {
+  linije.forEach((linija) => {
+    linija.classList.toggle("ascOrder");
+  });
+});
 
+// Funkcije
+function getSuboptionsFor(city) {
+  for (const suboptions of locationDropdownSuboptions) {
+    if (suboptions.dataset.city === city) return suboptions;
+  }
+}
 function getOptionsWithoutChildren() {
-  const allOptions = document.querySelectorAll(".movieCitySuboptions > p, .option");
+  const allOptions = document.querySelectorAll(".option");
   const withoutChildren = [];
   for (const node of allOptions) {
     if (node.childElementCount < 2) {
@@ -93,12 +106,6 @@ function getOptionsWithoutChildren() {
     }
   }
   return withoutChildren;
-}
-
-// prosirivanje carda na klik
-const movieCardsContainer = document.getElementById("movieCardsContainer");
-for (const card of movieCardsContainer.children) {
-  card.addEventListener("click", expandCard);
 }
 function expandCard(e) {
   const movieCard = e.currentTarget;

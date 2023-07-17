@@ -18,21 +18,55 @@
 
     <%- include("locationDropdown"); %>
 
-    <div class="input-container">
-      <div class="label">
-        <img class="label-icon" src="/images/sortIcon.svg" alt="sort icon" />
-        <p class="label-text">Sortiranje</p>
-      </div>
-
-      <div id="sortFieldAndOrderContainer">
-        <div class="input-element secondary-input gap-in-input">
-          <p class="selectedValue">IMDB ocjena</p>
+    <div id="dateAndSortContainer">
+      <!-- Date input -->
+      <div class="input-container">
+        <!-- Label -->
+        <div class="label">
+          <img class="label-icon" src="/images/sortIcon.svg" alt="sort icon" />
+          <p class="label-text">Datum</p>
+        </div>
+        <!-- Dropdown element -->
+        <div class="dropdown-element secondary-color-scheme">
+          <p class="selectedValue">Danas</p>
           <img src="/images/dropdownArrow.svg" alt="dropdown arrow" />
         </div>
-        <div class="input-element secondary-input" id="changeOrderButton">
-          <div class="icon-line ascOrder"></div>
-          <div class="icon-line ascOrder"></div>
-          <div class="icon-line ascOrder"></div>
+        <!-- Dropdown options -->
+        <div class="dropdown-options secondary-color-scheme">
+          <div class="option">
+            <p>Danas</p>
+          </div>
+          <% const today = new Date(); for(let i=0; i<6; i++){ %> <%
+          today.setDate(today.getDate()+1) %>
+          <div class="option">
+            <p><%= today.getDate() %></p>
+          </div>
+          <% } %>
+          <div class="option">
+            <p>Sve</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sort input -->
+      <div id="sortContainer" class="input-container">
+        <!-- Label -->
+        <div class="label">
+          <img class="label-icon" src="/images/sortIcon.svg" alt="sort icon" />
+          <p class="label-text">Sortiranje</p>
+        </div>
+        <div id="sortAndOrderContainer">
+          <!-- Dropdown element -->
+          <div class="dropdown-element secondary-color-scheme">
+            <p class="selectedValue">Datum izlaska</p>
+            <img src="/images/dropdownArrow.svg" alt="dropdown arrow" />
+          </div>
+          <!-- Dropdown options -->
+          <div id="changeOrderButton" class="secondary-color-scheme">
+            <div class="icon-line ascOrder"></div>
+            <div class="icon-line ascOrder"></div>
+            <div class="icon-line ascOrder"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -74,6 +108,10 @@
         </div>
 
         <div class="movieCardInfo">
+          <div class="infoContainer">
+            <p class="infoLabel">Naziv karte</p>
+            <p class="infoText"><%= movie.title %></p>
+          </div>
           <div class="infoContainer">
             <p class="infoLabel">Direktori</p>
             <% if(movie.englishDirectors){ %>

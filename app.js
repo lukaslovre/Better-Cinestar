@@ -153,7 +153,7 @@ let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
 let performances = JSON.parse(fs.readFileSync("./data/performances.json"));
 
 app.get("/", (req, res) => {
-  const dataFormattedForDisplay = formatDataForCinemas(cinemas[0].cinemaOid);
+  const dataFormattedForDisplay = formatDataForCinemas(cinemas[0].cinemaOid, new Date());
   res.render("index", {
     movies: dataFormattedForDisplay,
     cinemaCities: cinemasFormattedForDisplay,
@@ -198,13 +198,6 @@ app.get("/getCinestarMovies", async (req, res) => {
   fs.writeFileSync("./data/movies.json", JSON.stringify(movies));
   fs.writeFileSync("./data/performances.json", JSON.stringify(performances));
 });
-// funkcija getMovieData koji dobi sve podatke za sve filmove
-// funkcija getMovieSchedules koji dobi kada sve igraju filmovi u kojem mjestu (sve jedna lista koja ima neki atribut cinema-oid)
-
-// funkcija getPlayingMovies koji dobi samo listu imena filmova za mjesto (zato da se moze napraviti nova lista sa samo unique vrijednostima)
-
-// za svaki film u toj unique listi naci podatke iz podatka o filmovima
-// za svaki film naci kada igraju danas
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -217,24 +210,24 @@ function uniqueMovies(value, index, array) {
     }
   }
 }
-function isToday(date) {
-  const today = new Date();
+function isSameDate(date1, date2) {
   return (
-    today.getFullYear() === date.getFullYear() &&
-    today.getMonth() === date.getMonth() &&
-    today.getDate() === date.getDate()
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
   );
 }
 
-function formatDataForCinemas(cinemaOids) {
+function formatDataForCinemas(cinemaOids, selectedDate, movieSortBy, asc) {
   if (!Array.isArray(cinemaOids)) cinemaOids = [cinemaOids];
+
   // Ako je u trazenom kinu i samo za danas
   const filteredPerformances = performances
     .filter((performance) => {
       // if in
       if (cinemaOids.includes(performance.cinemaOid)) {
         const performanceDateTime = new Date(performance.performanceDateTime);
-        return isToday(performanceDateTime);
+        return isSameDate(performanceDateTime, selectedDate);
       } else {
         return false;
       }
@@ -253,6 +246,8 @@ function formatDataForCinemas(cinemaOids) {
 
   // Formatiranje za display
   const formattedData = [];
+  // moze se efikasnije mozda, jer .keys() vrati niz i onda gledati isto
+  // sa contains
   for (const filmNumber of groupedPerformances.keys()) {
     const movieData = structuredClone(
       movies.find((movie) => movie.filmNumber === filmNumber)
@@ -260,6 +255,7 @@ function formatDataForCinemas(cinemaOids) {
     movieData.performances = groupedPerformances.get(filmNumber);
     formattedData.push(movieData);
   }
+  formattedData.sort((a, b) => ("" + b.nationwideStart).localeCompare(a.nationwideStart));
 
   return formattedData;
 }
