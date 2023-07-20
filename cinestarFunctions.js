@@ -71,9 +71,9 @@ async function getPerformanceTimesFor(filmId, cinema) {
         id,
         performanceDateTime,
         performanceTime:
-          d.getHours().toString.padStart(2, "0") +
+          d.getHours().toString().padStart(2, "0") +
           ":" +
-          d.getMinutes().toString.padStart(2, "0"),
+          d.getMinutes().toString().padStart(2, "0"),
         performanceFeatures: releaseTypeName.split("/"),
         filmId,
         filmNumber,

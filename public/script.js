@@ -7,18 +7,23 @@ const locationDropdownSuboptions = locationDropdownElement
   .querySelectorAll(".dropdown-suboptions");
 const expandableOptions = locationDropdownOptions.querySelectorAll("svg");
 const nonExpandableOptions = getOptionsWithoutChildren();
+// Datum prikazivanja dropdown
+const dateDropdownElement = document.getElementById("dateDropdown");
+const dateDropdownOptions = dateDropdownElement
+  .closest(".input-container")
+  .querySelector(".dropdown-options");
 // Sortiranje dropdown
 const changeOrderButton = document.getElementById("changeOrderButton");
 const linije = changeOrderButton.querySelectorAll(".icon-line");
-
 // Cards
 const movieCardsContainer = document.getElementById("movieCardsContainer");
 
 // Globalne varijable
-let selectedCinemas = [];
+const urlParameters = loadParamsFromUrl();
+let parametersChanged = false;
 
 // Event listeneri
-// Otvaranje 1. levela dropdowna
+// Otvaranje 1. levela lokacije
 locationDropdownElement.addEventListener("click", () => {
   const dropdownDisplay = locationDropdownOptions.style.display;
   if (dropdownDisplay.length == 0 || dropdownDisplay === "none") {
@@ -35,14 +40,10 @@ locationDropdownElement.addEventListener("click", () => {
     });
 
     // Redirect
-    if (selectedCinemas.length > 0) {
-      window.location.href = "/cinemas/" + selectedCinemas.join("-");
-    } else {
-      window.location.href = "/";
-    }
+    if (parametersChanged) redirectWithParams();
   }
 });
-// Otvaranje 2. levela dropdowna
+// Otvaranje 2. levela lokacije
 expandableOptions.forEach((svg) => {
   const option = svg.parentNode;
   option.addEventListener("click", (e) => {
@@ -68,18 +69,35 @@ expandableOptions.forEach((svg) => {
 nonExpandableOptions.forEach((cinema) => {
   cinema.addEventListener("click", (e) => {
     const selectedCinemaOid = e.currentTarget.querySelector("p").dataset.cinemaOid;
-    console.log(selectedCinemas.includes(selectedCinemaOid));
-    if (selectedCinemas.includes(selectedCinemaOid)) {
+    if (urlParameters.cinemaOids.includes(selectedCinemaOid)) {
       e.currentTarget.style.color = "";
-      selectedCinemas = selectedCinemas.filter((oid) => oid !== selectedCinemaOid);
+      urlParameters.cinemaOids = urlParameters.cinemaOids.filter(
+        (oid) => oid !== selectedCinemaOid
+      );
     } else {
       e.currentTarget.style.color = "#E8C547";
-      selectedCinemas.push(selectedCinemaOid);
+      urlParameters.cinemaOids.push(selectedCinemaOid);
     }
-
-    console.log(selectedCinemas);
+    parametersChanged = true;
+    console.log(urlParameters.cinemaOids);
   });
 });
+// Otvaranje 1. levela datuma
+dateDropdownElement.addEventListener("click", () => {
+  const dropdownDisplay = dateDropdownOptions.style.display;
+  if (dropdownDisplay.length == 0 || dropdownDisplay === "none") {
+    dateDropdownOptions.style.display = "flex";
+  } else {
+    dateDropdownOptions.style.display = "none";
+
+    // Redirect
+    if (parametersChanged) redirectWithParams();
+  }
+});
+// Odabir datuma prikaza
+for (const dateOption of dateDropdownOptions.children) {
+  dateOption.addEventListener("click", setSelectedDate);
+}
 // prosirivanje carda na klik
 for (const card of movieCardsContainer.children) {
   card.addEventListener("click", expandCard);
@@ -98,7 +116,9 @@ function getSuboptionsFor(city) {
   }
 }
 function getOptionsWithoutChildren() {
-  const allOptions = document.querySelectorAll(".option");
+  const allOptions = document
+    .querySelector(".dropdown-options-container")
+    .querySelectorAll(".option");
   const withoutChildren = [];
   for (const node of allOptions) {
     if (node.childElementCount < 2) {
@@ -106,6 +126,19 @@ function getOptionsWithoutChildren() {
     }
   }
   return withoutChildren;
+}
+function setSelectedDate(e) {
+  const optionValue = e.currentTarget.dataset.date;
+  for (const dateOption of dateDropdownOptions.children) {
+    dateOption.style.color = "";
+  }
+  e.currentTarget.style.color = "#E8C547";
+  if (optionValue === "all") {
+    urlParameters.date = "all";
+  } else {
+    urlParameters.date = optionValue;
+  }
+  parametersChanged = true;
 }
 function expandCard(e) {
   const movieCard = e.currentTarget;
@@ -121,3 +154,54 @@ function expandCard(e) {
     movieCardInfo.style.display = "none";
   }
 }
+function loadParamsFromUrl() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.size === 0) {
+    return {
+      cinemaOids: [],
+      date: "",
+      sortBy: "",
+    };
+  }
+
+  const cinema = urlParams.getAll("cinema");
+  const cinemaOids = cinema[0] === "" ? [] : cinema;
+
+  const date = urlParams.get("date");
+  const sort = urlParams.get("sortBy");
+  console.log(cinemaOids, date, sort);
+
+  return {
+    cinemaOids: cinemaOids,
+    date: date,
+    sortBy: sort,
+  };
+}
+function redirectWithParams() {
+  const cinemaOidsString =
+    urlParameters.cinemaOids.length === 0
+      ? "cinema="
+      : urlParameters.cinemaOids.map((oid) => "cinema=" + oid).join("&");
+  const dateString = "&date=" + urlParameters.date;
+  const sortString = "&sortBy=" + urlParameters.sortBy;
+
+  window.location.href = "/movies?" + cinemaOidsString + dateString + sortString;
+}
+function styleDomBasedOnParams() {
+  const selectedCinemas = nonExpandableOptions
+    .filter((option) =>
+      urlParameters.cinemaOids.includes(option.querySelector("p").dataset.cinemaOid)
+    )
+    .forEach((option) => {
+      option.style.color = "#E8C547";
+    });
+
+  for (const dateOption of dateDropdownOptions.children) {
+    console.log(dateOption);
+    if (dateOption.dataset.date === urlParameters.date) {
+      dateOption.style.color = "#E8C547";
+      break;
+    }
+  }
+}
+styleDomBasedOnParams();

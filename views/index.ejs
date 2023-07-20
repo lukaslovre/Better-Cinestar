@@ -27,22 +27,31 @@
           <p class="label-text">Datum</p>
         </div>
         <!-- Dropdown element -->
-        <div class="dropdown-element secondary-color-scheme">
+        <div id="dateDropdown" class="dropdown-element secondary-color-scheme">
           <p class="selectedValue">Danas</p>
           <img src="/images/dropdownArrow.svg" alt="dropdown arrow" />
         </div>
         <!-- Dropdown options -->
         <div class="dropdown-options secondary-color-scheme">
-          <div class="option">
+          <% const today = new Date(); %>
+          <div
+            class="option"
+            data-date="<%= today.getFullYear() + '-' + (today.getMonth()+1) + '-' +today.getDate() %>"
+          >
             <p>Danas</p>
           </div>
-          <% const today = new Date(); for(let i=0; i<6; i++){ %> <%
-          today.setDate(today.getDate()+1) %>
-          <div class="option">
-            <p><%= today.getDate() %></p>
+          <% for(let i=0; i<6; i++){ today.setDate(today.getDate()+1) %>
+          <div
+            class="option"
+            data-date="<%= today.getFullYear() + '-' + (today.getMonth()+1) + '-' +today.getDate() %>"
+          >
+            <p>
+              <%= today.toLocaleDateString("en-EN",{weekday:"short", month:"short",
+              day:"numeric"}) %>
+            </p>
           </div>
           <% } %>
-          <div class="option">
+          <div class="option" data-date="all">
             <p>Sve</p>
           </div>
         </div>

@@ -153,16 +153,16 @@ let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
 let performances = JSON.parse(fs.readFileSync("./data/performances.json"));
 
 app.get("/", (req, res) => {
-  const dataFormattedForDisplay = formatDataForCinemas(cinemas[0].cinemaOid, new Date());
+  const dataFormattedForDisplay = formatDataForCinemas(cinemas[0].cinemaOid);
   res.render("index", {
     movies: dataFormattedForDisplay,
     cinemaCities: cinemasFormattedForDisplay,
   });
 });
-app.get("/cinemas/:cinemas", (req, res) => {
-  const cinemaIds = req.params.cinemas.split("-");
-  console.log(cinemaIds);
-  const dataFormattedForDisplay = formatDataForCinemas(cinemaIds);
+app.get("/movies", (req, res) => {
+  console.log(req.query);
+  const { cinema, date, sortBy } = req.query;
+  const dataFormattedForDisplay = formatDataForCinemas(cinema, date, sortBy);
   res.render("index", {
     movies: dataFormattedForDisplay,
     cinemaCities: cinemasFormattedForDisplay,
@@ -217,17 +217,33 @@ function isSameDate(date1, date2) {
     date1.getDate() === date2.getDate()
   );
 }
-
-function formatDataForCinemas(cinemaOids, selectedDate, movieSortBy, asc) {
+function formatDataForCinemas(cinemaOids, selectedDate, sortBy) {
   if (!Array.isArray(cinemaOids)) cinemaOids = [cinemaOids];
 
+  const anyDate = selectedDate === "all";
+  if (!anyDate) {
+    if (!selectedDate) {
+      selectedDate = new Date();
+    } else {
+      const dateComponents = selectedDate.split("-");
+      const year = dateComponents[0];
+      const month = parseInt(dateComponents[1]) - 1;
+      const day = parseInt(dateComponents[2]) + 1;
+      selectedDate = new Date(year, month, day);
+    }
+  }
+  console.log(selectedDate);
   // Ako je u trazenom kinu i samo za danas
   const filteredPerformances = performances
     .filter((performance) => {
       // if in
       if (cinemaOids.includes(performance.cinemaOid)) {
-        const performanceDateTime = new Date(performance.performanceDateTime);
-        return isSameDate(performanceDateTime, selectedDate);
+        if (anyDate) {
+          return true;
+        } else {
+          const performanceDateTime = new Date(performance.performanceDateTime);
+          return isSameDate(performanceDateTime, selectedDate);
+        }
       } else {
         return false;
       }
