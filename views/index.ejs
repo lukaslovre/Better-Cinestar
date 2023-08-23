@@ -33,20 +33,20 @@
         </div>
         <!-- Dropdown options -->
         <div class="dropdown-options secondary-color-scheme">
-          <% const today = new Date(); %>
+          <% const date = new Date(); %>
           <div
             class="option"
-            data-date="<%= today.getFullYear() + '-' + (today.getMonth()+1) + '-' +today.getDate() %>"
+            data-date="<%= date.getFullYear() + '-' + (date.getMonth()+1) + '-' +date.getDate() %>"
           >
             <p>Danas</p>
           </div>
-          <% for(let i=0; i<6; i++){ today.setDate(today.getDate()+1) %>
+          <% for(let i=0; i<6; i++){ date.setDate(date.getDate()+1) %>
           <div
             class="option"
-            data-date="<%= today.getFullYear() + '-' + (today.getMonth()+1) + '-' +today.getDate() %>"
+            data-date="<%= date.getFullYear() + '-' + (date.getMonth()+1) + '-' +date.getDate() %>"
           >
             <p>
-              <%= today.toLocaleDateString("en-EN",{weekday:"short", month:"short",
+              <%= date.toLocaleDateString("en-EN",{weekday:"short", month:"short",
               day:"numeric"}) %>
             </p>
           </div>
@@ -143,7 +143,11 @@
         </div>
 
         <div class="movieCardPerformancesContainer">
-          <div class="performanceslabel">Danas</div>
+          <div class="performanceslabel">
+            <% const showPerf = new Date(movie.performances[0].performanceDateTime); %>
+            <%= showPerf.toLocaleDateString("en-EN",{weekday:"short", month:"short",
+            day:"numeric"}) %>
+          </div>
           <div class="performanceList">
             <% movie.performances.forEach(performance=>{ %>
             <div class="performanceCard">

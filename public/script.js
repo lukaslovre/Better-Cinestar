@@ -188,17 +188,21 @@ function redirectWithParams() {
   window.location.href = "/movies?" + cinemaOidsString + dateString + sortString;
 }
 function styleDomBasedOnParams() {
-  const selectedCinemas = nonExpandableOptions
-    .filter((option) =>
-      urlParameters.cinemaOids.includes(option.querySelector("p").dataset.cinemaOid)
-    )
-    .forEach((option) => {
-      option.style.color = "#E8C547";
-    });
+  const selectedCinemas = nonExpandableOptions.filter((option) =>
+    urlParameters.cinemaOids.includes(option.querySelector("p").dataset.cinemaOid)
+  );
+  selectedCinemas.forEach((option) => {
+    option.style.color = "#E8C547";
+  });
+  locationDropdownElement.querySelector(".selectedValue").textContent =
+    selectedCinemas[0].querySelector("p").textContent.split(" ")[0] +
+    (selectedCinemas.length > 1 ? " + " + (selectedCinemas.length - 1) : "");
 
   for (const dateOption of dateDropdownOptions.children) {
     console.log(dateOption);
     if (dateOption.dataset.date === urlParameters.date) {
+      dateDropdownElement.querySelector(".selectedValue").textContent =
+        dateOption.querySelector("p").textContent;
       dateOption.style.color = "#E8C547";
       break;
     }

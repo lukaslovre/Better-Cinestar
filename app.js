@@ -210,12 +210,17 @@ function uniqueMovies(value, index, array) {
     }
   }
 }
+/*
 function isSameDate(date1, date2) {
   return (
     date1.getFullYear() === date2.getFullYear() &&
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate()
   );
+}
+*/
+function isSameDate(date1, date2) {
+  return date1.toDateString() === date2.toDateString();
 }
 function formatDataForCinemas(cinemaOids, selectedDate, sortBy) {
   if (!Array.isArray(cinemaOids)) cinemaOids = [cinemaOids];
@@ -226,9 +231,9 @@ function formatDataForCinemas(cinemaOids, selectedDate, sortBy) {
       selectedDate = new Date();
     } else {
       const dateComponents = selectedDate.split("-");
-      const year = dateComponents[0];
+      const year = parseInt(dateComponents[0]);
       const month = parseInt(dateComponents[1]) - 1;
-      const day = parseInt(dateComponents[2]) + 1;
+      const day = parseInt(dateComponents[2]);
       selectedDate = new Date(year, month, day);
     }
   }
@@ -242,6 +247,8 @@ function formatDataForCinemas(cinemaOids, selectedDate, sortBy) {
           return true;
         } else {
           const performanceDateTime = new Date(performance.performanceDateTime);
+          if (isSameDate(performanceDateTime, selectedDate)) {
+          }
           return isSameDate(performanceDateTime, selectedDate);
         }
       } else {
