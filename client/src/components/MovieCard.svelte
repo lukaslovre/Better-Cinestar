@@ -1,0 +1,939 @@
+<script>
+  const movies = [
+    {
+      id: "5A510000012FEPADHG",
+      filmNumber: 5332,
+      title: "Pušteni s lanca",
+      ticketTitle: "Pušteni s lanca",
+      originalTitle: "Strays",
+      synopsis:
+        "Psi koji govore na filmu su uglavnom ljupki, ali ne i u komediji redatelja Josha Greenbauma. U filmu Pušteni s lanca oni psuju, rade nepodopštine i smišljaju kako se osvetiti lošem vlasniku.\r\nNa prvi pogled, Pušteni s lanca je film koji ste vidjeli već toliko puta. Simpatični pas izgubi vlasnika, pa prolazi kroz nevjerojatnu avanturu kako bi mu se vratio… No, ovaj film nema nimalo te pretjerane slatkoće.\r\nKad Reggieja (Will Ferrell), naivnog, nemilosrdno optimističnog border terijera, napusti na opakim gradskim ulicama njegov nevaljali vlasnik Doug (Will Forte), Reggie je siguran da ga njegov voljeni vlasnik nikada ne bi ostavio namjerno. Ali jednom kada se Reggie spoji s bostonskim terijerom koji brzo govori i psuje Bugom (dobitnik Oscara Jamie Foxx), lutalicom koji voli svoju slobodu i vjeruje da su vlasnici naivčine, Reggie konačno shvaća da je bio u toksičnoj vezi i počinje doživljavati Douga kao bezosjećajnog ljigavca kakav je.\r\nOdlučni u potrazi za osvetom, Reggie, Bug i Bugovi prijatelji - Maggie (Isla Fisher), pametna australska ovčarka koju je novo štene njenog vlasnika zanemarilo, i Hunter (Randall Park), tjeskobna njemačka doga koja je pod stresom zbog svog posla kao životinje za emocionalnu potporu-zajedno kuju plan i upuste se u epsku avanturu kako bi pomogli Reggieju da pronađe put kući… I natjera Douga da plati odgrizajući stvar koji voli najviše. (Savjet: to nije njegovo stopalo).\r\n",
+      genres: ["Komedija"],
+      nationwideStart: "2023-08-24",
+      ageRating: "15",
+      director: "Josh Greenbaum",
+      duration: "1h 33m",
+      letterboxdUrl: "https://letterboxd.com/film/strays-2023/",
+      letterboxdRating: "2.7",
+      imdbUrl: "http://www.imdb.com/title/tt15153532/maindetails",
+      imdbRating: 6.4,
+      englishCategories: "comedy",
+      englishSynopsis:
+        "When Reggie is abandoned on the mean city streets by his lowlife owner, Doug, Reggie is certain that his beloved owner would never leave him on purpose. But once Reggie falls in with a fast-talking, foul-mouthed stray who loves his freedom and believes that owners are for suckers, Reggie finally realizes he was in a toxic relationship and begins to see Doug for the heartless sleazeball that he is.",
+      trailerLink: "https://www.youtube.com/watch?v=26Xq6_g2r6Q",
+      englishDirectors: ["Josh Greenbaum"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/xx/qs/hq/qg/strays-1200-1200-675-675-crop-000000.jpg?v=2af4a07f76",
+      performances: [
+        {
+          id: "E7556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T16:30:00+02:00",
+          performanceTime: "16:30",
+          performanceFeatures: ["TITL"],
+          filmId: "5A510000012FEPADHG",
+          filmNumber: 5332,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "F7556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T18:30:00+02:00",
+          performanceTime: "18:30",
+          performanceFeatures: ["TITL"],
+          filmId: "5A510000012FEPADHG",
+          filmNumber: 5332,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "08556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T20:30:00+02:00",
+          performanceTime: "20:30",
+          performanceFeatures: ["TITL"],
+          filmId: "5A510000012FEPADHG",
+          filmNumber: 5332,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "EC510000012FEPADHG",
+      filmNumber: 5372,
+      title: "Drakula: Buđenje zla",
+      ticketTitle: "Drakula: Buđenje zla",
+      originalTitle: "The Last Voyage of the Demeter",
+      synopsis:
+        'Zastrašujuća adaptacija jednog jezivog poglavlja popularnog horor romana Brama Stokera "Drakula", u režiji Andréa ?vredala.\r\n\r\nZastrašujuća priča o trgovačkom brodu Demeter, koji je unajmljen za prijevoz privatnog tereta - pedeset neoznačenih drvenih sanduka koji plove do Londona.\r\nNa tom putovanju čudni događaji zadese posadu koja pokušava preživjeti oceansko putovanje, svake noći praćeni nemilosrdnom prisutnošću na brodu. Kada Demeter konačno stigne do obala Engleske, to je pougljenjena, napuštena olupina, a od posade nema ni traga.\r\n',
+      genres: ["Horor"],
+      nationwideStart: "2023-08-24",
+      ageRating: "15",
+      director: "André Ovredal",
+      duration: "1h 58m",
+      letterboxdUrl: "https://letterboxd.com/film/the-last-voyage-of-the-demeter/",
+      letterboxdRating: "2.8",
+      imdbUrl: "http://www.imdb.com/title/tt1001520/maindetails",
+      imdbRating: 6.5,
+      englishCategories: "fantasy",
+      englishSynopsis:
+        "The crew of the merchant ship Demeter attempts to survive the ocean voyage from Carpathia to London as they are stalked each night by a merciless presence onboard the ship.",
+      trailerLink: "https://www.youtube.com/watch?v=6FgUUO9Ztd0",
+      englishDirectors: ["André Øvredal"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/2d/j9/x1/2u/demeneter-1200-1200-675-675-crop-000000.jpg?v=42b259e180",
+      performances: [
+        {
+          id: "DD556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T17:35:00+02:00",
+          performanceTime: "17:35",
+          performanceFeatures: ["TITL"],
+          filmId: "EC510000012FEPADHG",
+          filmNumber: 5372,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "ED556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T20:00:00+02:00",
+          performanceTime: "20:00",
+          performanceFeatures: ["TITL"],
+          filmId: "EC510000012FEPADHG",
+          filmNumber: 5372,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "FD556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T22:25:00+02:00",
+          performanceTime: "22:25",
+          performanceFeatures: ["TITL"],
+          filmId: "EC510000012FEPADHG",
+          filmNumber: 5372,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "6C510000012FEPADHG",
+      filmNumber: 5364,
+      title: "Gran Turismo",
+      ticketTitle: "Gran Turismo",
+      originalTitle: "Gran Turismo",
+      synopsis:
+        "Prema istinitoj priči Janna Mardenborougha, film je ultimativno ispunjenje snova mladog igrača Gran Turisma koji je svojim igračkim vještinama osvojio niz Nissanovih natjecanja kako bi postao stvarni profesionalni vozač trkaćih automobila. Jann Mardenborough (Archie Madekwe) je tinejdžer koji po cijele dane igra Gran Turismo igre, unatoč prigovorima svojim roditelja. No, kad dođe prilika za natjecanje koje održava GT Academy, Jann će dobiti priliku svoje gaming iskustvo iskoristiti za osvajanje glavne nagrade - ulazak u vode profesionalnih utrka!",
+      genres: ["Sportska drama"],
+      nationwideStart: "2023-08-24",
+      ageRating: "12",
+      director: "Neill Blomkamp",
+      duration: "2h 15m",
+      letterboxdUrl: "https://letterboxd.com/film/gran-turismo/",
+      letterboxdRating: "3.4",
+      imdbUrl: "http://www.imdb.com/title/tt4495098/maindetails",
+      imdbRating: 7.3,
+      englishCategories: "drama",
+      englishSynopsis:
+        "The ultimate wish fulfillment tale of a teenage Gran Turismo player whose gaming skills won him a series of Nissan competitions to become an actual professional racecar driver.",
+      trailerLink: "https://www.youtube.com/watch?v=ZCYHn8mvyF8",
+      englishDirectors: ["Neill Blomkamp"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/e1/k5/aw/3i/gran%20turismo-1200-1200-675-675-crop-000000.jpg?v=7d966ed75e",
+      performances: [
+        {
+          id: "2F556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T17:35:00+02:00",
+          performanceTime: "17:35",
+          performanceFeatures: ["TITL"],
+          filmId: "6C510000012FEPADHG",
+          filmNumber: 5364,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "3F556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T20:15:00+02:00",
+          performanceTime: "20:15",
+          performanceFeatures: ["TITL"],
+          filmId: "6C510000012FEPADHG",
+          filmNumber: 5364,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "51556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T22:30:00+02:00",
+          performanceTime: "22:30",
+          performanceFeatures: ["TITL"],
+          filmId: "6C510000012FEPADHG",
+          filmNumber: 5364,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "7C510000012FEPADHG",
+      filmNumber: 5365,
+      title: "Blue Beetle",
+      ticketTitle: "Blue Beetle",
+      originalTitle: "Blue Beetle",
+      synopsis:
+        "Blue Beetle je akcijska, moderna priča koja daje svjež, zabavan pogled na žanr superheroja u kombinaciji odličnog humora, akcije i emocija koji se ne smiju propustiti.\r\n\r\nOva epska avantura istražuje kako Jaime Reyes, običan mladić koji je tek diplomirao na fakultetu, nevoljko odgovara na poziv tajanstvene i moćne relikvije koja zauvijek mijenja njegovu sudbinu. On uz pomoć svoje obitelji i izvanrednog tehnološki naprednog super odijela ... otkriva da može spasiti svijet.\r\n",
+      genres: ["Akcijski"],
+      nationwideStart: "2023-08-17",
+      ageRating: "12",
+      director: "Angel Manuel Soto",
+      duration: "2h 8m",
+      letterboxdUrl: "https://letterboxd.com/film/blue-beetle/",
+      letterboxdRating: "3.2",
+      imdbUrl: "http://www.imdb.com/title/tt9362930/maindetails",
+      imdbRating: 6.8,
+      englishCategories: "action",
+      englishSynopsis:
+        "Recent college grad Jaime Reyes returns home full of aspirations for his future, only to find that home is not quite as he left it. As he searches to find his purpose in the world, fate intervenes when Jaime unexpectedly finds himself in possession of an ancient relic of alien biotechnology: the Scarab.",
+      trailerLink: "https://www.youtube.com/watch?v=4wxyy8Rcz4k",
+      englishDirectors: ["Ángel Manuel Soto"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/kc/xr/qr/v5/blue-beetle-1200-1200-675-675-crop-000000.jpg?v=a20cbdf4e6",
+      performances: [
+        {
+          id: "AC456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T16:00:00+02:00",
+          performanceTime: "16:00",
+          performanceFeatures: ["TITL"],
+          filmId: "7C510000012FEPADHG",
+          filmNumber: 5365,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "BC456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T18:30:00+02:00",
+          performanceTime: "18:30",
+          performanceFeatures: ["TITL"],
+          filmId: "7C510000012FEPADHG",
+          filmNumber: 5365,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "41556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T20:00:00+02:00",
+          performanceTime: "20:00",
+          performanceFeatures: ["TITL"],
+          filmId: "7C510000012FEPADHG",
+          filmNumber: 5365,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "3B556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T21:30:00+02:00",
+          performanceTime: "21:30",
+          performanceFeatures: ["TITL"],
+          filmId: "7C510000012FEPADHG",
+          filmNumber: 5365,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "1D510000012FEPADHG",
+      filmNumber: 5375,
+      title: "Ljubav na prvi vau",
+      ticketTitle: "Ljubav na prvi vau",
+      originalTitle: "Puppy Love",
+      synopsis:
+        "Romantična komedija koja će vas uvjeriti da postoji ljubav i na drugi pogled. \r\nNakon katastrofalnog prvog Tinder spoja, Nicole i Max se više nikad ne žele vidjeti. Ali kada nesretni par sazna da im psići iščekuju štence, odluče ostati skupa do poroda. Urnebesno neusklađeni Nicole i Max prisiljeni su postati odgovorni suroditelji, ali na kraju i sami pronađu ljubav.\r\n",
+      genres: ["Komedija"],
+      nationwideStart: "2023-08-17",
+      ageRating: "12",
+      director: "Nick Fabiano, Richard Alan Reid",
+      duration: "1h 46m",
+      letterboxdUrl: "https://letterboxd.com/film/puppy-love-2023/",
+      letterboxdRating: "3.1",
+      imdbUrl: "http://www.imdb.com/title/tt28182736/maindetails",
+      imdbRating: 6.3,
+      englishCategories: "romance",
+      englishSynopsis:
+        "After a disastrous first date, wild-child Nicole and socially-anxious Max vow to lose each other’s numbers until they learn that their dogs found a love match, and now puppies are on the way! The hilariously mismatched Nicole and Max are forced to become responsible co-parents, but may end up finding love themselves.",
+      trailerLink: "https://www.youtube.com/watch?v=_k_xFt9h5qY",
+      englishDirectors: ["Richard Alan Reid", " Nicholas Fabiano"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/film-poster/1/0/3/0/2/5/8/1030258-puppy-love-0-230-0-345-crop.jpg?v=05fe7c9c9d",
+      performances: [
+        {
+          id: "6F456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T19:30:00+02:00",
+          performanceTime: "19:30",
+          performanceFeatures: ["TITL"],
+          filmId: "1D510000012FEPADHG",
+          filmNumber: 5375,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "18556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T22:30:00+02:00",
+          performanceTime: "22:30",
+          performanceFeatures: ["TITL"],
+          filmId: "1D510000012FEPADHG",
+          filmNumber: 5375,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "9C510000012FEPADHG",
+      filmNumber: 5367,
+      title: "Asteroid City",
+      ticketTitle: "Asteroid City",
+      originalTitle: "Asteroid City",
+      synopsis:
+        'Još jedan odličan film iz radionice Wesa Andersona. Radnja filma odvija se \'50-ih godina prošloga stoljeća, a film prati djecu i roditelje koji dolaze u pustinjski grad na Junior Stargazer/Space Cadet konveciju koja okuplja astronome, nastavnike, obitelji tinejdžera zainteresiranih za astronomiju te vojsku. Svi oni očekuju ugodno druženje protkano zajedništvom i natjecanjem u znanju, no umjesto toga svjedoče kaosu nakon što dolazi do prekida konvencije zbog "događaja koji mijenjaju svijet".\r\nOvaj se film može pohvaliti "zvjezdanom" glumačkom postavom koju čine: Jason Schwartzman, Scarlett Johansson, Tom Hanks, Jeffrey Wright, Tilda Swinton, Bryan Cranston, Edward Norton, Adrien Brody, Liev Schreiber, Hope Davis, Stephen Park, Rupert Friend, Maya Hawke, Steve Carell, Matt Dillon, Hong Chau, Willem Dafoe, Margot Robbie, Tony Revolori, Jake Ryan i Jeff Goldblum.\r\n',
+      genres: ["Komedija"],
+      nationwideStart: "2023-08-17",
+      ageRating: "12",
+      director: "Wes Anderson",
+      duration: "1h 45m",
+      letterboxdUrl: "https://letterboxd.com/film/asteroid-city/",
+      letterboxdRating: "3.6",
+      imdbUrl: "http://www.imdb.com/title/tt14230388/maindetails",
+      imdbRating: 6.7,
+      englishCategories: "comedy",
+      englishSynopsis:
+        "Set in a fictional American desert town circa 1955, the itinerary of a Junior Stargazer/Space Cadet convention (organized to bring together students and parents from across the country for fellowship and scholarly competition) is spectacularly disrupted by world-changing events.",
+      trailerLink: "https://www.youtube.com/watch?v=WCoHy4EWl9E",
+      englishDirectors: ["Wes Anderson"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/j4/pi/fy/cf/525FJ1YD28efjP5cI7V2gDro6Qc-1200-1200-675-675-crop-000000.jpg?v=c93e68da37",
+      performances: [
+        {
+          id: "CC456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T21:00:00+02:00",
+          performanceTime: "21:00",
+          performanceFeatures: ["TITL"],
+          filmId: "9C510000012FEPADHG",
+          filmNumber: 5367,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "8C510000012FEPADHG",
+      filmNumber: 5366,
+      title: "Nindža kornjače: Makljaža s mutantima",
+      ticketTitle: "Nindža kornjače: Makljaža s mu",
+      originalTitle: "Teenage Mutant Ninja Turtles: Mutant Mayhem",
+      synopsis:
+        "Ova nova animirana avantura dolazi od Setha Rogena i potpuno je nova interpretacija popularne franšize u kojoj sve vrvi od slavnih glumaca i poznatih osoba.\r\nNajpoznatije kornjače na svijetu, ovoga će ljeta pod vodstvom učitelja Splintera ponovo uzeti pravdu u svoje ruke i upustiti se u borbu protiv najopasnijih kriminalaca!\r\nNakon što su se godinama krili od ljudi, kreću osvojiti New York. Njihova nova prijateljica April O'Neil pomaže im u borbi s misterioznim zločinačkim udruženjem, ali ubrzo će imati pune ruke posla kada na njih puste vojsku mutanata.\r\n",
+      genres: ["Animirani"],
+      nationwideStart: "2023-08-10",
+      ageRating: "",
+      director: "Jeff Rowe",
+      duration: "1h 40m",
+      letterboxdUrl:
+        "https://letterboxd.com/film/teenage-mutant-ninja-turtles-mutant-mayhem/",
+      letterboxdRating: "3.8",
+      imdbUrl: "http://www.imdb.com/title/tt8589698/maindetails",
+      imdbRating: 7.5,
+      englishCategories: "comedy",
+      englishSynopsis:
+        "After years of being sheltered from the human world, the Turtle brothers set out to win the hearts of New Yorkers and be accepted as normal teenagers through heroic acts. Their new friend April O'Neil helps them take on a mysterious crime syndicate, but they soon get in over their heads when an army of mutants is unleashed upon them.",
+      trailerLink: "https://www.youtube.com/watch?v=JhXRNRmuYcc",
+      englishDirectors: ["Jeff Rowe"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/es/iv/l0/qj/tmntmm110k2-1200-1200-675-675-crop-000000.jpg?v=4df0c3db0a",
+      performances: [
+        {
+          id: "E5556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T16:15:00+02:00",
+          performanceTime: "16:15",
+          performanceFeatures: ["SINK"],
+          filmId: "8C510000012FEPADHG",
+          filmNumber: 5366,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "3E456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T17:30:00+02:00",
+          performanceTime: "17:30",
+          performanceFeatures: ["3D", "SINK"],
+          filmId: "8C510000012FEPADHG",
+          filmNumber: 5366,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "F5556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T18:15:00+02:00",
+          performanceTime: "18:15",
+          performanceFeatures: ["SINK"],
+          filmId: "8C510000012FEPADHG",
+          filmNumber: 5366,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "CC510000012FEPADHG",
+      filmNumber: 5370,
+      title: "Roboti",
+      ticketTitle: "Roboti",
+      originalTitle: "Robots",
+      synopsis:
+        "Godine 2032., nakon što je napredna robotika omogućila čovječanstvu da koristi realistične androide kao sluge i fizičke radnike, imućni stanovnici predgrađa Elaine i Charles koriste svoje dvojnike androida kako bi izbjegli vremenska ograničenja vezana uz veze. Međutim, kada varalice shvate da se zapravo zaljubljuju, ukradu identitet svojih vlasnika i daju se u bijeg, prisiljavajući Elaine i Charlesa da se udruže i vrate svoje živote.\r\nI Charlie i Elaine nisu dobri ljudi. Elaine koristi muškarce da ima lijepe stvari i zalaže nešto od toga da plati svoje račune. Charlie izlazi sa ženama samo radi seksa, a da stvar bude gora loš je u krevetu. No, budući da oboje koriste spojeve kako bi dobili ono što žele, shvaćaju da postoji lakši način da dobiju ono što žele 2032. godine.\r\n",
+      genres: ["Komedija"],
+      nationwideStart: "2023-08-03",
+      ageRating: "12",
+      director: "Anthony Hines, Casper Christensen",
+      duration: "1h 33m",
+      letterboxdUrl: "https://letterboxd.com/film/robots-2023-1/",
+      letterboxdRating: "2.3",
+      imdbUrl: "http://www.imdb.com/title/tt12579470/maindetails",
+      imdbRating: 5.5,
+      englishCategories: "science-fiction",
+      englishSynopsis:
+        "A womanizer and a gold digger trick people into relationships with illegal robot doubles. When they unwittingly use this scam on each other, their robot doubles fall in love and elope, forcing the duo to team up to hunt them down before the authorities discover their secret.",
+      trailerLink: "https://www.youtube.com/watch?v=5-QlB-CCozc",
+      englishDirectors: ["Anthony Hines", " Casper Christensen"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/t6/zo/za/ye/robots-1200-1200-675-675-crop-000000.jpg?v=12ce5ce724",
+      performances: [
+        {
+          id: "C2556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T16:00:00+02:00",
+          performanceTime: "16:00",
+          performanceFeatures: ["TITL"],
+          filmId: "CC510000012FEPADHG",
+          filmNumber: 5370,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "5C510000012FEPADHG",
+      filmNumber: 5363,
+      title: "Meg 2: Put u dubinu",
+      ticketTitle: "Meg 2: Put u dubinu",
+      originalTitle: "The Meg 2: The Trench",
+      synopsis:
+        "Nastavak filma iz 2018. godine. Jason Statham i njegov tim vraćaju se u daljnje istraživanje Marijanske brazde gdje će se suočiti s novim, još većim zastrašujućim stvorenjima.\r\nZaronite u neistražene vode s Jasonom Stathamom i globalnom akcijskom ikonom Wu Jingom dok vode odvažni istraživački tim ronioca u najveće dubine oceana. Njihovo putovanje ubrzo postaje kaos kada zlonamjerna rudarska kompanija zaprijeti njihovoj misiji i natjera ih na bitku za preživljavanje s visokim ulozima. Suprotstavljeni kolosalnim morskim psima megalodonima s jedne strane, te nemilosrdnim otimačima s druge, naši heroji moraju nadmudriti te nemilosrdne predatore u utrci s vremenom.\r\n",
+      genres: ["Akcijski"],
+      nationwideStart: "2023-08-03",
+      ageRating: "12",
+      director: "Ben Wheatley",
+      duration: "1h 56m",
+      letterboxdUrl: "https://letterboxd.com/film/meg-2-the-trench/",
+      letterboxdRating: "2.2",
+      imdbUrl: "http://www.imdb.com/title/tt9224104/maindetails",
+      imdbRating: 5.5,
+      englishCategories: "action",
+      englishSynopsis:
+        "An exploratory dive into the deepest depths of the ocean of a daring research team spirals into chaos when a malevolent mining operation threatens their mission and forces them into a high-stakes battle for survival.",
+      trailerLink: "https://www.youtube.com/watch?v=dG91B3hHyY4",
+      englishDirectors: ["Ben Wheatley"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/lg/o2/2a/vh/meg-2-the-trench-1200-1200-675-675-crop-000000.jpg?v=4820cf8ceb",
+      performances: [
+        {
+          id: "1B556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T17:00:00+02:00",
+          performanceTime: "17:00",
+          performanceFeatures: ["TITL"],
+          filmId: "5C510000012FEPADHG",
+          filmNumber: 5363,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "D2556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T18:00:00+02:00",
+          performanceTime: "18:00",
+          performanceFeatures: ["3D", "TITL"],
+          filmId: "5C510000012FEPADHG",
+          filmNumber: 5363,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "2B556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T19:15:00+02:00",
+          performanceTime: "19:15",
+          performanceFeatures: ["TITL"],
+          filmId: "5C510000012FEPADHG",
+          filmNumber: 5363,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "7F456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T21:30:00+02:00",
+          performanceTime: "21:30",
+          performanceFeatures: ["3D", "TITL"],
+          filmId: "5C510000012FEPADHG",
+          filmNumber: 5363,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "2C510000012FEPADHG",
+      filmNumber: 5361,
+      title: "Napad na Pariz",
+      ticketTitle: "Napad na Pariz",
+      originalTitle: "Novembre",
+      synopsis:
+        "Dobitnik nagrade Oscar® Jean Dujardin u glavnoj ulozi u trileru Cédrica Jimeneza.\r\nFilm prati francuske antiterorističke službe tijekom lova na osumnjičene nakon napada u Parizu 13. 11. 2015.\r\n",
+      genres: ["Triler"],
+      nationwideStart: "2023-07-27",
+      ageRating: "15",
+      director: "Cédric Jimenez",
+      duration: "1h 45m",
+      letterboxdUrl: "https://letterboxd.com/film/november-2022/",
+      letterboxdRating: "3.3",
+      imdbUrl: "http://www.imdb.com/title/tt14542254/maindetails",
+      imdbRating: 6.8,
+      englishCategories: "thriller",
+      englishSynopsis:
+        "In November 2015, a series of unprecedented and deadly attacks hits Paris. The anti-terrorist police led by Heloise and her chief commander Fred - face an unprecedented level of pressure: in a race against the clock, they must find the perpetrators of the attacks as quickly as possible before they can strike again, travelling across Europe and beyond in one of the biggest manhunts in history.",
+      trailerLink: "https://www.youtube.com/watch?v=t8CHwgz4sY4",
+      englishDirectors: ["Cédric Jimenez"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/e3/5z/et/sf/november-1200-1200-675-675-crop-000000.jpg?v=f491b73a40",
+      performances: [
+        {
+          id: "CF456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T21:30:00+02:00",
+          performanceTime: "21:30",
+          performanceFeatures: ["TITL"],
+          filmId: "2C510000012FEPADHG",
+          filmNumber: 5361,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "5B510000012FEPADHG",
+      filmNumber: 5348,
+      title: "Oppenheimer",
+      ticketTitle: "Oppenheimer",
+      originalTitle: "Oppenheimer",
+      synopsis:
+        'Oppenheimer je biografski film o američkom fizičaru J. Robertu Oppenheimeru, koji je prozvan "ocem atomske bombe". Oppenheimer je bio glavni čovjek Operacije Manhattan, akcije američkih vlasti da stvore nuklearnu bombu i time dobiju prevlast u II. svjetskom ratu, a film pokazuje taj proces od entuzijazma do veselja zbog uspjeha i zabrinutosti zbog rezultata.\r\nGlavnu ulogu u filmu ima Cillian Murphy. Oppenheimer je čak šesta suradnja irskoga glumca i Christophera Nolana. Uz to što je glumio negativca u sva tri filma iz Nolanove Batman trilogije, Cillian Murphy imao je značajne uloge i u njegovim spektaklima Dunkirk i Početak. Plodonosna suradnja je i ovdje nastavljena, a iz prvih kadrova čini se da je Murphy bio odličan izbor za ulogu fizičara Oppenheimera.\r\nUz Murphyja, u filmu glume i Emily Blunt, Robert Downey Jr., Matt Damon, Rami Malek, Florence Pugh, Benny Safdie, Michael Angarano, Josh Hartnett i Kenneth Branagh.\r\n',
+      genres: ["Drama"],
+      nationwideStart: "2023-07-20",
+      ageRating: "12",
+      director: "Christopher Nolan",
+      duration: "3h 1m",
+      letterboxdUrl: "https://letterboxd.com/film/oppenheimer-2023/",
+      letterboxdRating: "4.3",
+      imdbUrl: "http://www.imdb.com/title/tt15398776/maindetails",
+      imdbRating: 8.6,
+      englishCategories: "drama",
+      englishSynopsis:
+        "The story of J. Robert Oppenheimer’s role in the development of the atomic bomb during World War II.",
+      trailerLink: "https://www.youtube.com/watch?v=pXTvDfOjbh0",
+      englishDirectors: ["Christopher Nolan"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/mn/uu/op/02/oppenheimer-2023-1200-1200-675-675-crop-000000.jpg?v=aa1b3a6d85",
+      performances: [
+        {
+          id: "31556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T16:30:00+02:00",
+          performanceTime: "16:30",
+          performanceFeatures: ["TITL"],
+          filmId: "5B510000012FEPADHG",
+          filmNumber: 5348,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "B9556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T19:00:00+02:00",
+          performanceTime: "19:00",
+          performanceFeatures: ["TITL"],
+          filmId: "5B510000012FEPADHG",
+          filmNumber: 5348,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "C9556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T22:25:00+02:00",
+          performanceTime: "22:25",
+          performanceFeatures: ["TITL"],
+          filmId: "5B510000012FEPADHG",
+          filmNumber: 5348,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "3B510000012FEPADHG",
+      filmNumber: 5346,
+      title: "Barbie",
+      ticketTitle: "Barbie",
+      originalTitle: "Barbie",
+      synopsis:
+        "Ružičasta avantura koja će oduševiti sve generacije. Ulogu ikonične lutke preuzima Margot Robbie, a njezinu bolju polovicu Kena utjelovljuje Ryan Gosling.\r\n\r\nRežiju potpisuje Greta Gerwig dok zvjezdani cast uključuje još i Willa Ferrella, Kate McKinnon, Simu Liu, Michaela Ceru i Americu Ferreru. Očekivano, scenografijom dominira upečatljiva ružičasta boja, a cijela estetika filma inspirirana je prividom savršenog života i izgleda junaka filma.\r\n",
+      genres: ["Komedija"],
+      nationwideStart: "2023-07-20",
+      ageRating: "12",
+      director: "Greta Gerwig",
+      duration: "1h 54m",
+      letterboxdUrl: "https://letterboxd.com/film/barbie/",
+      letterboxdRating: "4.1",
+      imdbUrl: "http://www.imdb.com/title/tt1517268/maindetails",
+      imdbRating: 7.4,
+      englishCategories: "fantasy",
+      englishSynopsis:
+        "Barbie and Ken are having the time of their lives in the colorful and seemingly perfect world of Barbie Land. However, when they get a chance to go to the real world, they soon discover the joys and perils of living among humans.",
+      trailerLink: "https://www.youtube.com/watch?v=Ml0bijl4IoA",
+      englishDirectors: ["Greta Gerwig"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/mm/bt/iu/mk/fRyYKQdsXIjw26MendWxpWmvnBs-1200-1200-675-675-crop-000000.jpg?v=0036da8577",
+      performances: [
+        {
+          id: "AF456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T17:00:00+02:00",
+          performanceTime: "17:00",
+          performanceFeatures: ["TITL"],
+          filmId: "3B510000012FEPADHG",
+          filmNumber: 5346,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "BF456000023KBHTNGF",
+          performanceDateTime: "2023-08-24T19:15:00+02:00",
+          performanceTime: "19:15",
+          performanceFeatures: ["TITL"],
+          filmId: "3B510000012FEPADHG",
+          filmNumber: 5346,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "06556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T20:15:00+02:00",
+          performanceTime: "20:15",
+          performanceFeatures: ["TITL"],
+          filmId: "3B510000012FEPADHG",
+          filmNumber: 5346,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+        {
+          id: "16556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T22:30:00+02:00",
+          performanceTime: "22:30",
+          performanceFeatures: ["TITL"],
+          filmId: "3B510000012FEPADHG",
+          filmNumber: 5346,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "4B510000012FEPADHG",
+      filmNumber: 5347,
+      title: "Nemoguća misija: Odmazda - prvi dio",
+      ticketTitle: "Nemoguća misija 7",
+      originalTitle: "Mission: Impossible - Dead Reckoning Part One",
+      synopsis:
+        "Sedmi i osmi film iz franšize 'Nemoguća misija' bit će i službeni ispraćaj Ethana Hunta, kojeg Cruise glumi od 1996. godine. Zbog silnih odgoda, mnogih lokacija snimanja te atraktivnih akcijskih scena budžet filma je dostigao razinu jednog od najskupljih filmova u povijesti.\r\nRedatelj i scenarist je Christopher McQuarrie, a uz neizbježnog Cruisea u filmu nastupaju Rebecca Ferguson, Ving Rhames, Simon Pegg, Esai Morales i Hayley Atwell.\r\n",
+      genres: ["Akcijski"],
+      nationwideStart: "2023-07-13",
+      ageRating: "12",
+      director: "Christopher McQuarrie",
+      duration: "2h 44m",
+      letterboxdUrl:
+        "https://letterboxd.com/film/mission-impossible-dead-reckoning-part-one/",
+      letterboxdRating: "3.8",
+      imdbUrl: "http://www.imdb.com/title/tt9603212/maindetails",
+      imdbRating: 8,
+      englishCategories: "action",
+      englishSynopsis:
+        "Ethan Hunt and his IMF team embark on their most dangerous mission yet: To track down a terrifying new weapon that threatens all of humanity before it falls into the wrong hands. With control of the future and the fate of the world at stake, and dark forces from Ethan's past closing in, a deadly race around the globe begins. Confronted by a mysterious, all-powerful enemy, Ethan is forced to consider that nothing can matter more than his mission – not even the lives of those he cares about most.",
+      trailerLink: "https://www.youtube.com/watch?v=HurjfO_TDlQ",
+      englishDirectors: ["Christopher McQuarrie"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/y9/xn/y0/xz/mission-impossible-dead-reckoning-part-one-1200-1200-675-675-crop-000000.jpg?v=3511c2e186",
+      performances: [
+        {
+          id: "E2556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T20:15:00+02:00",
+          performanceTime: "20:15",
+          performanceFeatures: ["TITL"],
+          filmId: "4B510000012FEPADHG",
+          filmNumber: 5347,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+    {
+      id: "7A510000012FEPADHG",
+      filmNumber: 5334,
+      title: "Indiana Jones i artefakt sudbine",
+      ticketTitle: "Indiana Jones i artefakt sudbi",
+      originalTitle: "Indiana Jones and the Dial of Destiny",
+      synopsis:
+        "Harrison Ford se vraća u ulozi najpoznatijeg profesora arheologije u petom filmu kultne franšize čija je radnja smještena u kasne šezdesete godine prošlog stoljeća, a čitava je priča povezana sa svemirskim programom.",
+      genres: ["Akcijski"],
+      nationwideStart: "2023-06-29",
+      ageRating: "12",
+      director: "James Mangold",
+      duration: "2h 35m",
+      letterboxdUrl: "https://letterboxd.com/film/indiana-jones-and-the-dial-of-destiny/",
+      letterboxdRating: "3.0",
+      imdbUrl: "http://www.imdb.com/title/tt1462764/maindetails",
+      imdbRating: 6.8,
+      englishCategories: "fantasy",
+      englishSynopsis:
+        "Finding himself in a new era, approaching retirement, Indy wrestles with fitting into a world that seems to have outgrown him. But as the tentacles of an all-too-familiar evil return in the form of an old rival, Indy must don his hat and pick up his whip once more to make sure an ancient and powerful artifact doesn't fall into the wrong hands.",
+      trailerLink: "https://www.youtube.com/watch?v=eQfMbSe7F2g",
+      englishDirectors: ["James Mangold"],
+      backgroundImage:
+        "https://a.ltrbxd.com/resized/sm/upload/49/bb/xv/vl/dial-1200-1200-675-675-crop-000000.jpg?v=26516aebf1",
+      performances: [
+        {
+          id: "A9556000023KBHTNGF",
+          performanceDateTime: "2023-08-24T16:05:00+02:00",
+          performanceTime: "16:05",
+          performanceFeatures: ["TITL"],
+          filmId: "7A510000012FEPADHG",
+          filmNumber: 5334,
+          cinemaOid: "10000000014OCPXCOG",
+        },
+      ],
+    },
+  ];
+
+  let fullscreenedMovie = 0;
+
+  function getPerformancesLabel(perfDateTime) {
+    const performanceDate = new Date(perfDateTime);
+    return performanceDate.toLocaleDateString("en-EN", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }
+
+  function toggleFullscreen(filmNumber) {
+    if (filmNumber === fullscreenedMovie) {
+      fullscreenedMovie = 0;
+    } else {
+      fullscreenedMovie = filmNumber;
+    }
+  }
+</script>
+
+{#each movies as movie}
+  <div class="movieCard">
+    <img
+      class="moviePoster"
+      src={movie.backgroundImage}
+      alt="{movie.originalTitle} poster"
+      style:width={movie.filmNumber === fullscreenedMovie ? "0%" : "50%"}
+    />
+
+    <div
+      class="movieData"
+      style:width={movie.filmNumber === fullscreenedMovie ? "100%" : "50%"}
+    >
+      <div class="titleAndStats">
+        <p class="movieTitle">{movie.title}</p>
+        <div class="movieStats">
+          {#if movie.englishCategories}
+            <p>{movie.englishCategories}</p>
+          {:else}
+            <p>movie.genres[0]</p>
+          {/if}
+
+          <p>·</p>
+
+          <p>{movie.duration}</p>
+
+          {#if movie.letterboxdRating}
+            <p>·</p>
+            <div class="ratingIconAndValue">
+              <img src="/images/letterboxdIcon.png" alt="letterboxd icon" />
+              <p>{movie.letterboxdRating}/5</p>
+            </div>
+          {/if}
+
+          {#if movie.imdbRating}
+            <p>·</p>
+            <div class="ratingIconAndValue">
+              <img src="/images/imdbIcon.png" alt="imdb icon" />
+              <p>{movie.imdbRating}/10</p>
+            </div>
+          {/if}
+        </div>
+      </div>
+
+      <div
+        class="movieExtraInfo"
+        style:display={movie.filmNumber === fullscreenedMovie ? "flex" : "none"}
+      >
+        <div class="infoContainer">
+          <p class="infoLabel">Direktori</p>
+          {#if movie.englishDirectors}
+            <p class="infoText">{movie.englishDirectors.join(", ")}</p>
+          {:else}
+            <p class="infoText">{movie.director}</p>
+          {/if}
+        </div>
+        <div class="infoContainer">
+          <p class="infoLabel">Opis</p>
+          {#if movie.englishSynopsis}
+            <p class="infoText">{movie.englishSynopsis}</p>
+          {:else}
+            <p class="infoText">{movie.synopsis}</p>
+          {/if}
+        </div>
+
+        {#if movie.trailerLink}
+          <a href={movie.trailerLink} class="trailerButton"> Trailer </a>
+        {/if}
+      </div>
+
+      <div class="performanceAndFullscreenContainer">
+        <div class="performanceContainer">
+          <div class="performanceslabel">
+            {getPerformancesLabel(movie.performances[0].performanceDateTime)}
+          </div>
+          <div class="performanceList">
+            {#each movie.performances as performance}
+              <div class="performanceCard">
+                <p class="performanceTime">{performance.performanceTime}</p>
+                <div class="performanceFeature">
+                  {#each performance.performanceFeatures as feature}
+                    <p>{feature}</p>
+                  {/each}
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+        <img
+          src="/images/fullscreen.svg"
+          alt="fullscreen"
+          on:click={() => {
+            toggleFullscreen(movie.filmNumber);
+          }}
+        />
+      </div>
+    </div>
+  </div>
+{/each}
+
+<style>
+  .movieCard {
+    display: flex;
+    border-radius: 0.5rem;
+    box-shadow: 0.375rem 0.375rem 0.25rem rgba(0, 0, 0, 0.25);
+  }
+
+  .movieCard > .moviePoster {
+    width: 50%;
+    border-radius: 0.5rem;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+
+    transition: width 250ms ease-out;
+  }
+  .movieCard > .movieData {
+    width: 50%;
+    padding: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 2rem;
+
+    transition: width 250ms ease-out;
+  }
+
+  .movieCard > .movieData .movieTitle {
+    /* mozda ovo limitirat height */
+    color: #cdcdcd;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.4375rem;
+  }
+  .movieCard > .movieData .movieStats {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    column-gap: 0.375rem;
+    color: #9d9d9d;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  .movieCard > .movieData .movieStats .ratingIconAndValue {
+    display: flex;
+    align-items: center;
+    column-gap: 0.1875rem;
+  }
+  .movieCard > .movieData .movieStats .ratingIconAndValue > img {
+    height: 1rem;
+  }
+
+  .movieCard > .movieData .movieExtraInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 1rem;
+  }
+  .movieCard > .movieData .movieExtraInfo .infoLabel {
+    color: #cdcdcd;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .movieCard > .movieData .movieExtraInfo .infoText {
+    color: #9d9d9d;
+    font-size: 0.75rem;
+    font-weight: 400;
+    margin-left: 0.75rem;
+  }
+  .movieCard > .movieData .movieExtraInfo .trailerButton {
+    text-decoration: none;
+    padding: 0.375rem 0.875rem;
+    border-radius: 0.25rem;
+    background-color: #19284d;
+    color: #b8c4e0;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .movieCard > .movieData .performanceAndFullscreenContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.625rem;
+  }
+  .movieCard > .movieData .performanceAndFullscreenContainer > img {
+    cursor: pointer;
+    align-self: flex-end;
+  }
+
+  .movieCard > .movieData .performanceContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.3125rem;
+  }
+  .movieCard > .movieData .performanceContainer .performanceslabel {
+    color: #8d8d8d;
+    font-weight: 400;
+    font-size: 0.625rem;
+  }
+  .movieCard > .movieData .performanceContainer .performanceList {
+    display: flex;
+    column-gap: 0.375rem;
+    overflow-x: scroll;
+  }
+  .movieCard > .movieData .performanceContainer .performanceList .performanceCard {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 0.5px solid #14171f;
+    background: #0e131f;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 0.5rem;
+  }
+
+  .movieCard > .movieData .performanceCard .performanceTime {
+    color: #cdcdcd;
+    font-size: 0.75rem;
+  }
+
+  .movieCard > .movieData .performanceCard .performanceFeature {
+    text-align: center;
+    color: #8d8d8d;
+    font-size: 0.625rem;
+    font-weight: 400;
+  }
+</style>

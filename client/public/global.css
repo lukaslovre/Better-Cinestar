@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Rubik", sans-serif;
+  font-weight: 500;
+}
+body {
+  background-color: #0e131f;
+  padding: 1rem;
+}
+.primary-color-scheme {
+  background-color: #454954;
+  color: #b9bdc6;
+}
+.primary-color-scheme .stroke > path {
+  stroke: #8f95a3;
+}
+.primary-color-scheme .fill > path {
+  fill: #8f95a3;
+}
+
+.secondary-color-scheme {
+  background-color: #1d2435;
+  color: #818898;
+}
+.secondary-color-scheme .stroke > path {
+  stroke: #676e7e;
+}
+.secondary-color-scheme .fill > path {
+  fill: #676e7e;
+}
+
+.fadeout-1-input {
+  background-color: #292f3d;
+  color: #5c6270;
+}
+.fadeout-1-input .stroke > path {
+  stroke: #454954;
+}
+.fadeout-1-input .fill > path {
+  fill: #454954;
+}
+
+.fadeout-2-input {
+  background-color: #141926;
+  color: #212633;
+}
+.fadeout-2-input .stroke > path {
+  stroke: #1b202c;
+}
+.fadeout-2-input .fill > path {
+  fill: #1b202c;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+}
+.input-container .label {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+.input-container .label .label-text {
+  font-size: 0.6875rem;
+  color: #454954;
+}
+.input-container .dropdown-element {
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.875rem;
+  transition: all 350ms ease-out;
+}
+.input-container .dropdown-options-container {
+  display: flex;
+  gap: 0.375rem;
+  align-items: flex-start;
+}
+.input-container .dropdown-options {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  row-gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+}
+.input-container .dropdown-options .option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.input-container .dropdown-options .selected-option {
+  color: #e8c547;
+}
