@@ -1,5 +1,6 @@
 const fs = require("fs");
 
+// Preset header za API poziv
 const headers = {
   "CENTER-OID": "10000000014OCPXCOG",
   //"SESSION-ID": "4ba9185e85b64c6583651c53329ffa7f",
@@ -10,6 +11,7 @@ const headers = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0", //nepotrebno
 };
 
+// Funkcija za lakse fetchanje sa shop.cinestar.hr
 async function cinestarApi(endpoint, cinema) {
   const url = "https://shop.cinestarcinemas.hr/api" + endpoint;
   headers["CENTER-OID"] = cinema.cinemaOid;
@@ -21,22 +23,17 @@ async function cinestarApi(endpoint, cinema) {
   return data;
 }
 
-// ovo pozivat svakih par dana?
-async function getAllMovies(cinema) {
-  const today = new Date();
-  today.setDate(today.getDate() + 10);
-  const month = today.getMonth() + 1;
+// Vraca sve podatke o filmovima za odredeno kino
+async function getCinemaMoviesAndPerformances(cinema) {
+  const data = await cinestarApi("/films", cinema);
+  let performancesFormatted = [];
 
-  const tenDaysFromToday =
-    today.getFullYear() +
-    "-" +
-    month.toString().padStart(2, "0") +
-    "-" +
-    today.getDate().toString().padStart(2, "0");
-
-  const data = await cinestarApi(`/films?&cinemadate.to=${tenDaysFromToday}`, cinema);
+  // Movies
   const moviesFormatted = data.map(
-    ({ performances, filmEDI, name, imageUrl, ageRatingInformation, ...otherFields }) => {
+    ({ performances, filmEDI, name, ageRatingInformation, ...otherFields }) => {
+      // mozda bi bilo korisno tu invertat ovo da se vidi koji podaci ostaju.
+
+      performancesFormatted.push(...performances);
       return {
         ...otherFields,
         duration: null,
@@ -48,46 +45,78 @@ async function getAllMovies(cinema) {
         englishSynopsis: null,
         trailerLink: null,
         englishDirectors: null,
-        backgroundImage: null,
+        posterUrl: null,
       };
     }
   );
 
-  //fs.writeFileSync("./data/movies.json", JSON.stringify(moviesFormatted));
-  return moviesFormatted;
-}
-
-async function getPerformanceTimesFor(filmId, cinema) {
-  //https://shop.cinestarcinemas.hr/api/films/0A510000012FEPADHG
-  const data = await cinestarApi("/films/" + filmId, cinema);
-  if (data.errorMessage) return null;
-
-  const filmNumber = data.filmNumber;
-  // filmReleaseTypeName i onda ga splitati po '/', GC je goldclass
-  const formattedPerformances = data.performances.map(
-    ({ id, performanceDateTime, releaseTypeName, filmId }) => {
-      const d = new Date(performanceDateTime);
+  // Performances
+  performancesFormatted = performancesFormatted.map(
+    ({
+      id,
+      performanceDateTime,
+      cinemaDate,
+      auditoriumName,
+      releaseTypeName,
+      filmId,
+    }) => {
       return {
         id,
         performanceDateTime,
-        performanceTime:
-          d.getHours().toString().padStart(2, "0") +
-          ":" +
-          d.getMinutes().toString().padStart(2, "0"),
-        performanceFeatures: releaseTypeName.split("/"),
+        performanceTime: getPerformanceTimeFromDatetime(performanceDateTime),
+        cinemaDate,
+        auditoriumName,
+        performanceFeatures: formatPerformanceFeatures(releaseTypeName),
         filmId,
-        filmNumber,
         cinemaOid: cinema.cinemaOid,
       };
     }
   );
 
-  //fs.writeFileSync("./data/performances.json", JSON.stringify(formattedPerformances));
-  return formattedPerformances;
+  return { moviesFormatted, performancesFormatted };
 }
 
 function getSeating() {
   ///api/performances/50C20000023VITSDHB/seatingplan
 }
 
-module.exports = { getAllMovies, getPerformanceTimesFor };
+// Helper
+function getPerformanceTimeFromDatetime(performanceDateTime) {
+  const d = new Date(performanceDateTime);
+  return (
+    d.getHours().toString().padStart(2, "0") +
+    ":" +
+    d.getMinutes().toString().padStart(2, "0")
+  );
+}
+function formatPerformanceFeatures(releaseTypeName) {
+  const features = releaseTypeName.split("/");
+
+  let index;
+  if ((index = features.indexOf("3D")) !== -1) {
+    swap(features, 0, index);
+  } else {
+    features.unshift("2D");
+  }
+
+  if (
+    (index = features.indexOf("SINK")) !== -1 ||
+    (index = features.indexOf("TITL")) !== -1
+  ) {
+    swap(features, 1, index);
+  }
+
+  if ((index = features.indexOf("GC")) !== -1) {
+    features[index] = "GOLD";
+  }
+
+  return features.slice(0, 2).concat(features.slice(2).sort());
+}
+
+function swap(arr, a, b) {
+  if (a === b) return;
+  const temp = arr[a];
+  arr[a] = arr[b];
+  arr[b] = temp;
+}
+module.exports = { getCinemaMoviesAndPerformances };

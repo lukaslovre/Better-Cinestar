@@ -3,7 +3,10 @@ const app = express();
 const port = 3000;
 const fs = require("fs");
 
-const { getAllMovies, getPerformanceTimesFor } = require("./cinestarFunctions.js");
+const cors = require("cors");
+app.use(cors());
+
+const { getCinemaMoviesAndPerformances } = require("./cinestarFunctions.js");
 const {
   fillMoviesWithLetterboxdData,
   fillMoviesWithImdbData,
@@ -152,44 +155,42 @@ const cinemasFormattedForDisplay = [
 let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
 let performances = JSON.parse(fs.readFileSync("./data/performances.json"));
 
-app.get("/", (req, res) => {
-  const dataFormattedForDisplay = formatDataForCinemas(cinemas[0].cinemaOid);
-  res.render("index", {
-    movies: dataFormattedForDisplay,
-    cinemaCities: cinemasFormattedForDisplay,
-  });
-});
-app.get("/movies", (req, res) => {
+app.get("/api/movies", (req, res) => {
   console.log(req.query);
-  const { cinema, date, sortBy } = req.query;
-  const dataFormattedForDisplay = formatDataForCinemas(cinema, date, sortBy);
-  res.render("index", {
-    movies: dataFormattedForDisplay,
-    cinemaCities: cinemasFormattedForDisplay,
-  });
+  const { cinemaOids, selectedDate, sortBy } = req.query;
+
+  const formattedMovies = formatDataForFrontend(
+    cinemaOids.split(","),
+    selectedDate,
+    sortBy
+  );
+  res.send(formattedMovies);
 });
 
 app.get("/fillWithExternalData", async (req, res) => {
-  // TODO: formatirati sta se salje da ima svamo informacije koje treba i
   res.end();
+
   movies = await fillMoviesWithLetterboxdData(movies);
   movies = await fillMoviesWithImdbData(movies);
+
   fs.writeFileSync("./data/movies.json", JSON.stringify(movies));
   console.log("Gotovo popunjavanje sa eksternim podacima");
 });
 
 app.get("/getCinestarMovies", async (req, res) => {
   res.end();
+
   console.log("Dohvacanje svih filmova sa CineStar-a");
   const tempMovies = [];
   performances = [];
+
   for (const cinema of cinemas) {
-    const cinemaMovies = await getAllMovies(cinema);
-    cinemaMovies.forEach(async (movie) => {
-      performances.push(...(await getPerformanceTimesFor(movie.id, cinema)));
-    });
-    tempMovies.push(...cinemaMovies);
+    const { moviesFormatted, performancesFormatted } =
+      await getCinemaMoviesAndPerformances(cinema);
+    tempMovies.push(...moviesFormatted);
+    performances.push(...performancesFormatted);
   }
+
   console.log("Ukupno nadeno filmova: " + tempMovies.length);
   movies = tempMovies.filter(uniqueMovies);
   console.log("Jedinstvenih filmova: " + movies.length);
@@ -210,34 +211,22 @@ function uniqueMovies(value, index, array) {
     }
   }
 }
-/*
-function isSameDate(date1, date2) {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
-*/
+
 function isSameDate(date1, date2) {
   return date1.toDateString() === date2.toDateString();
 }
-function formatDataForCinemas(cinemaOids, selectedDate, sortBy) {
-  if (!Array.isArray(cinemaOids)) cinemaOids = [cinemaOids];
-
+function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   const anyDate = selectedDate === "all";
-  if (!anyDate) {
-    if (!selectedDate) {
-      selectedDate = new Date();
-    } else {
-      const dateComponents = selectedDate.split("-");
-      const year = parseInt(dateComponents[0]);
-      const month = parseInt(dateComponents[1]) - 1;
-      const day = parseInt(dateComponents[2]);
-      selectedDate = new Date(year, month, day);
-    }
+  // Ako nije predan datum funkciji
+  if (!selectedDate) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
+    selectedDate = `${year}-${month}-${day}`;
   }
   console.log(selectedDate);
+
   // Ako je u trazenom kinu i samo za danas
   const filteredPerformances = performances
     .filter((performance) => {
@@ -246,39 +235,58 @@ function formatDataForCinemas(cinemaOids, selectedDate, sortBy) {
         if (anyDate) {
           return true;
         } else {
-          const performanceDateTime = new Date(performance.performanceDateTime);
-          if (isSameDate(performanceDateTime, selectedDate)) {
-          }
-          return isSameDate(performanceDateTime, selectedDate);
+          return selectedDate === performance.cinemaDate;
         }
       } else {
         return false;
       }
     })
     .sort((a, b) => ("" + a.performanceTime).localeCompare(b.performanceTime));
-  console.log(filteredPerformances.length);
+  console.log("Performances: " + filteredPerformances.length);
 
   // Grupiranje prikazivanja po filmu
   const groupedPerformances = new Map();
   for (const e of filteredPerformances) {
-    if (!groupedPerformances.has(e.filmNumber)) {
-      groupedPerformances.set(e.filmNumber, []);
+    if (!groupedPerformances.has(e.filmId)) {
+      groupedPerformances.set(e.filmId, []);
     }
-    groupedPerformances.get(e.filmNumber).push(e);
+    groupedPerformances.get(e.filmId).push(e);
   }
 
-  // Formatiranje za display
-  const formattedData = [];
+  // Spajanje perfromanca sa podacimo o filmu
   // moze se efikasnije mozda, jer .keys() vrati niz i onda gledati isto
   // sa contains
-  for (const filmNumber of groupedPerformances.keys()) {
-    const movieData = structuredClone(
-      movies.find((movie) => movie.filmNumber === filmNumber)
-    );
-    movieData.performances = groupedPerformances.get(filmNumber);
+  const formattedData = [];
+  for (const filmId of groupedPerformances.keys()) {
+    const movieData = structuredClone(movies.find((movie) => movie.id === filmId));
+    movieData.performances = groupedPerformances.get(filmId);
     formattedData.push(movieData);
   }
-  formattedData.sort((a, b) => ("" + b.nationwideStart).localeCompare(a.nationwideStart));
+
+  // Sortiranje filmova
+  if (sortBy === "durationMins" || sortBy === "imdbRating") {
+    formattedData.sort((a, b) => b[sortBy] - a[sortBy]);
+  } else if (sortBy === "genre") {
+    formattedData.sort((a, b) => {
+      const comparison = ("" + b.englishCategories[0]).localeCompare(
+        a.englishCategories[0]
+      );
+      if (comparison === 0) {
+        return b.imdbRating - a.imdbRating;
+      } else {
+        return comparison;
+      }
+    });
+  } else {
+    formattedData.sort((a, b) => {
+      const comparison = ("" + b[sortBy]).localeCompare(a[sortBy]);
+      if (comparison === 0) {
+        return b.imdbRating - a.imdbRating;
+      } else {
+        return comparison;
+      }
+    });
+  }
 
   return formattedData;
 }

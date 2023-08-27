@@ -1,32 +1,8 @@
 const cheerio = require("cheerio");
-//const cors = require("cors");
-const fs = require("fs");
-
-//app.use(cors());
-
-/*   
-  cors({
-    origin: "http://yourapp.com",
-  })
-*/
 
 let cinestarData;
 let currentlyScraping = 0;
 
-// Ucitavanje iz datoteke
-/*
-if (fs.existsSync("cinestarData.json")) {
-  cinestarData = fs.readFileSync("cinestarData.json");
-
-  if (cinestarData) {
-    console.log("Datoteka 'cinestarData.json' uspjesno ucitana.");
-    cinestarData = JSON.parse(cinestarData);
-  }
-} else {
-  console.log("Datoteka 'cinestarData.json' ne postoji.");
-  createCinestarDataJson();
-}
-*/
 // radi (valjda)
 async function fillMoviesWithLetterboxdData(movies) {
   if (!Array.isArray(movies)) movies = [movies];
@@ -113,7 +89,7 @@ async function getLetterboxdDataFromUrl(url) {
     letterboxdRating: null,
     imdbUrl: null,
     englishDirectors: null,
-    backgroundImage: null,
+    posterUrl: null,
     englishSynopsis: null,
     englishCategories: null,
     trailerLink: null,
@@ -128,30 +104,37 @@ async function getLetterboxdDataFromUrl(url) {
     const movieDataHtml = await movieDataResponse.text();
     const $ = cheerio.load(movieDataHtml);
 
-    const letterboxdRating = $('[name="twitter:data2"]').attr("content");
-    const imdbUrl = $('[data-track-action="IMDb"]').attr("href");
-    const englishDirectors = $('[name="twitter:data1"]').attr("content").split(",");
-    const backgroundImage = $('[name="twitter:image"]').attr("content");
+    const scriptTag = $("[type='application/ld+json']").text();
+    const startingIndex = scriptTag.indexOf("{");
+    const endingIndex = -10;
+    const data = JSON.parse(scriptTag.slice(startingIndex, endingIndex));
+
+    // Extractanje podataka
+    const letterboxdRating = data.aggregateRating.ratingValue;
+    const englishCategories = data.genre;
+    const posterUrl = data.image;
+    const englishDirectors = data.director.map((dir) => dir.name);
     const englishSynopsis = $(".truncate > *").prop("innerText");
-    const englishCategories = $("#tab-genres .text-slug").first().prop("innerText");
+    const imdbUrl = $('[data-track-action="IMDb"]').attr("href");
     const trailer = $('[data-track-category="Trailer"]').attr("href");
     const trailerId =
       "https://www.youtube.com/watch?v=" +
       trailer.slice(trailer.indexOf("embed/") + 6, trailer.indexOf("?"));
-    let duration = $(".text-footer").prop("innerText");
-    const indexOfMins = duration.indexOf("mins");
-    duration = duration.slice(indexOfMins - 4, indexOfMins - 1);
-    duration = Math.floor(duration / 60) + "h " + (duration % 60) + "m";
+    let durationMins = $(".text-footer").prop("innerText");
+    const indexOfMins = durationMins.indexOf("mins");
+    durationMins = parseInt(durationMins.slice(indexOfMins - 4, indexOfMins - 1));
+    const duration = Math.floor(durationMins / 60) + "h " + (durationMins % 60) + "m";
 
     return {
       letterboxdRating: letterboxdRating ? parseFloat(letterboxdRating).toFixed(1) : null,
       imdbUrl,
       englishDirectors,
-      backgroundImage,
+      posterUrl,
       englishSynopsis,
       englishCategories,
       trailerLink: trailerId,
       duration,
+      durationMins,
     };
   } catch (err) {
     console.log(err);

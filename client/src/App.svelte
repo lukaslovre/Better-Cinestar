@@ -4,6 +4,9 @@
   import DateDropdown from "./components/DateDropdown.svelte";
   import SortDropdown from "./components/SortDropdown.svelte";
   import MovieCard from "./components/MovieCard.svelte";
+
+  import { cinemaOids, selectedDate, sortBy } from "./stores";
+  $: console.log($cinemaOids, $selectedDate, $sortBy);
 </script>
 
 <Navigation />

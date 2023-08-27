@@ -1,4 +1,6 @@
 <script>
+  import { cinemaOids } from "../stores";
+
   const cinemaCities = [
     {
       city: "Zagreb",
@@ -57,7 +59,6 @@
 
   let dropdownLevelOpen = 0;
   let dropdownLevelTwoOpen = null;
-  let selectedCinemas = [];
 
   function toggleDropdownLevelOne() {
     if (dropdownLevelOpen === 0) {
@@ -66,7 +67,6 @@
       dropdownLevelOpen = 0;
     }
   }
-
   function toggleDropdownLevelTwo(city) {
     if (
       dropdownLevelOpen === 1 ||
@@ -78,12 +78,11 @@
       dropdownLevelOpen = 1;
     }
   }
-
   function toggleCinemaSelection(cinemaOid) {
-    if (selectedCinemas.includes(cinemaOid)) {
-      selectedCinemas = selectedCinemas.filter((cinema) => cinema !== cinemaOid);
+    if ($cinemaOids.includes(cinemaOid)) {
+      $cinemaOids = $cinemaOids.filter((cinema) => cinema !== cinemaOid);
     } else {
-      selectedCinemas = [...selectedCinemas, cinemaOid];
+      $cinemaOids = [...$cinemaOids, cinemaOid];
     }
   }
 </script>
@@ -153,7 +152,7 @@
         {:else}
           <div
             class="option"
-            class:selected-option={selectedCinemas.includes(city.cinemas[0].cinemaOid)}
+            class:selected-option={$cinemaOids.includes(city.cinemas[0].cinemaOid)}
             on:click={() => {
               toggleCinemaSelection(city.cinemas[0].cinemaOid);
             }}
@@ -176,7 +175,7 @@
           {#each city.cinemas as cinema}
             <div
               class="option"
-              class:selected-option={selectedCinemas.includes(cinema.cinemaOid)}
+              class:selected-option={$cinemaOids.includes(cinema.cinemaOid)}
               on:click={() => {
                 toggleCinemaSelection(cinema.cinemaOid);
               }}

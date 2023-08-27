@@ -8,6 +8,8 @@
 body {
   background-color: #0e131f;
   padding: 1rem;
+  max-width: 50rem;
+  margin: auto;
 }
 .primary-color-scheme {
   background-color: #454954;
