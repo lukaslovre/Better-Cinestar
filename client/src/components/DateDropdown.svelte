@@ -33,7 +33,7 @@
 <div class="input-container">
   <!-- Label -->
   <div class="label">
-    <img class="label-icon" src="/images/sortIcon.svg" alt="sort icon" />
+    <img class="label-icon" src="/images/dateIcon.svg" alt="sort icon" />
     <p class="label-text">Datum</p>
   </div>
 

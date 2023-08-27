@@ -103,7 +103,16 @@
 
   function getPerformancesLabel(perfDateTime) {
     const performanceDate = new Date(perfDateTime);
-    return performanceDate.toLocaleDateString("en-EN", {
+    const today = new Date();
+    const dateDiff = performanceDate.getDate() - today.getDate();
+    if (dateDiff === 0) {
+      return "danas";
+    }
+    if (dateDiff === 1) {
+      return "sutra";
+    }
+
+    return performanceDate.toLocaleDateString("hr-HR", {
       weekday: "short",
       month: "short",
       day: "numeric",
@@ -366,6 +375,7 @@
     color: #8d8d8d;
     font-weight: 400;
     font-size: 0.625rem;
+    text-transform: capitalize;
   }
   .movieCard > .movieData .performanceContainer .performanceList {
     display: flex;

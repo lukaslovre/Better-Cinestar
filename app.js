@@ -268,13 +268,22 @@ function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
     formattedData.sort((a, b) => b[sortBy] - a[sortBy]);
   } else if (sortBy === "genre") {
     formattedData.sort((a, b) => {
-      const comparison = ("" + b.englishCategories[0]).localeCompare(
-        a.englishCategories[0]
-      );
-      if (comparison === 0) {
-        return b.imdbRating - a.imdbRating;
+      if (!b.englishCategories || !a.englishCategories) {
+        const comparison = ("" + b.genres[0]).localeCompare(a.genres[0]);
+        if (comparison === 0) {
+          return b.imdbRating - a.imdbRating;
+        } else {
+          return comparison;
+        }
       } else {
-        return comparison;
+        const comparison = ("" + b.englishCategories[0]).localeCompare(
+          a.englishCategories[0]
+        );
+        if (comparison === 0) {
+          return b.imdbRating - a.imdbRating;
+        } else {
+          return comparison;
+        }
       }
     });
   } else {

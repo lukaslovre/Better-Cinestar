@@ -85,6 +85,14 @@
       $cinemaOids = [...$cinemaOids, cinemaOid];
     }
   }
+  function checkIfSuboptionSelected(city, selectedOids) {
+    for (const cinema of city.cinemas) {
+      if (selectedOids.includes(cinema.cinemaOid)) {
+        return true;
+      }
+    }
+    return false;
+  }
 </script>
 
 <div class="input-container">
@@ -144,6 +152,9 @@
               <path
                 d="M1 1L5.38848 5.82733C5.73523 6.20875 5.73523 6.79125 5.38848 7.17267L1 12"
                 stroke="#454954"
+                style:stroke={checkIfSuboptionSelected(city, $cinemaOids)
+                  ? "#e8c547"
+                  : ""}
                 stroke-width="2"
                 stroke-linecap="round"
               />
@@ -168,7 +179,7 @@
       {#if city.cinemas.length > 1}
         <div
           class="dropdown-options primary-color-scheme dropdown-suboptions"
-          style:display={dropdownLevelOpen >= 2 && dropdownLevelTwoOpen === city.city
+          style:display={dropdownLevelOpen == 2 && dropdownLevelTwoOpen === city.city
             ? "flex"
             : "none"}
         >
