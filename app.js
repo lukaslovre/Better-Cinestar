@@ -12,7 +12,7 @@ const {
   fillMoviesWithImdbData,
 } = require("./scraperFunctions.js");
 
-app.use(express.static("public"));
+app.use(express.static("client/public"));
 app.set("view engine", "ejs");
 
 const cinemas = [
