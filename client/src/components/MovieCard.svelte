@@ -1,6 +1,50 @@
 <script>
-  import { cinemaOids, selectedDate, sortBy } from "../stores";
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
 
+  export let movie;
+  export let fullscreenedMovieNumber;
+
+  function dispatchFullscreenSelection(filmNumber) {
+    dispatch("setFullscreen", filmNumber);
+  }
+  function dispatchPerformanceData(movie, performance) {
+    dispatch("setPerformanceData", { movie, performance });
+  }
+
+  function getPerformancesLabel(perfDateTime) {
+    const performanceDate = new Date(perfDateTime);
+    const today = new Date();
+    const dateDiff = performanceDate.getDate() - today.getDate();
+    if (dateDiff === 0) {
+      return "danas";
+    }
+    if (dateDiff === 1) {
+      return "sutra";
+    }
+
+    return performanceDate.toLocaleDateString("hr-HR", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }
+  function groupPerformancesByCinema(performances) {
+    const groupedPerformances = new Map();
+    for (const e of performances) {
+      const cinemaName = cinemasData.find(
+        (cinema) => cinema.cinemaOid === e.cinemaOid
+      ).cinemaName;
+      if (!groupedPerformances.has(cinemaName)) {
+        groupedPerformances.set(cinemaName, []);
+      }
+      groupedPerformances.get(cinemaName).push(e);
+    }
+
+    return groupedPerformances;
+  }
+
+  // Ovo negdje drugdje?
   const cinemasData = [
     {
       cinemaOid: "10000000014OCPXCOG",
@@ -83,196 +127,143 @@
       cinemaCity: "Šibenik",
     },
   ];
-  const hostname = window.location.hostname;
-
-  let fullscreenedMovie = 0;
-
-  let promise = fetch(
-    `http://${hostname}:3000/api/movies?cinemaOids=${$cinemaOids.join(
-      ","
-    )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
-  ).then((x) => x.json());
-
-  $: {
-    promise = fetch(
-      `http://${hostname}:3000/api/movies?cinemaOids=${$cinemaOids.join(
-        ","
-      )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
-    ).then((x) => x.json());
-  }
-
-  function getPerformancesLabel(perfDateTime) {
-    const performanceDate = new Date(perfDateTime);
-    const today = new Date();
-    const dateDiff = performanceDate.getDate() - today.getDate();
-    if (dateDiff === 0) {
-      return "danas";
-    }
-    if (dateDiff === 1) {
-      return "sutra";
-    }
-
-    return performanceDate.toLocaleDateString("hr-HR", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-  }
-  function groupPerformancesByCinema(performances) {
-    const groupedPerformances = new Map();
-    for (const e of performances) {
-      const cinemaName = cinemasData.find(
-        (cinema) => cinema.cinemaOid === e.cinemaOid
-      ).cinemaName;
-      if (!groupedPerformances.has(cinemaName)) {
-        groupedPerformances.set(cinemaName, []);
-      }
-      groupedPerformances.get(cinemaName).push(e);
-    }
-
-    return groupedPerformances;
-  }
-
-  function toggleFullscreen(filmNumber) {
-    if (filmNumber === fullscreenedMovie) {
-      fullscreenedMovie = 0;
-    } else {
-      fullscreenedMovie = filmNumber;
-    }
-  }
 </script>
 
-{#await promise}
-  <p>Waiting...</p>
-{:then movies}
-  {#each movies as movie}
-    <div class="movieCard">
-      <img
-        class="moviePoster"
-        src={movie.posterUrl || movie.imageUrl}
-        alt="{movie.originalTitle} poster"
-        style:width={movie.filmNumber === fullscreenedMovie ? "0%" : "50%"}
-      />
+<div class="movieCard">
+  <img
+    class="moviePoster"
+    src={movie.posterUrl || movie.imageUrl}
+    alt="{movie.originalTitle} poster"
+    style:width={movie.filmNumber === fullscreenedMovieNumber ? "0%" : "50%"}
+  />
 
+  <div
+    class="movieData"
+    style:width={movie.filmNumber === fullscreenedMovieNumber ? "100%" : "50%"}
+  >
+    <div class="titleAndStats">
+      <p class="movieTitle">{movie.title}</p>
+      <div class="movieStats">
+        {#if movie.englishCategories}
+          <p>{movie.englishCategories[0]}</p>
+        {:else}
+          <p>{movie.genres[0]}</p>
+        {/if}
+
+        <p>·</p>
+
+        <p>{movie.duration}</p>
+
+        {#if movie.letterboxdRating}
+          <p>·</p>
+          <div class="ratingIconAndValue">
+            <img src="/images/letterboxdIcon.png" alt="letterboxd icon" />
+            <p>{movie.letterboxdRating}/5</p>
+          </div>
+        {/if}
+
+        {#if movie.imdbRating}
+          <p>·</p>
+          <div class="ratingIconAndValue">
+            <img src="/images/imdbIcon.png" alt="imdb icon" />
+            <p>{movie.imdbRating}/10</p>
+          </div>
+        {/if}
+      </div>
+    </div>
+
+    <div
+      class="movieExtraInfo"
+      style:display={movie.filmNumber === fullscreenedMovieNumber ? "flex" : "none"}
+    >
+      <div class="infoContainer">
+        <p class="infoLabel">Direktori</p>
+        {#if movie.englishDirectors}
+          <p class="infoText">{movie.englishDirectors.join(", ")}</p>
+        {:else}
+          <p class="infoText">{movie.director}</p>
+        {/if}
+      </div>
+      <div class="infoContainer">
+        <p class="infoLabel">Opis</p>
+        {#if movie.englishSynopsis}
+          <p class="infoText">{movie.englishSynopsis}</p>
+        {:else}
+          <p class="infoText">{movie.synopsis}</p>
+        {/if}
+      </div>
+
+      {#if movie.trailerLink}
+        <a href={movie.trailerLink} class="trailerButton"> Trailer </a>
+      {/if}
+    </div>
+
+    <div class="performanceAndFullscreenContainer">
+      <!-- Performances minimizirano -->
       <div
-        class="movieData"
-        style:width={movie.filmNumber === fullscreenedMovie ? "100%" : "50%"}
+        class="performanceContainer"
+        style:display={movie.filmNumber === fullscreenedMovieNumber ? "none" : "flex"}
       >
-        <div class="titleAndStats">
-          <p class="movieTitle">{movie.title}</p>
-          <div class="movieStats">
-            {#if movie.englishCategories}
-              <p>{movie.englishCategories[0]}</p>
-            {:else}
-              <p>{movie.genres[0]}</p>
-            {/if}
-
-            <p>·</p>
-
-            <p>{movie.duration}</p>
-
-            {#if movie.letterboxdRating}
-              <p>·</p>
-              <div class="ratingIconAndValue">
-                <img src="/images/letterboxdIcon.png" alt="letterboxd icon" />
-                <p>{movie.letterboxdRating}/5</p>
-              </div>
-            {/if}
-
-            {#if movie.imdbRating}
-              <p>·</p>
-              <div class="ratingIconAndValue">
-                <img src="/images/imdbIcon.png" alt="imdb icon" />
-                <p>{movie.imdbRating}/10</p>
-              </div>
-            {/if}
-          </div>
+        <div class="performanceslabel">
+          {getPerformancesLabel(movie.performances[0].performanceDateTime)}
         </div>
-
-        <div
-          class="movieExtraInfo"
-          style:display={movie.filmNumber === fullscreenedMovie ? "flex" : "none"}
-        >
-          <div class="infoContainer">
-            <p class="infoLabel">Direktori</p>
-            {#if movie.englishDirectors}
-              <p class="infoText">{movie.englishDirectors.join(", ")}</p>
-            {:else}
-              <p class="infoText">{movie.director}</p>
-            {/if}
-          </div>
-          <div class="infoContainer">
-            <p class="infoLabel">Opis</p>
-            {#if movie.englishSynopsis}
-              <p class="infoText">{movie.englishSynopsis}</p>
-            {:else}
-              <p class="infoText">{movie.synopsis}</p>
-            {/if}
-          </div>
-
-          {#if movie.trailerLink}
-            <a href={movie.trailerLink} class="trailerButton"> Trailer </a>
-          {/if}
-        </div>
-
-        <div class="performanceAndFullscreenContainer">
-          <!-- Performances minimizirano -->
-          <div
-            class="performanceContainer"
-            style:display={movie.filmNumber === fullscreenedMovie ? "none" : "flex"}
-          >
-            <div class="performanceslabel">
-              {getPerformancesLabel(movie.performances[0].performanceDateTime)}
-            </div>
-            <div class="performanceList">
-              {#each movie.performances as performance}
-                <div class="performanceCard">
-                  <p class="performanceTime">{performance.performanceTime}</p>
-                  <div class="performanceFeature">
-                    {#each performance.performanceFeatures as feature}
-                      <p>{feature}</p>
-                    {/each}
-                  </div>
-                </div>
-              {/each}
-            </div>
-          </div>
-
-          <!-- Performances fullscreen (odvojena kina) -->
-          <div
-            class="performanceContainer"
-            style:display={movie.filmNumber === fullscreenedMovie ? "flex" : "none"}
-          >
-            {#each [...groupPerformancesByCinema(movie.performances)] as [key, value]}
-              <div class="performanceslabel">
-                {key}
-              </div>
-              <div class="performanceList">
-                {#each value as performance}
-                  <div class="performanceCard">
-                    <p class="performanceTime">{performance.performanceTime}</p>
-                    <div class="performanceFeature">
-                      {#each performance.performanceFeatures as feature}
-                        <p>{feature}</p>
-                      {/each}
-                    </div>
-                  </div>
+        <div class="performanceList">
+          {#each movie.performances as performance}
+            <div
+              class="performanceCard"
+              on:click={() => {
+                dispatchPerformanceData(movie, performance);
+              }}
+            >
+              <p class="performanceTime">{performance.performanceTime}</p>
+              <div class="performanceFeature">
+                {#each performance.performanceFeatures as feature}
+                  <p>{feature}</p>
                 {/each}
+              </div>
+            </div>
+          {/each}
+        </div>
+      </div>
+
+      <!-- Performances fullscreen (odvojena kina) -->
+      <div
+        class="performanceContainer"
+        style:display={movie.filmNumber === fullscreenedMovieNumber ? "flex" : "none"}
+      >
+        {#each [...groupPerformancesByCinema(movie.performances)] as [key, value]}
+          <div class="performanceslabel">
+            {key}
+          </div>
+          <div class="performanceList">
+            {#each value as performance}
+              <div
+                class="performanceCard"
+                on:click={() => {
+                  dispatchPerformanceData(movie, performance);
+                }}
+              >
+                <p class="performanceTime">{performance.performanceTime}</p>
+                <div class="performanceFeature">
+                  {#each performance.performanceFeatures as feature}
+                    <p>{feature}</p>
+                  {/each}
+                </div>
               </div>
             {/each}
           </div>
-          <img
-            src="/images/fullscreen.svg"
-            alt="fullscreen"
-            on:click={() => {
-              toggleFullscreen(movie.filmNumber);
-            }}
-          />
-        </div>
+        {/each}
       </div>
+      <img
+        src="/images/fullscreen.svg"
+        alt="fullscreen"
+        on:click={() => {
+          dispatchFullscreenSelection(movie.filmNumber);
+        }}
+      />
     </div>
-  {/each}
-{/await}
+  </div>
+</div>
 
 <style>
   .movieCard {
@@ -387,6 +378,7 @@
     border-radius: 0.25rem;
     border: 0.5px solid #14171f;
     background: #0e131f;
+    cursor: pointer;
 
     display: flex;
     flex-direction: column;

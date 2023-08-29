@@ -6,7 +6,7 @@ const fs = require("fs");
 const cors = require("cors");
 app.use(cors());
 
-const { getCinemaMoviesAndPerformances } = require("./cinestarFunctions.js");
+const { getCinemaMoviesAndPerformances, getSeating } = require("./cinestarFunctions.js");
 const {
   fillMoviesWithLetterboxdData,
   fillMoviesWithImdbData,
@@ -152,6 +152,7 @@ const cinemasFormattedForDisplay = [
     cinemas: [{ cinemaOid: "07000000014FEPADHG", cinemaName: "Dalmare centar" }],
   },
 ];
+
 let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
 let performances = JSON.parse(fs.readFileSync("./data/performances.json"));
 
@@ -165,6 +166,11 @@ app.get("/api/movies", (req, res) => {
     sortBy
   );
   res.send(formattedMovies);
+});
+app.get("/api/seating", async (req, res) => {
+  console.log(req.query);
+  const { cinemaOid, performanceId } = req.query;
+  res.send(await getSeating(cinemaOid, performanceId));
 });
 
 app.get("/fillWithExternalData", async (req, res) => {
@@ -212,9 +218,6 @@ function uniqueMovies(value, index, array) {
   }
 }
 
-function isSameDate(date1, date2) {
-  return date1.toDateString() === date2.toDateString();
-}
 function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   const anyDate = selectedDate === "all";
   // Ako nije predan datum funkciji

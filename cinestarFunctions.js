@@ -12,20 +12,19 @@ const headers = {
 };
 
 // Funkcija za lakse fetchanje sa shop.cinestar.hr
-async function cinestarApi(endpoint, cinema) {
+async function cinestarApi(endpoint, cinemaOid) {
   const url = "https://shop.cinestarcinemas.hr/api" + endpoint;
-  headers["CENTER-OID"] = cinema.cinemaOid;
+  headers["CENTER-OID"] = cinemaOid;
 
   const response = await fetch(url, { headers });
   const data = await response.json();
 
-  //console.log(data.length);
   return data;
 }
 
 // Vraca sve podatke o filmovima za odredeno kino
 async function getCinemaMoviesAndPerformances(cinema) {
-  const data = await cinestarApi("/films", cinema);
+  const data = await cinestarApi("/films", cinema.cinemaOid);
   let performancesFormatted = [];
 
   // Movies
@@ -76,8 +75,29 @@ async function getCinemaMoviesAndPerformances(cinema) {
   return { moviesFormatted, performancesFormatted };
 }
 
-function getSeating() {
-  ///api/performances/50C20000023VITSDHB/seatingplan
+async function getSeating(cinemaOid, performanceId) {
+  const data = await cinestarApi(`/performances/${performanceId}/seatingplan`, cinemaOid);
+  if (data.errorMessage) return;
+
+  const formattedSeating = {
+    height: data.height,
+    width: data.width,
+    seats: data.seatGroups
+      .map((group) => group.seats)
+      .flat()
+      .map((seat) => {
+        return {
+          x: seat.x,
+          y: seat.y,
+          w: seat.w,
+          h: seat.h,
+          sg: seat.sg,
+          stat: seat.stat,
+        };
+      }),
+  };
+
+  return formattedSeating;
 }
 
 // Helper
@@ -119,4 +139,4 @@ function swap(arr, a, b) {
   arr[a] = arr[b];
   arr[b] = temp;
 }
-module.exports = { getCinemaMoviesAndPerformances };
+module.exports = { getCinemaMoviesAndPerformances, getSeating };
