@@ -150,9 +150,10 @@
           <p>{movie.genres[0]}</p>
         {/if}
 
-        <p>·</p>
-
-        <p>{movie.duration}</p>
+        {#if movie.duration}
+          <p>·</p>
+          <p>{movie.duration}</p>
+        {/if}
 
         {#if movie.letterboxdRating}
           <p>·</p>

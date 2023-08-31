@@ -82,6 +82,7 @@ async function getSeating(cinemaOid, performanceId) {
   const formattedSeating = {
     height: data.height,
     width: data.width,
+    // maxX: findLargestX(data.seatGroups.map((group) => group.seats)),
     seats: data.seatGroups
       .map((group) => group.seats)
       .flat()
@@ -139,4 +140,21 @@ function swap(arr, a, b) {
   arr[a] = arr[b];
   arr[b] = temp;
 }
+// function findLargestX(seatGroups) {
+//   console.log(seatGroups);
+
+//   if (seatGroups.length === 0) {
+//     return undefined;
+//   }
+
+//   let largest = seatGroups[0].x;
+
+//   for (let i = 1; i < seats.length; i++) {
+//     if (seats[i].x > largest) {
+//       largest = seats[i]; // Update largest if a larger element is found
+//     }
+//   }
+
+//   return largest;
+// }
 module.exports = { getCinemaMoviesAndPerformances, getSeating };
