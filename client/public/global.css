@@ -8,29 +8,29 @@
 body {
   background-color: #0e131f;
   padding: 1rem;
-  max-width: 50rem;
+  max-width: 45rem;
   margin: auto;
 }
 .primary-color-scheme {
   background-color: #454954;
-  color: #b9bdc6;
+  color: #c7cad1;
 }
 .primary-color-scheme .stroke > path {
-  stroke: #8f95a3;
+  stroke: #abafba;
 }
 .primary-color-scheme .fill > path {
-  fill: #8f95a3;
+  fill: #abafba;
 }
 
 .secondary-color-scheme {
   background-color: #1d2435;
-  color: #818898;
+  color: #abafba;
 }
 .secondary-color-scheme .stroke > path {
-  stroke: #676e7e;
+  stroke: #8f95a3;
 }
 .secondary-color-scheme .fill > path {
-  fill: #676e7e;
+  fill: #8f95a3;
 }
 
 .fadeout-1-input {
@@ -68,7 +68,7 @@ body {
 }
 .input-container .label .label-text {
   font-size: 0.6875rem;
-  color: #454954;
+  color: #767d8f;
 }
 .input-container .dropdown-element {
   padding: 0.75rem;

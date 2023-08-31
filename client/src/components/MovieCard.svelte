@@ -268,7 +268,7 @@
 <style>
   .movieCard {
     display: flex;
-    background-color: #080b12;
+    background-color: #05060b;
     border-radius: 0.5rem;
     box-shadow: 0.375rem 0.375rem 0.25rem rgba(0, 0, 0, 0.25);
   }
@@ -295,7 +295,7 @@
 
   .movieCard > .movieData .movieTitle {
     /* mozda ovo limitirat height */
-    color: #cdcdcd;
+    color: #e6e6e6;
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 0.4375rem;
@@ -306,7 +306,7 @@
     flex-wrap: wrap;
     column-gap: 0.375rem;
     row-gap: 0.25rem;
-    color: #9d9d9d;
+    color: #bfbfbf;
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: capitalize;
@@ -327,12 +327,12 @@
     row-gap: 1rem;
   }
   .movieCard > .movieData .movieExtraInfo .infoLabel {
-    color: #cdcdcd;
+    color: #e6e6e6;
     font-size: 0.75rem;
     margin-bottom: 0.25rem;
   }
   .movieCard > .movieData .movieExtraInfo .infoText {
-    color: #9d9d9d;
+    color: #bfbfbf;
     font-size: 0.75rem;
     font-weight: 400;
     margin-left: 0.75rem;
@@ -363,7 +363,7 @@
     row-gap: 0.3125rem;
   }
   .movieCard > .movieData .performanceContainer .performanceslabel {
-    color: #8d8d8d;
+    color: #999999;
     font-weight: 400;
     font-size: 0.625rem;
     text-transform: capitalize;
@@ -387,13 +387,13 @@
   }
 
   .movieCard > .movieData .performanceCard .performanceTime {
-    color: #cdcdcd;
+    color: #bfbfbf;
     font-size: 0.75rem;
   }
 
   .movieCard > .movieData .performanceCard .performanceFeature {
     text-align: center;
-    color: #8d8d8d;
+    color: #999999;
     font-size: 0.625rem;
     font-weight: 400;
   }

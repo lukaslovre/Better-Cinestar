@@ -241,7 +241,7 @@
     row-gap: 0.3125rem;
   }
   #performanceInfo > .movieTitle {
-    color: #9d9d9d;
+    color: #bfbfbf;
     font-weight: 400;
     font-size: 0.875rem;
     margin-bottom: 0.125rem;
@@ -251,7 +251,7 @@
     column-gap: 0.25rem;
   }
   #performanceInfo > .performanceInfoRow > p {
-    color: #cdcdcd;
+    color: #e6e6e6;
     font-weight: 400;
     font-size: 0.875rem;
   }
@@ -264,7 +264,7 @@
 
     padding: 0.625rem;
     border-radius: 0.375rem;
-    background: rgba(232, 197, 71, 0.1);
+    background: rgba(232, 197, 71, 0.2);
     cursor: pointer;
   }
   #buyTicketButton > p {
