@@ -23,7 +23,6 @@
   }
   function setPerformanceData(event) {
     performanceData = event.detail;
-    console.log(performanceData);
   }
 
   // Api call

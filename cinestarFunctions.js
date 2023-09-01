@@ -79,23 +79,22 @@ async function getSeating(cinemaOid, performanceId) {
   const data = await cinestarApi(`/performances/${performanceId}/seatingplan`, cinemaOid);
   if (data.errorMessage) return;
 
+  const seatGroups = data.seatGroups.map((group) => group.seats);
   const formattedSeating = {
     height: data.height,
     width: data.width,
-    // maxX: findLargestX(data.seatGroups.map((group) => group.seats)),
-    seats: data.seatGroups
-      .map((group) => group.seats)
-      .flat()
-      .map((seat) => {
-        return {
-          x: seat.x,
-          y: seat.y,
-          w: seat.w,
-          h: seat.h,
-          sg: seat.sg,
-          stat: seat.stat,
-        };
-      }),
+    maxX: findLargestX(seatGroups),
+    maxY: seatGroups[seatGroups.length - 1][0].y,
+    seats: seatGroups.flat().map((seat) => {
+      return {
+        x: seat.x,
+        y: seat.y,
+        // w: seat.w,
+        // h: seat.h,
+        sg: seat.sg,
+        stat: seat.stat,
+      };
+    }),
   };
 
   return formattedSeating;
@@ -140,21 +139,20 @@ function swap(arr, a, b) {
   arr[a] = arr[b];
   arr[b] = temp;
 }
-// function findLargestX(seatGroups) {
-//   console.log(seatGroups);
+function findLargestX(seatGroups) {
+  if (seatGroups.length === 0) {
+    return undefined;
+  }
 
-//   if (seatGroups.length === 0) {
-//     return undefined;
-//   }
+  let largest = seatGroups[0][seatGroups[0].length - 1].x;
 
-//   let largest = seatGroups[0].x;
+  for (let i = 1; i < seatGroups.length; i++) {
+    if (seatGroups[i][seatGroups[i].length - 1].x > largest) {
+      largest = seatGroups[i][seatGroups[i].length - 1].x; // Update largest if a larger element is found
+    }
+  }
 
-//   for (let i = 1; i < seats.length; i++) {
-//     if (seats[i].x > largest) {
-//       largest = seats[i]; // Update largest if a larger element is found
-//     }
-//   }
+  return largest;
+}
 
-//   return largest;
-// }
 module.exports = { getCinemaMoviesAndPerformances, getSeating };

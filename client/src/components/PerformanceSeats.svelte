@@ -96,16 +96,24 @@
     };
 
     const date = new Date(dateString);
-    console.log(date);
     const localeString = date.toLocaleDateString("hr-HR", options);
-    console.log(localeString);
     const formattedDate = localeString.replace(/\s+/g, "").replace(/,/g, " ");
 
     return time + ", " + formattedDate;
   }
-
   function closeSeats() {
     dispatch("setPerformanceData", null);
+  }
+
+  let seatLocationMultiplier = 2.5;
+  function setLocationMultiplier(seats) {
+    const seatsContainer = document.getElementById("seatsContainer");
+    const containerWidth = seatsContainer.clientWidth - 9;
+    const furthestSeat = seats.maxX;
+    seatLocationMultiplier = containerWidth / furthestSeat;
+
+    const seatsHeight = seats.maxY * seatLocationMultiplier;
+    seatsContainer.style.setProperty("height", 48 + seatsHeight + 9 + "px");
   }
 
   // Api call
@@ -118,7 +126,7 @@
     const data = await res.json();
 
     if (res.ok) {
-      console.log(data);
+      setLocationMultiplier(data);
       return data;
     } else {
       throw new Error(data);
@@ -149,8 +157,8 @@
           <div
             class="seat"
             style:background-color={seat.stat === 4 ? "#80A6FF" : "#373B43"}
-            style:left={seat.x * 2.5 + "px"}
-            style:top={48 + seat.y * 2.5 + "px"}
+            style:left={seat.x * seatLocationMultiplier + "px"}
+            style:top={48 + seat.y * seatLocationMultiplier + "px"}
           />
         {/each}
       {/await}
@@ -204,8 +212,9 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: calc(100% - 2rem);
 
+    width: calc(100% - 2rem);
+    max-width: 30rem;
     padding: 2rem;
     border-radius: 0.5rem;
     background: #131a2a;
