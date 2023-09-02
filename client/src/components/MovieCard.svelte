@@ -185,6 +185,14 @@
           <p class="infoText">{movie.director}</p>
         {/if}
       </div>
+
+      {#if movie.actors}
+        <div class="infoContainer">
+          <p class="infoLabel">Glumci</p>
+          <p class="infoText">{movie.actors}</p>
+        </div>
+      {/if}
+
       <div class="infoContainer">
         <p class="infoLabel">Opis</p>
         {#if movie.englishSynopsis}
@@ -192,6 +200,11 @@
         {:else}
           <p class="infoText">{movie.synopsis}</p>
         {/if}
+      </div>
+
+      <div class="infoContainer">
+        <p class="infoLabel">Datum izlaska u Cinestar-u</p>
+        <p class="infoText">{movie.nationwideStart}</p>
       </div>
 
       {#if movie.trailerLink}
@@ -337,6 +350,7 @@
     font-size: 0.75rem;
     font-weight: 400;
     margin-left: 0.75rem;
+    line-height: 140%;
   }
   .movieCard > .movieData .movieExtraInfo .trailerButton {
     text-decoration: none;

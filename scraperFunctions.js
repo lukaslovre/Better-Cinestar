@@ -89,11 +89,13 @@ async function getLetterboxdDataFromUrl(url) {
     letterboxdRating: null,
     imdbUrl: null,
     englishDirectors: null,
+    actors: null,
     posterUrl: null,
     englishSynopsis: null,
     englishCategories: null,
     trailerLink: null,
     duration: null,
+    durationMins: null,
   };
   if (!url) {
     return defaultData;
@@ -114,6 +116,10 @@ async function getLetterboxdDataFromUrl(url) {
     const englishCategories = data.genre;
     const posterUrl = data.image;
     const englishDirectors = data.director.map((dir) => dir.name);
+    const actors = data.actors
+      .slice(0, Math.min(8, data.actors.length))
+      .map((actor) => actor.name)
+      .join(", ");
     const englishSynopsis = $(".truncate > *").prop("innerText");
     const imdbUrl = $('[data-track-action="IMDb"]').attr("href");
     const trailer = $('[data-track-category="Trailer"]').attr("href");
@@ -129,6 +135,7 @@ async function getLetterboxdDataFromUrl(url) {
       letterboxdRating: letterboxdRating ? parseFloat(letterboxdRating).toFixed(1) : null,
       imdbUrl,
       englishDirectors,
+      actors,
       posterUrl,
       englishSynopsis,
       englishCategories,

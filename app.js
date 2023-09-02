@@ -221,33 +221,26 @@ function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   }
 
   // Sortiranje filmova
-  if (sortBy === "durationMins" || sortBy === "imdbRating") {
+  if (
+    sortBy === "durationMins" ||
+    sortBy === "imdbRating" ||
+    sortBy === "letterboxdRating"
+  ) {
     formattedData.sort((a, b) => b[sortBy] - a[sortBy]);
   } else if (sortBy === "genre") {
     formattedData.sort((a, b) => {
-      if (!b.englishCategories || !a.englishCategories) {
-        const comparison = ("" + b.genres[0]).localeCompare(a.genres[0]);
-        if (comparison === 0) {
-          return b.imdbRating - a.imdbRating;
-        } else {
-          return comparison;
-        }
+      const aGenre = a.englishCategories || a.genres;
+      const bGenre = b.englishCategories || b.genres;
+      const comparison = ("" + bGenre[0]).localeCompare(aGenre[0]);
+      if (comparison === 0) {
+        return b.imdbRating - a.imdbRating;
       } else {
-        const comparison = ("" + b.englishCategories[0]).localeCompare(
-          a.englishCategories[0]
-        );
-        if (comparison === 0) {
-          return b.imdbRating - a.imdbRating;
-        } else {
-          return comparison;
-        }
+        return comparison;
       }
     });
   } else {
     formattedData.sort((a, b) => {
-      if (b[sortBy] == null) return -1;
-
-      const comparison = ("" + b[sortBy]).localeCompare(a[sortBy]);
+      const comparison = b.nationwideStart.localeCompare(a.nationwideStart);
       if (comparison === 0) {
         return b.imdbRating - a.imdbRating;
       } else {
