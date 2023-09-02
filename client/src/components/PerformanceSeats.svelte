@@ -106,11 +106,13 @@
   }
 
   let seatLocationMultiplier = 2.5;
+  let seatOffsetX = 0;
   function setLocationMultiplier(seats) {
     const seatsContainer = document.getElementById("seatsContainer");
     const containerWidth = seatsContainer.clientWidth - 9;
     const furthestSeat = seats.maxX;
-    seatLocationMultiplier = containerWidth / furthestSeat;
+    seatLocationMultiplier = (containerWidth * 0.85) / furthestSeat;
+    seatOffsetX = containerWidth * 0.075;
 
     const seatsHeight = seats.maxY * seatLocationMultiplier;
     seatsContainer.style.setProperty("height", 48 + seatsHeight + 9 + "px");
@@ -157,11 +159,23 @@
           <div
             class="seat"
             style:background-color={seat.stat === 4 ? "#80A6FF" : "#373B43"}
-            style:left={seat.x * seatLocationMultiplier + "px"}
+            style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
             style:top={48 + seat.y * seatLocationMultiplier + "px"}
           />
         {/each}
       {/await}
+    </div>
+
+    <div id="seatsLegend">
+      <div>
+        <div class="seat" style:background-color="#80A6FF" />
+        <p>Slobodno</p>
+      </div>
+
+      <div>
+        <div class="seat" style:background-color="#373B43" />
+        <p>Zauzeto</p>
+      </div>
     </div>
 
     <div id="performanceInfo">
@@ -222,13 +236,14 @@
 
     display: flex;
     flex-direction: column;
-    row-gap: 2.25rem;
   }
 
   #closeSeatsButton {
+    margin-bottom: 1rem;
     align-self: flex-end;
     cursor: pointer;
   }
+
   #seatsContainer {
     height: 300px;
     position: relative;
@@ -244,7 +259,30 @@
     border-radius: 1rem;
   }
 
+  #seatsLegend {
+    margin-top: 1.25rem;
+    display: flex;
+    justify-content: center;
+    column-gap: 2rem;
+  }
+  #seatsLegend > div {
+    display: flex;
+    align-items: center;
+    column-gap: 0.25rem;
+  }
+  #seatsLegend > div > .seat {
+    width: 10px;
+    height: 10px;
+    border-radius: 1rem;
+  }
+  #seatsLegend > div > p {
+    color: #bfbfbf;
+    font-weight: 400;
+    font-size: 0.875rem;
+  }
+
   #performanceInfo {
+    margin: 2.5rem 0;
     display: flex;
     flex-direction: column;
     row-gap: 0.3125rem;
