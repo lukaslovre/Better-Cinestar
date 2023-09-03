@@ -59,6 +59,7 @@
         on:click={() => {
           $selectedDate = dateOption.value;
           selectedDateText = dateOption.text;
+          dropdownOpen = false;
         }}
       >
         <p>{dateOption.text}</p>

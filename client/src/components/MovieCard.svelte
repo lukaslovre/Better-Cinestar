@@ -32,9 +32,8 @@
   function groupPerformancesByCinema(performances) {
     const groupedPerformances = new Map();
     for (const e of performances) {
-      const cinemaName = cinemasData.find(
-        (cinema) => cinema.cinemaOid === e.cinemaOid
-      ).cinemaName;
+      const cinema = cinemasData.find((cinema) => cinema.cinemaOid === e.cinemaOid);
+      const cinemaName = cinema.cinemaName + " (" + cinema.cinemaCity + ")";
       if (!groupedPerformances.has(cinemaName)) {
         groupedPerformances.set(cinemaName, []);
       }
@@ -387,6 +386,7 @@
     display: flex;
     column-gap: 0.375rem;
     overflow-x: scroll;
+    margin-bottom: 0.5rem;
   }
   .movieCard > .movieData .performanceContainer .performanceList .performanceCard {
     padding: 0.5rem;

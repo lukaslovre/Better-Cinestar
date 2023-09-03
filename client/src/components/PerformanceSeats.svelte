@@ -107,15 +107,18 @@
 
   let seatLocationMultiplier = 2.5;
   let seatOffsetX = 0;
-  function setLocationMultiplier(seats) {
+  let seatSize = 9;
+  function setSeatingLayoutValues(seats) {
     const seatsContainer = document.getElementById("seatsContainer");
-    const containerWidth = seatsContainer.clientWidth - 9;
+    const containerWidth = seatsContainer.clientWidth - 10;
     const furthestSeat = seats.maxX;
     seatLocationMultiplier = (containerWidth * 0.85) / furthestSeat;
     seatOffsetX = containerWidth * 0.075;
+    const seatDistance = (seats.seats[1].x - seats.seats[0].x) * seatLocationMultiplier;
+    seatSize = Math.min(Math.floor(seatDistance * 0.85), 15);
 
     const seatsHeight = seats.maxY * seatLocationMultiplier;
-    seatsContainer.style.setProperty("height", 48 + seatsHeight + 9 + "px");
+    seatsContainer.style.setProperty("height", 48 + seatsHeight + seatSize + "px");
   }
 
   // Api call
@@ -128,7 +131,7 @@
     const data = await res.json();
 
     if (res.ok) {
-      setLocationMultiplier(data);
+      setSeatingLayoutValues(data);
       return data;
     } else {
       throw new Error(data);
@@ -161,6 +164,8 @@
             style:background-color={seat.stat === 4 ? "#80A6FF" : "#373B43"}
             style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
             style:top={48 + seat.y * seatLocationMultiplier + "px"}
+            style:width={seatSize + "px"}
+            style:height={seatSize + "px"}
           />
         {/each}
       {/await}
@@ -254,8 +259,6 @@
   }
   #seatsContainer > .seat {
     position: absolute;
-    width: 9px;
-    height: 9px;
     border-radius: 1rem;
   }
 

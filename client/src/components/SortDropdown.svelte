@@ -42,6 +42,7 @@
         on:click={() => {
           $sortBy = sortOption.value;
           selectedSortText = sortOption.text;
+          dropdownOpen = false;
         }}
       >
         <p>{sortOption.text}</p>

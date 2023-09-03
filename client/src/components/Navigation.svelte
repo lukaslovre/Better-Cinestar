@@ -1,5 +1,5 @@
 <nav>
-  <img src="/images/logo4x.png" alt="Better CineStar logo" />
+  <img src="/images/logoo2x.png" alt="Better CineStar logo" />
 </nav>
 
 <style>
