@@ -56,10 +56,96 @@
       cinemas: [{ cinemaOid: "07000000014FEPADHG", cinemaName: "Dalmare centar" }],
     },
   ];
+  const cinemasData = [
+    {
+      cinemaOid: "10000000014OCPXCOG",
+      cinemaName: "Branimir mingle mall",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "20000000014FEPADHG",
+      cinemaName: "Avenue mall",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "37000000014FEPADHG",
+      cinemaName: "Arena centar",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "B7000000014FEPADHG",
+      cinemaName: "Z centar",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "87000000014FEPADHG",
+      cinemaName: "Kaptol boutique",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "57000000014FEPADHG",
+      cinemaName: "Dvori lapad",
+      cinemaCity: "Dubrovnik",
+    },
+    {
+      cinemaOid: "27000000014FEPADHG",
+      cinemaName: "Portanova centar",
+      cinemaCity: "Osijek",
+    },
+    {
+      cinemaOid: "A7000000014FEPADHG",
+      cinemaName: "Max city",
+      cinemaCity: "Pula",
+    },
+    {
+      cinemaOid: "40000000014FEPADHG",
+      cinemaName: "Tower centar",
+      cinemaCity: "Rijeka",
+    },
+    {
+      cinemaOid: "67000000014FEPADHG",
+      cinemaName: "City colosseum",
+      cinemaCity: "Slavonski Brod",
+    },
+    {
+      cinemaOid: "17000000014FEPADHG",
+      cinemaName: "Joker centar",
+      cinemaCity: "Split",
+    },
+    {
+      cinemaOid: "97000000014FEPADHG",
+      cinemaName: "Mall of split",
+      cinemaCity: "Split",
+    },
+    {
+      cinemaOid: "47000000014FEPADHG",
+      cinemaName: "Lumini centar",
+      cinemaCity: "Varaždin",
+    },
+    {
+      cinemaOid: "77000000014FEPADHG",
+      cinemaName: "K centar golubica",
+      cinemaCity: "Vukovar",
+    },
+    {
+      cinemaOid: "D4000000014FEPADHG",
+      cinemaName: "City galleria",
+      cinemaCity: "Zadar",
+    },
+    {
+      cinemaOid: "07000000014FEPADHG",
+      cinemaName: "Dalmare centar",
+      cinemaCity: "Šibenik",
+    },
+  ];
 
   let dropdownLevelOpen = 0;
   let dropdownLevelTwoOpen = null;
-
+  $: selectedCinemasForDisplay = $cinemaOids.map((cinemaOid) => {
+    return cinemasData
+      .find((cinema) => cinema.cinemaOid === cinemaOid)
+      .cinemaName.split(" ")[0];
+  });
   function toggleDropdownLevelOne() {
     if (dropdownLevelOpen === 0) {
       dropdownLevelOpen = 1;
@@ -109,7 +195,7 @@
     class:fadeout-2-input={dropdownLevelOpen === 2}
     on:click={toggleDropdownLevelOne}
   >
-    <p class="selectedValue">Zagreb</p>
+    <p class="selectedValue">{selectedCinemasForDisplay.join(", ") || "Odaberi"}</p>
     <svg
       class="fill"
       width="10"
@@ -201,4 +287,12 @@
 </div>
 
 <style>
+  .dropdown-element {
+    max-width: 66%;
+  }
+  .dropdown-element > .selectedValue {
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+  }
 </style>

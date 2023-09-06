@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 
 const danas = dateToYMDFormat(new Date());
 
-export const cinemaOids = writable(["10000000014OCPXCOG"]);
+export const cinemaOids = writable([]);
 export const selectedDate = writable(danas);
 export const sortBy = writable("nationwideStart");
 

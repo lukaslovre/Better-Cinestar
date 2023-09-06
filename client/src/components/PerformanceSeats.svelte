@@ -115,7 +115,7 @@
     seatLocationMultiplier = (containerWidth * 0.85) / furthestSeat;
     seatOffsetX = containerWidth * 0.075;
     const seatDistance = (seats.seats[1].x - seats.seats[0].x) * seatLocationMultiplier;
-    seatSize = Math.min(Math.floor(seatDistance * 0.85), 15);
+    seatSize = Math.max(6, Math.min(Math.floor(seatDistance * 0.85), 15));
 
     const seatsHeight = seats.maxY * seatLocationMultiplier;
     seatsContainer.style.setProperty("height", 48 + seatsHeight + seatSize + "px");
