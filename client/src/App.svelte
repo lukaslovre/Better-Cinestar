@@ -5,6 +5,7 @@
   import SortDropdown from "./components/SortDropdown.svelte";
   import MovieCard from "./components/MovieCard.svelte";
   import PerformanceSeats from "./components/PerformanceSeats.svelte";
+  import NoResultsGif from "./components/NoResultsGif.svelte";
 
   import { cinemaOids, selectedDate, sortBy } from "./stores";
 
@@ -57,20 +58,24 @@
   <SortDropdown />
 </div>
 
-<div id="movieCardsContainer">
-  {#await moviesPromise}
-    <p>Waiting...</p>
-  {:then movies}
-    {#each movies as movie}
-      <MovieCard
-        {movie}
-        {fullscreenedMovieNumber}
-        on:setFullscreen={setFullscreen}
-        on:setPerformanceData={setPerformanceData}
-      />
-    {/each}
-  {/await}
-</div>
+{#await moviesPromise}
+  <p>Waiting...</p>
+{:then movies}
+  {#if movies.length == 0}
+    <NoResultsGif />
+  {:else}
+    <div id="movieCardsContainer">
+      {#each movies as movie}
+        <MovieCard
+          {movie}
+          {fullscreenedMovieNumber}
+          on:setFullscreen={setFullscreen}
+          on:setPerformanceData={setPerformanceData}
+        />
+      {/each}
+    </div>
+  {/if}
+{/await}
 
 {#if performanceData}
   <PerformanceSeats {performanceData} on:setPerformanceData={setPerformanceData} />
