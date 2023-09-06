@@ -62,7 +62,7 @@ async function getCinemaMoviesAndPerformances(cinema) {
       return {
         id,
         performanceDateTime,
-        performanceTime: getPerformanceTimeFromDatetime(performanceDateTime),
+        performanceTime: performanceDateTime.slice(11, 16),
         cinemaDate,
         auditoriumName,
         performanceFeatures: formatPerformanceFeatures(releaseTypeName),
@@ -101,14 +101,6 @@ async function getSeating(cinemaOid, performanceId) {
 }
 
 // Helper
-function getPerformanceTimeFromDatetime(performanceDateTime) {
-  const d = new Date(performanceDateTime);
-  return (
-    d.getHours().toString().padStart(2, "0") +
-    ":" +
-    d.getMinutes().toString().padStart(2, "0")
-  );
-}
 function formatPerformanceFeatures(releaseTypeName) {
   const features = releaseTypeName.split("/");
 
