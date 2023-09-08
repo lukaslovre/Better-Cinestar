@@ -175,7 +175,7 @@ function uniqueMovies(value, index, array) {
   }
 }
 function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
-  const anyDate = selectedDate === "all";
+  const anyDate = selectedDate == "any";
   if (!selectedDate) {
     const today = new Date();
     const year = today.getFullYear();
@@ -187,12 +187,13 @@ function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   // Ako je u trazenom kinu i na odabrani datum
   const filteredPerformances = performances
     .filter((performance) => {
-      // if in
+      // Ako je odabrano kino
       if (cinemaOids.includes(performance.cinemaOid)) {
-        if (anyDate) {
-          return true;
-        } else {
+        // Ako je odabrani datum
+        if (!anyDate) {
           return selectedDate === performance.cinemaDate;
+        } else {
+          return true;
         }
       } else {
         return false;
@@ -201,13 +202,40 @@ function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
     .sort((a, b) => ("" + a.performanceTime).localeCompare(b.performanceTime));
   console.log("Performances: " + filteredPerformances.length);
 
-  // Grupiranje prikazivanja po filmu
+  // Grupiranje performanca po filmu
   const groupedPerformances = new Map();
   for (const e of filteredPerformances) {
     if (!groupedPerformances.has(e.filmId)) {
       groupedPerformances.set(e.filmId, []);
     }
     groupedPerformances.get(e.filmId).push(e);
+  }
+
+  // Ako je anyDate, maknuti sve osim samo jednog datuma (najraniji od danas)
+  if (anyDate) {
+    const yesterd = new Date();
+    yesterd.setDate(yesterd.getDate() - 1);
+    const year = yesterd.getFullYear();
+    const month = (yesterd.getMonth() + 1).toString().padStart(2, "0");
+    const day = yesterd.getDate().toString().padStart(2, "0");
+    const jucer = `${year}-${month}-${day}`;
+
+    for (const filmId of groupedPerformances.keys()) {
+      let najranijiDatum = "9999-99-99";
+      let earliestPerformances = [];
+      for (const perf of groupedPerformances.get(filmId)) {
+        if (perf.cinemaDate.localeCompare(jucer) === 1) {
+          if (perf.cinemaDate.localeCompare(najranijiDatum) === -1) {
+            najranijiDatum = perf.cinemaDate;
+            earliestPerformances = [perf];
+          } else if (perf.cinemaDate.localeCompare(najranijiDatum) === 0) {
+            earliestPerformances.push(perf);
+          }
+        }
+      }
+
+      groupedPerformances.set(filmId, earliestPerformances);
+    }
   }
 
   // Spajanje perfromanca sa podacima o filmu

@@ -112,7 +112,9 @@ async function getLetterboxdDataFromUrl(url) {
     const data = JSON.parse(scriptTag.slice(startingIndex, endingIndex));
 
     // Extractanje podataka
-    const letterboxdRating = data.aggregateRating.ratingValue;
+
+    let letterboxdRating = null;
+    if (data.aggregateRating) letterboxdRating = data.aggregateRating.ratingValue;
     const englishCategories = data.genre;
     const posterUrl = data.image;
     const englishDirectors = data.director.map((dir) => dir.name);

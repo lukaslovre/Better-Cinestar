@@ -17,7 +17,7 @@
     });
     dropdownOptionValues.push({ text: dateString, value: dateToYMDFormat(date) });
   }
-  dropdownOptionValues.push({ text: "Sve", value: "0" });
+  dropdownOptionValues.push({ text: "Sve", value: "any" });
 
   function toggleDropdown() {
     dropdownOpen = !dropdownOpen;

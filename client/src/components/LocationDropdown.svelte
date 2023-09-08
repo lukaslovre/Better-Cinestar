@@ -292,7 +292,7 @@
   }
   .dropdown-element > .selectedValue {
     overflow: hidden;
-    text-wrap: nowrap;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 </style>
