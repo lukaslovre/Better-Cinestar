@@ -179,6 +179,11 @@
     }
     return false;
   }
+
+  document.body.addEventListener("click", (e) => {
+    // Ako nije neki element location dropdowna
+    if (!e.target.closest(".primary-color-scheme")) dropdownLevelOpen = 0;
+  });
 </script>
 
 <div class="input-container">
