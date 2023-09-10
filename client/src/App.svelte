@@ -59,7 +59,7 @@
 </div>
 
 {#await moviesPromise}
-  <p>Waiting...</p>
+  <p>Dohvaćanje filmova...</p>
 {:then movies}
   {#if movies.length == 0}
     <NoResultsGif />

@@ -1,4 +1,5 @@
 <script>
+  import Loading from "./Loading.svelte";
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
 
@@ -155,7 +156,7 @@
 
     <div id="seatsContainer">
       {#await seatsPromise}
-        <p>Waiting...</p>
+        <Loading />
       {:then seatsData}
         <img src="/images/cinemaScreen.svg" alt="screen" />
         {#each seatsData.seats as seat}
