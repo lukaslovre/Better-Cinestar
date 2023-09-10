@@ -176,27 +176,30 @@ function uniqueMovies(value, index, array) {
 }
 function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   const anyDate = selectedDate == "any";
+  const today = new Date();
   if (!selectedDate) {
-    const today = new Date();
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, "0");
     const day = today.getDate().toString().padStart(2, "0");
     selectedDate = `${year}-${month}-${day}`;
   }
 
-  // Ako je u trazenom kinu i na odabrani datum
+  const currentTime = today.getHours() + ":" + today.getMinutes();
+  // Ako je u trazenom kinu, na odabrani datum i vremenski nakon *sad*
   const filteredPerformances = performances
     .filter((performance) => {
-      // Ako je odabrano kino
-      if (cinemaOids.includes(performance.cinemaOid)) {
-        // Ako je odabrani datum
-        if (!anyDate) {
-          return selectedDate === performance.cinemaDate;
-        } else {
-          return true;
-        }
+      // Ako nije odabrano kino, odbaciti
+      if (!cinemaOids.includes(performance.cinemaOid)) return false;
+
+      // Ako nije nije nakon trenutnog vremena, odbaciti
+      if (currentTime.localeCompare(performance.performanceTime) !== -1) return false;
+
+      // Ako je 'anyDate', prihvatiti
+      if (anyDate) {
+        return true;
       } else {
-        return false;
+        // Ako je odabrani datum
+        return selectedDate === performance.cinemaDate;
       }
     })
     .sort((a, b) => ("" + a.performanceTime).localeCompare(b.performanceTime));
@@ -213,11 +216,10 @@ function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
 
   // Ako je anyDate, maknuti sve osim samo jednog datuma (najraniji od danas)
   if (anyDate) {
-    const yesterd = new Date();
-    yesterd.setDate(yesterd.getDate() - 1);
-    const year = yesterd.getFullYear();
-    const month = (yesterd.getMonth() + 1).toString().padStart(2, "0");
-    const day = yesterd.getDate().toString().padStart(2, "0");
+    today.setDate(today.getDate() - 1);
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0");
+    const day = today.getDate().toString().padStart(2, "0");
     const jucer = `${year}-${month}-${day}`;
 
     for (const filmId of groupedPerformances.keys()) {
