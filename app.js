@@ -167,6 +167,12 @@ async function getDataOnAppStart() {
 }
 
 // Helper functions
+function dateToYYYYMMDD(date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 function uniqueMovies(value, index, array) {
   for (let i = 0; i < array.length; i++) {
     if (value.filmNumber === array[i].filmNumber) {
@@ -177,22 +183,26 @@ function uniqueMovies(value, index, array) {
 function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   const anyDate = selectedDate == "any";
   const today = new Date();
+  const todayString = dateToYYYYMMDD(today);
   if (!selectedDate) {
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
-    const day = today.getDate().toString().padStart(2, "0");
-    selectedDate = `${year}-${month}-${day}`;
+    selectedDate = todayString;
   }
 
-  const currentTime = today.getHours() + ":" + today.getMinutes();
+  const currentTime =
+    today.getHours().toString().padStart(2, "0") +
+    ":" +
+    today.getMinutes().toString().padStart(2, "0");
+
   // Ako je u trazenom kinu, na odabrani datum i vremenski nakon *sad*
   const filteredPerformances = performances
     .filter((performance) => {
       // Ako nije odabrano kino, odbaciti
       if (!cinemaOids.includes(performance.cinemaOid)) return false;
 
-      // Ako nije nije nakon trenutnog vremena, odbaciti
-      if (currentTime.localeCompare(performance.performanceTime) !== -1) return false;
+      // Ako nije nije nakon trenutnog vremena danas, odbaciti
+      if (performance.cinemaDate === todayString) {
+        if (currentTime.localeCompare(performance.performanceTime) !== -1) return false;
+      }
 
       // Ako je 'anyDate', prihvatiti
       if (anyDate) {
@@ -217,10 +227,7 @@ function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
   // Ako je anyDate, maknuti sve osim samo jednog datuma (najraniji od danas)
   if (anyDate) {
     today.setDate(today.getDate() - 1);
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, "0");
-    const day = today.getDate().toString().padStart(2, "0");
-    const jucer = `${year}-${month}-${day}`;
+    const jucer = dateToYYYYMMDD(today);
 
     for (const filmId of groupedPerformances.keys()) {
       let najranijiDatum = "9999-99-99";
