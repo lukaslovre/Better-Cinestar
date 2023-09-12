@@ -127,7 +127,7 @@
   async function getSeats() {
     const origin = window.location.origin; // Za radenje API requesta
     const res = await fetch(
-      `${origin}:3000/api/seating?cinemaOid=${performanceData.performance.cinemaOid}&performanceId=${performanceData.performance.id}`
+      `${origin}/api/seating?cinemaOid=${performanceData.performance.cinemaOid}&performanceId=${performanceData.performance.id}`
     );
     const data = await res.json();
 

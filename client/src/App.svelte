@@ -30,7 +30,7 @@
   let moviesPromise = getMovies();
   async function getMovies() {
     const res = await fetch(
-      `${origin}:3000/api/movies?cinemaOids=${$cinemaOids.join(
+      `${origin}/api/movies?cinemaOids=${$cinemaOids.join(
         ","
       )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
     );
