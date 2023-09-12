@@ -9,7 +9,7 @@
 
   import { cinemaOids, selectedDate, sortBy } from "./stores";
 
-  const hostname = window.location.hostname; // Za radenje API requesta
+  const origin = window.location.origin; // Za radenje API requesta
   let fullscreenedMovieNumber = 0;
   let performanceData = null;
 
@@ -30,7 +30,7 @@
   let moviesPromise = getMovies();
   async function getMovies() {
     const res = await fetch(
-      `http://${hostname}:3000/api/movies?cinemaOids=${$cinemaOids.join(
+      `${origin}:3000/api/movies?cinemaOids=${$cinemaOids.join(
         ","
       )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
     );

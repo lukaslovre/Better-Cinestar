@@ -125,9 +125,9 @@
   // Api call
   let seatsPromise = getSeats();
   async function getSeats() {
-    const hostname = window.location.hostname; // Za radenje API requesta
+    const origin = window.location.origin; // Za radenje API requesta
     const res = await fetch(
-      `http://${hostname}:3000/api/seating?cinemaOid=${performanceData.performance.cinemaOid}&performanceId=${performanceData.performance.id}`
+      `${origin}:3000/api/seating?cinemaOid=${performanceData.performance.cinemaOid}&performanceId=${performanceData.performance.id}`
     );
     const data = await res.json();
 
