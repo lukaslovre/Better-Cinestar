@@ -4,7 +4,7 @@ const danas = dateToYMDFormat(new Date());
 
 export const cinemaOids = writable([]);
 export const selectedDate = writable(danas);
-export const sortBy = writable("imdbRating");
+export const sortBy = writable("nationwideStart");
 
 function dateToYMDFormat(date) {
   const year = date.getFullYear();
