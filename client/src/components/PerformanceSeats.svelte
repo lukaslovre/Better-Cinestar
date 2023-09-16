@@ -105,6 +105,15 @@
   function closeSeats() {
     dispatch("setPerformanceData", null);
   }
+  function getAverageSeatDistance(seats) {
+    let distances = [];
+    for (let i = 0; i < 5; i++) {
+      distances.push(seats.seats[i + 1].x - seats.seats[i].x);
+    }
+    console.log(distances.sort((a, b) => b - a).slice(1, -1));
+    // Vraća zadnji element
+    return distances.sort((a, b) => b - a).slice(1, -1)[2];
+  }
 
   let seatLocationMultiplier = 2.5;
   let seatOffsetX = 0;
@@ -115,8 +124,8 @@
     const furthestSeat = seats.maxX;
     seatLocationMultiplier = (containerWidth * 0.85) / furthestSeat;
     seatOffsetX = containerWidth * 0.075;
-    const seatDistance = (seats.seats[1].x - seats.seats[0].x) * seatLocationMultiplier;
-    seatSize = Math.max(6, Math.min(Math.floor(seatDistance * 0.85), 15));
+    const seatDistance = getAverageSeatDistance(seats) * seatLocationMultiplier;
+    seatSize = Math.max(6, Math.min(Math.floor(seatDistance * 0.85), 18));
 
     const seatsHeight = seats.maxY * seatLocationMultiplier;
     seatsContainer.style.setProperty("height", 48 + seatsHeight + seatSize + "px");
@@ -209,10 +218,14 @@
       </div>
     </div>
 
-    <div id="buyTicketButton">
+    <a
+      id="buyTicketButton"
+      target="_blank"
+      href={`https://shop.cinestarcinemas.hr/landingpage?center=${performanceData.performance.cinemaOid}&page=seatingplan&performance=${performanceData.performance.id}`}
+    >
       <p>Kupi kartu na cinestar.hr</p>
       <img src="images/linkArrow.svg" alt="arrow" />
-    </div>
+    </a>
   </div>
 </div>
 
