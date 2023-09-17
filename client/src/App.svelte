@@ -6,10 +6,12 @@
   import MovieCard from "./components/MovieCard.svelte";
   import PerformanceSeats from "./components/PerformanceSeats.svelte";
   import NoResultsGif from "./components/NoResultsGif.svelte";
+  import PerformanceInfoPopup from "./components/PerformanceInfoPopup.svelte";
 
   import { cinemaOids, selectedDate, sortBy } from "./stores";
 
   const origin = window.location.origin; // Za radenje API requesta
+  let showPerformanceInfoPopup = false;
   let fullscreenedMovieNumber = 0;
   let performanceData = null;
 
@@ -24,6 +26,9 @@
   }
   function setPerformanceData(event) {
     performanceData = event.detail;
+  }
+  function setShowPerformanceInfoPopup(event) {
+    showPerformanceInfoPopup = event.detail;
   }
 
   // Api call
@@ -51,7 +56,7 @@
 
 <Navigation />
 
-<LocationDropdown />
+<LocationDropdown on:showPerformanceInfoPopup={setShowPerformanceInfoPopup} />
 
 <div id="dateAndSortContainer">
   <DateDropdown />
@@ -77,8 +82,12 @@
   {/if}
 {/await}
 
+<!-- Popup prozori -->
 {#if performanceData}
   <PerformanceSeats {performanceData} on:setPerformanceData={setPerformanceData} />
+{/if}
+{#if showPerformanceInfoPopup}
+  <PerformanceInfoPopup on:showPerformanceInfoPopup={setShowPerformanceInfoPopup} />
 {/if}
 
 <style>

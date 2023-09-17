@@ -1,4 +1,7 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
+
   import { cinemaOids } from "../stores";
 
   const cinemaCities = [
@@ -152,6 +155,11 @@
       dropdownLevelOpen = 1;
     } else {
       dropdownLevelOpen = 0;
+
+      // Ako je odabrano vise kina i prvi put su na stranici, pokazati info
+      if ($cinemaOids.length > 1 && !localStorage.getItem("visitedWebsiteBefore")) {
+        dispatch("showPerformanceInfoPopup", true);
+      }
     }
   }
   function toggleDropdownLevelTwo(city) {
@@ -183,7 +191,13 @@
 
   document.body.addEventListener("click", (e) => {
     // Ako nije neki element location dropdowna
-    if (!e.target.closest(".primary-color-scheme")) dropdownLevelOpen = 0;
+    if (!e.target.closest(".primary-color-scheme")) {
+      dropdownLevelOpen = 0;
+      // Ako je odabrano vise kina i prvi put su na stranici, pokazati info
+      if ($cinemaOids.length > 1 && !localStorage.getItem("visitedWebsiteBefore")) {
+        dispatch("showPerformanceInfoPopup", true);
+      }
+    }
   });
 </script>
 
