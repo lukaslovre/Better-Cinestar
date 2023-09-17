@@ -19,11 +19,14 @@ body {
   background-color: #454954;
   color: #c7cad1;
 }
+.primary-color-scheme .checkbox {
+  border-color: #5c6270;
+}
 .primary-color-scheme .stroke > path {
-  stroke: #abafba;
+  stroke: #c7cad1;
 }
 .primary-color-scheme .fill > path {
-  fill: #abafba;
+  fill: #c7cad1;
 }
 
 .secondary-color-scheme {
@@ -31,21 +34,24 @@ body {
   color: #abafba;
 }
 .secondary-color-scheme .stroke > path {
-  stroke: #8f95a3;
+  stroke: #abafba;
 }
 .secondary-color-scheme .fill > path {
-  fill: #8f95a3;
+  fill: #abafba;
 }
 
 .fadeout-1-input {
   background-color: #292f3d;
   color: #5c6270;
 }
+.fadeout-1-input .checkbox {
+  border-color: #5c6270;
+}
 .fadeout-1-input .stroke > path {
-  stroke: #454954;
+  stroke: #5c6270;
 }
 .fadeout-1-input .fill > path {
-  fill: #454954;
+  fill: #5c6270;
 }
 
 .fadeout-2-input {
@@ -53,10 +59,10 @@ body {
   color: #212633;
 }
 .fadeout-2-input .stroke > path {
-  stroke: #1b202c;
+  stroke: #212633;
 }
 .fadeout-2-input .fill > path {
-  fill: #1b202c;
+  fill: #212633;
 }
 
 .input-container {
@@ -99,12 +105,41 @@ body {
   border-radius: 0.25rem;
   font-size: 1rem;
 }
-.input-container .dropdown-options .option {
+.input-container .dropdown-suboptions {
+  /* flex-shrink: 1; */
+}
+.input-container .dropdown-options .expandable-option {
+  padding-left: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
 }
-.input-container .dropdown-options .selected-option {
+.input-container .dropdown-options .option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.input-container .dropdown-options .option p {
+  flex: 1;
+  /* white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+}
+.input-container .dropdown-options .selected {
   color: #e8c547;
+}
+.input-container .dropdown-options .selected .checkbox {
+  background-color: #e8c547;
+}
+
+.input-container .dropdown-options .checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  border: 0.125rem solid;
+  border-radius: 0.125rem;
+}
+.input-container .dropdown-options .checkbox img {
+  width: 1rem;
 }

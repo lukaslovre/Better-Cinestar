@@ -146,6 +146,7 @@
       .find((cinema) => cinema.cinemaOid === cinemaOid)
       .cinemaName.split(" ")[0];
   });
+
   function toggleDropdownLevelOne() {
     if (dropdownLevelOpen === 0) {
       dropdownLevelOpen = 1;
@@ -226,7 +227,7 @@
       {#each cinemaCities as city}
         {#if city.cinemas.length > 1}
           <div
-            class="option"
+            class="expandable-option"
             on:click={() => {
               toggleDropdownLevelTwo(city.city);
             }}
@@ -254,11 +255,19 @@
         {:else}
           <div
             class="option"
-            class:selected-option={$cinemaOids.includes(city.cinemas[0].cinemaOid)}
+            class:selected={$cinemaOids.includes(city.cinemas[0].cinemaOid)}
             on:click={() => {
               toggleCinemaSelection(city.cinemas[0].cinemaOid);
             }}
           >
+            <div class="checkbox">
+              <img
+                src={dropdownLevelOpen === 2
+                  ? "images/check-fadeout1.svg"
+                  : "images/check.svg"}
+                alt="check icon"
+              />
+            </div>
             <p>{city.city}</p>
           </div>
         {/if}
@@ -277,11 +286,14 @@
           {#each city.cinemas as cinema}
             <div
               class="option"
-              class:selected-option={$cinemaOids.includes(cinema.cinemaOid)}
+              class:selected={$cinemaOids.includes(cinema.cinemaOid)}
               on:click={() => {
                 toggleCinemaSelection(cinema.cinemaOid);
               }}
             >
+              <div class="checkbox">
+                <img src="images/check.svg" alt="check icon" />
+              </div>
               <p>{cinema.cinemaName}</p>
             </div>
           {/each}
