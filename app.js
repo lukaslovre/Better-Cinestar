@@ -133,8 +133,8 @@ app.listen(port, () => {
 getDataOnAppStart();
 // const oneDay = 1 * 24 * 60 * 60 * 1000;
 // setInterval(updateMoviesAndPerformances, oneDay);
-const sixHours = 6 * 60 * 60 * 1000;
-setInterval(updateExternalData, sixHours);
+const twelveHours = 12 * 60 * 60 * 1000;
+setInterval(updateExternalData, twelveHours);
 
 async function updateMoviesAndPerformances() {
   console.log("Dohvacanje filmova i performance-a sa CineStar-a.");

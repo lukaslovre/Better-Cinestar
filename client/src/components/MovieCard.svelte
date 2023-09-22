@@ -179,16 +179,35 @@
       <div class="infoContainer">
         <p class="infoLabel">Direktori</p>
         {#if movie.englishDirectors}
-          <p class="infoText">{movie.englishDirectors.join(", ")}</p>
+          <div class="peopleContainer">
+            {#each movie.englishDirectors as director}
+              <div class="person">
+                <img src={director.portraitUrl} alt={director.name + "portrait"} />
+                <p class="personName">{director.name}</p>
+              </div>
+            {/each}
+          </div>
         {:else}
-          <p class="infoText">{movie.director}</p>
+          <div class="peopleContainer">
+            <div class="person">
+              <img src="/images/clockIcon.svg" alt={movie.director + "portrait"} />
+              <p class="personName">{movie.director}</p>
+            </div>
+          </div>
         {/if}
       </div>
 
       {#if movie.actors}
         <div class="infoContainer">
           <p class="infoLabel">Glumci</p>
-          <p class="infoText">{movie.actors}</p>
+          <div class="peopleContainer">
+            {#each movie.actors as actor}
+              <div class="person">
+                <img src={actor.portraitUrl} alt={actor.name + "portrait"} />
+                <p class="personName">{actor.name}</p>
+              </div>
+            {/each}
+          </div>
         </div>
       {/if}
 
@@ -365,6 +384,33 @@
     align-items: flex-start;
     row-gap: 1rem;
   }
+  .movieCard > .movieData .movieExtraInfo .infoContainer {
+    width: 100%;
+    overflow-x: scroll;
+  }
+  .movieCard > .movieData .movieExtraInfo .peopleContainer {
+    display: flex;
+    column-gap: 1rem;
+  }
+  .movieCard > .movieData .movieExtraInfo .peopleContainer .person {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.25rem;
+    align-items: center;
+  }
+  .movieCard > .movieData .movieExtraInfo .peopleContainer .person img {
+    width: 4rem;
+    height: 4rem;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .movieCard > .movieData .movieExtraInfo .peopleContainer .person p {
+    color: #bfbfbf;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 400;
+  }
+
   .movieCard > .movieData .movieExtraInfo .infoLabel {
     color: #e6e6e6;
     font-size: 0.75rem;

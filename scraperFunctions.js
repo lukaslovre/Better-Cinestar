@@ -112,16 +112,24 @@ async function getLetterboxdDataFromUrl(url) {
     const data = JSON.parse(scriptTag.slice(startingIndex, endingIndex));
 
     // Extractanje podataka
-
     let letterboxdRating = null;
     if (data.aggregateRating) letterboxdRating = data.aggregateRating.ratingValue;
     const englishCategories = data.genre;
     const posterUrl = data.image;
-    const englishDirectors = data.director.map((dir) => dir.name);
+    const englishDirectors = data.director.map(({ name, sameAs }) => {
+      return { name, portraitUrl: null, lbUrl: "https://letterboxd.com" + sameAs };
+    });
+    englishDirectors.forEach(async (director) => {
+      director.portraitUrl = await getPortraitUrlFromActorProfile(director.lbUrl);
+    });
     const actors = data.actors
       .slice(0, Math.min(8, data.actors.length))
-      .map((actor) => actor.name)
-      .join(", ");
+      .map(({ name, sameAs }) => {
+        return { name, portraitUrl: null, lbUrl: "https://letterboxd.com" + sameAs };
+      });
+    actors.forEach(async (actor) => {
+      actor.portraitUrl = await getPortraitUrlFromActorProfile(actor.lbUrl);
+    });
     const englishSynopsis = $(".truncate > *").prop("innerText");
     const imdbUrl = $('[data-track-action="IMDb"]').attr("href");
     const trailer = $('[data-track-category="Trailer"]').attr("href");
@@ -183,6 +191,30 @@ async function getImdbDataFromUrl(url) {
     console.log(err);
     return null;
   }
+}
+
+async function getPortraitUrlFromActorProfile(url) {
+  const letterboxdDataResponse = await fetch(url);
+  const letterboxdDataHtml = await letterboxdDataResponse.text();
+  const $ = cheerio.load(letterboxdDataHtml);
+
+  const personTmdbId = $("body").attr("data-tmdb-id");
+  const personTmdbUrl = "http://www.themoviedb.org/person/" + personTmdbId;
+  const tmdbDataResponse = await fetch(personTmdbUrl);
+  const tmdbDataHtml = await tmdbDataResponse.text();
+  const $2 = cheerio.load(tmdbDataHtml);
+
+  const imageUrl = $2("meta[property='og:image']").attr("content");
+  if (!imageUrl) {
+    console.log(personTmdbUrl);
+    console.log(imageUrl);
+    return "/images/clockIcon.svg";
+  }
+
+  const imageId = imageUrl.slice(imageUrl.lastIndexOf("/"));
+  const smallImageUrl = "http://image.tmdb.org/t/p/w138_and_h175_face" + imageId;
+
+  return smallImageUrl;
 }
 
 module.exports = {
