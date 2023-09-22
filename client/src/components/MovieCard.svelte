@@ -128,20 +128,20 @@
   ];
 </script>
 
-<div class="movieCard">
+<div
+  class="movieCard"
+  class:fullScreenMovieCard={movie.filmNumber === fullscreenedMovieNumber}
+>
   <img
     class="moviePoster"
     src={movie.posterUrl || movie.imageUrl}
     alt="{movie.originalTitle} poster"
-    style:width={movie.filmNumber === fullscreenedMovieNumber ? "0%" : "50%"}
   />
 
-  <div
-    class="movieData"
-    style:width={movie.filmNumber === fullscreenedMovieNumber ? "100%" : "50%"}
-  >
+  <div class="movieData">
     <div class="titleAndStats">
       <p class="movieTitle">{movie.title}</p>
+
       <div class="movieStats">
         {#if movie.englishCategories}
           <p>{movie.englishCategories[0]}</p>
@@ -201,15 +201,14 @@
         {/if}
       </div>
 
-      <div class="infoContainer">
-        <p class="infoLabel">Datum izlaska u Cinestar-u</p>
-        <p class="infoText">{movie.nationwideStart}</p>
-      </div>
-
       {#if movie.trailerLink}
-        <a href={movie.trailerLink} class="trailerButton"> Trailer </a>
+        <a href={movie.trailerLink} class="trailerButton">
+          <img src="images/trailerPlayIcon.svg" alt="play trailer icon" /> Trailer
+        </a>
       {/if}
     </div>
+
+    <!-- Donja polovica detalja -->
 
     <div class="performanceAndFullscreenContainer">
       <!-- Performances minimizirano -->
@@ -239,6 +238,13 @@
         </div>
       </div>
 
+      <div
+        class="performanceManipulationContainer"
+        style:display={movie.filmNumber === fullscreenedMovieNumber ? "flex" : "none"}
+      >
+        <div class="performanceFilter">P</div>
+        <div class="performanceDatePicker">Placeholder</div>
+      </div>
       <!-- Performances fullscreen (odvojena kina) -->
       <div
         class="performanceContainer"
@@ -267,6 +273,7 @@
           </div>
         {/each}
       </div>
+
       <img
         src="/images/fullscreen.svg"
         alt="fullscreen"
@@ -282,8 +289,12 @@
   .movieCard {
     display: flex;
     background-color: #05060b;
+    border: 1px solid #05060b;
     border-radius: 0.5rem;
     box-shadow: 0.375rem 0.375rem 0.25rem rgba(0, 0, 0, 0.25);
+  }
+  .fullScreenMovieCard {
+    border: 1px solid #2e406b;
   }
 
   .movieCard > .moviePoster {
@@ -294,6 +305,9 @@
 
     transition: width 250ms ease-out;
   }
+  .fullScreenMovieCard > .moviePoster {
+    width: 0%;
+  }
   .movieCard > .movieData {
     width: 50%;
     padding: 1.25rem;
@@ -301,17 +315,24 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    row-gap: 3rem;
+    row-gap: 2rem;
 
     transition: width 250ms ease-out;
   }
+  .fullScreenMovieCard > .movieData {
+    width: 100%;
+    row-gap: 1rem;
+  }
 
+  /* mozda ovo limitirat height */
   .movieCard > .movieData .movieTitle {
-    /* mozda ovo limitirat height */
     color: #e6e6e6;
     font-size: 0.875rem;
     font-weight: 600;
-    margin-bottom: 0.4375rem;
+    margin-bottom: 0.5rem;
+  }
+  .fullScreenMovieCard > .movieData .movieTitle {
+    font-size: 1.125rem;
   }
   .movieCard > .movieData .movieStats {
     display: flex;
@@ -319,10 +340,14 @@
     flex-wrap: wrap;
     column-gap: 0.375rem;
     row-gap: 0.25rem;
+
     color: #bfbfbf;
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: capitalize;
+  }
+  .fullScreenMovieCard > .movieData .movieStats {
+    justify-content: space-between;
   }
   .movieCard > .movieData .movieStats .ratingIconAndValue {
     display: flex;
@@ -333,6 +358,7 @@
     height: 1rem;
   }
 
+  /* Podaci koji se vide tek kad je fullscreen */
   .movieCard > .movieData .movieExtraInfo {
     display: flex;
     flex-direction: column;
@@ -342,7 +368,7 @@
   .movieCard > .movieData .movieExtraInfo .infoLabel {
     color: #e6e6e6;
     font-size: 0.75rem;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.375rem;
   }
   .movieCard > .movieData .movieExtraInfo .infoText {
     color: #bfbfbf;
@@ -352,11 +378,13 @@
     line-height: 140%;
   }
   .movieCard > .movieData .movieExtraInfo .trailerButton {
-    text-decoration: none;
+    display: flex;
+    align-items: center;
+    column-gap: 0.375rem;
     padding: 0.375rem 0.875rem;
     border-radius: 0.25rem;
-    background-color: #19284d;
-    color: #b8c4e0;
+    background-color: #263d73;
+    color: #dbe1f0;
     font-size: 0.875rem;
     font-weight: 600;
   }
@@ -371,14 +399,38 @@
     align-self: flex-end;
   }
 
+  .movieCard > .movieData .performanceManipulationContainer {
+    /* Linija koja odvaja info i performance je ovdje gornji border */
+    margin-top: 1rem; /* + 1rem row-gap */
+    border-top: 2px solid #454545;
+    padding-top: 2rem;
+
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+
+    color: #e6e6e6;
+    font-size: 1rem;
+  }
+  .movieCard > .movieData .performanceManipulationContainer > .performanceFilter {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background: #202b46;
+  }
+  .movieCard > .movieData .performanceManipulationContainer > .performanceDatePicker {
+    padding: 0.75rem 4rem;
+    border-radius: 1.5rem;
+    background: #101623;
+  }
+
   .movieCard > .movieData .performanceContainer {
     display: flex;
     flex-direction: column;
     row-gap: 0.3125rem;
   }
   .movieCard > .movieData .performanceContainer .performanceslabel {
-    color: #999999;
-    font-weight: 400;
+    color: #bfbfbf;
+    font-weight: 500;
     font-size: 0.625rem;
     text-transform: capitalize;
   }
@@ -400,15 +452,13 @@
     align-items: center;
     row-gap: 0.5rem;
   }
-
   .movieCard > .movieData .performanceCard .performanceTime {
-    color: #bfbfbf;
+    color: #e6e6e6;
     font-size: 0.75rem;
   }
-
   .movieCard > .movieData .performanceCard .performanceFeature {
     text-align: center;
-    color: #999999;
+    color: #bfbfbf;
     font-size: 0.625rem;
     font-weight: 400;
   }

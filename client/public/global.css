@@ -134,12 +134,12 @@ body {
 }
 
 .input-container .dropdown-options .checkbox {
-  width: 1.25rem;
-  height: 1.25rem;
+  display: flex;
+  justify-content: center;
   margin-right: 0.75rem;
   border: 0.125rem solid;
   border-radius: 0.125rem;
 }
 .input-container .dropdown-options .checkbox img {
-  width: 1rem;
+  width: 0.75rem;
 }

@@ -9,6 +9,6 @@
     margin-bottom: 1.5rem;
   }
   img {
-    width: 5rem;
+    width: 6.66rem;
   }
 </style>
