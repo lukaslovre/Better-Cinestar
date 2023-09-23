@@ -37,7 +37,6 @@
     transform: translate(-50%, -50%);
 
     width: calc(100% - 2rem);
-    max-width: 30rem;
     padding: 2rem;
     border-radius: 0.5rem;
     background: #131a2a;

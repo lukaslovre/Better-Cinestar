@@ -220,4 +220,5 @@ async function getPortraitUrlFromActorProfile(url) {
 module.exports = {
   fillMoviesWithLetterboxdData,
   fillMoviesWithImdbData,
+  getPortraitUrlFromActorProfile,
 };

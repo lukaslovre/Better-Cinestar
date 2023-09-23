@@ -178,23 +178,21 @@
     >
       <div class="infoContainer">
         <p class="infoLabel">Direktori</p>
-        {#if movie.englishDirectors}
-          <div class="peopleContainer">
+        <div class="peopleContainer">
+          {#if movie.englishDirectors}
             {#each movie.englishDirectors as director}
               <div class="person">
                 <img src={director.portraitUrl} alt={director.name + "portrait"} />
                 <p class="personName">{director.name}</p>
               </div>
             {/each}
-          </div>
-        {:else}
-          <div class="peopleContainer">
+          {:else}
             <div class="person">
               <img src="/images/clockIcon.svg" alt={movie.director + "portrait"} />
               <p class="personName">{movie.director}</p>
             </div>
-          </div>
-        {/if}
+          {/if}
+        </div>
       </div>
 
       {#if movie.actors}
@@ -203,7 +201,7 @@
           <div class="peopleContainer">
             {#each movie.actors as actor}
               <div class="person">
-                <img src={actor.portraitUrl} alt={actor.name + "portrait"} />
+                <img src={actor.portraitUrl} alt={actor.name + " portrait"} />
                 <p class="personName">{actor.name}</p>
               </div>
             {/each}
@@ -261,8 +259,18 @@
         class="performanceManipulationContainer"
         style:display={movie.filmNumber === fullscreenedMovieNumber ? "flex" : "none"}
       >
-        <div class="performanceFilter">P</div>
-        <div class="performanceDatePicker">Placeholder</div>
+        <div class="performanceFilter">
+          <img src="/images/filterPerfomanceIcon.svg" alt="filter icon" />
+        </div>
+        <div class="performanceDatePicker">
+          <div class="arrowCircle">
+            <img src="images/leftArrow.svg" alt="left arrow" />
+          </div>
+          {getPerformancesLabel(movie.performances[0].performanceDateTime)}
+          <div class="arrowCircle">
+            <img src="images/rightArrow.svg" alt="right arrow" />
+          </div>
+        </div>
       </div>
       <!-- Performances fullscreen (odvojena kina) -->
       <div
@@ -386,13 +394,15 @@
   }
   .movieCard > .movieData .movieExtraInfo .infoContainer {
     width: 100%;
-    overflow-x: scroll;
   }
   .movieCard > .movieData .movieExtraInfo .peopleContainer {
     display: flex;
     column-gap: 1rem;
+    margin-left: 0.75rem;
+    overflow-x: scroll;
   }
   .movieCard > .movieData .movieExtraInfo .peopleContainer .person {
+    width: 4rem;
     display: flex;
     flex-direction: column;
     row-gap: 0.25rem;
@@ -405,6 +415,7 @@
     border-radius: 50%;
   }
   .movieCard > .movieData .movieExtraInfo .peopleContainer .person p {
+    width: 100%;
     color: #bfbfbf;
     text-align: center;
     font-size: 0.75rem;
@@ -447,26 +458,45 @@
 
   .movieCard > .movieData .performanceManipulationContainer {
     /* Linija koja odvaja info i performance je ovdje gornji border */
-    margin-top: 1rem; /* + 1rem row-gap */
-    border-top: 2px solid #454545;
-    padding-top: 2rem;
+    margin-top: 2rem; /* + 1rem row-gap */
+    border-top: 2px solid #808080;
+    padding-top: 3rem;
 
     display: flex;
     justify-content: space-between;
+    column-gap: 1.5rem;
     margin-bottom: 1.25rem;
 
     color: #e6e6e6;
     font-size: 1rem;
   }
   .movieCard > .movieData .performanceManipulationContainer > .performanceFilter {
+    display: flex;
+    align-items: center;
     padding: 0.5rem;
     border-radius: 0.25rem;
     background: #202b46;
+    cursor: pointer;
   }
   .movieCard > .movieData .performanceManipulationContainer > .performanceDatePicker {
-    padding: 0.75rem 4rem;
+    padding: 0.125rem;
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 1.5rem;
     background: #101623;
+    text-transform: capitalize;
+  }
+  .movieCard > .movieData .performanceDatePicker > .arrowCircle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: #202b46;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
 
   .movieCard > .movieData .performanceContainer {
