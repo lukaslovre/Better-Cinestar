@@ -71,8 +71,6 @@ async function getLetterboxdUrlFromName(targetName, targetYear, targetDirectors)
             "\n"
         );
         moviePageUrl = "https://letterboxd.com" + linkToMovie;
-      } else {
-        console.log("\t" + releaseYear + "\n\t" + title + "\n\t" + linkToMovie + "\n");
       }
     });
 
@@ -119,17 +117,18 @@ async function getLetterboxdDataFromUrl(url) {
     const englishDirectors = data.director.map(({ name, sameAs }) => {
       return { name, portraitUrl: null, lbUrl: "https://letterboxd.com" + sameAs };
     });
-    englishDirectors.forEach(async (director) => {
+    for (const director of englishDirectors) {
       director.portraitUrl = await getPortraitUrlFromActorProfile(director.lbUrl);
-    });
+    }
     const actors = data.actors
       .slice(0, Math.min(8, data.actors.length))
       .map(({ name, sameAs }) => {
         return { name, portraitUrl: null, lbUrl: "https://letterboxd.com" + sameAs };
       });
-    actors.forEach(async (actor) => {
+    for (const actor of actors) {
       actor.portraitUrl = await getPortraitUrlFromActorProfile(actor.lbUrl);
-    });
+    }
+
     const englishSynopsis = $(".truncate > *").prop("innerText");
     const imdbUrl = $('[data-track-action="IMDb"]').attr("href");
     const trailer = $('[data-track-category="Trailer"]').attr("href");
@@ -172,15 +171,6 @@ async function getImdbDataFromUrl(url) {
     const imdbData = JSON.parse($('[type="application/ld+json"]').text());
     if (!imdbData.aggregateRating) return null;
     const ocjena = imdbData.aggregateRating.ratingValue;
-    /*
-    const ocjena = $(".ipc-btn__text #iconContext-star")
-      .first()
-      .parent()
-      .next()
-      .find("span")
-      .first()
-      .text();
-*/
 
     if (ocjena) {
       return ocjena;
@@ -202,17 +192,21 @@ async function getPortraitUrlFromActorProfile(url) {
   const personTmdbUrl = "http://www.themoviedb.org/person/" + personTmdbId;
   const tmdbDataResponse = await fetch(personTmdbUrl);
   const tmdbDataHtml = await tmdbDataResponse.text();
+
+  console.log(tmdbDataResponse.status);
+  if (tmdbDataResponse.status === 429) {
+    await delay(10000);
+  }
+
   const $2 = cheerio.load(tmdbDataHtml);
 
   const imageUrl = $2("meta[property='og:image']").attr("content");
   if (!imageUrl) {
-    console.log(personTmdbUrl);
-    console.log(imageUrl);
     return "/images/clockIcon.svg";
   }
 
   const imageId = imageUrl.slice(imageUrl.lastIndexOf("/"));
-  const smallImageUrl = "http://image.tmdb.org/t/p/w138_and_h175_face" + imageId;
+  const smallImageUrl = "https://image.tmdb.org/t/p/w138_and_h175_face" + imageId;
 
   return smallImageUrl;
 }
@@ -222,3 +216,9 @@ module.exports = {
   fillMoviesWithImdbData,
   getPortraitUrlFromActorProfile,
 };
+
+async function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}

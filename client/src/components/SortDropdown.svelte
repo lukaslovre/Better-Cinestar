@@ -2,14 +2,14 @@
   import { sortBy } from "../stores";
 
   let dropdownOpen = false;
-  let selectedSortText = "Datum izlaska";
+  let selectedSortText = "po Datumu izlaska";
 
   const dropdownOptionValues = [
-    { text: "Datum izlaska", value: "nationwideStart" },
-    { text: "IMDB ocjena", value: "imdbRating" },
-    { text: "Letterboxd ocjena", value: "letterboxdRating" },
-    { text: "Žanr", value: "genre" },
-    { text: "Trajanje", value: "durationMins" },
+    { text: "po Datumu izlaska", value: "nationwideStart" },
+    { text: "po IMDB ocjeni", value: "imdbRating" },
+    { text: "po Letterboxd ocjeni", value: "letterboxdRating" },
+    { text: "po Žanru", value: "genre" },
+    { text: "po Trajanju", value: "durationMins" },
   ];
 
   function toggleDropdown() {
@@ -38,7 +38,7 @@
     {#each dropdownOptionValues as sortOption}
       <div
         class="option"
-        class:selected-option={$sortBy === sortOption.value}
+        class:selected={$sortBy === sortOption.value}
         on:click={() => {
           $sortBy = sortOption.value;
           selectedSortText = sortOption.text;

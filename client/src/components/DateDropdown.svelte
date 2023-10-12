@@ -55,7 +55,7 @@
     {#each dropdownOptionValues as dateOption}
       <div
         class="option"
-        class:selected-option={$selectedDate === dateOption.value}
+        class:selected={$selectedDate === dateOption.value}
         on:click={() => {
           $selectedDate = dateOption.value;
           selectedDateText = dateOption.text;

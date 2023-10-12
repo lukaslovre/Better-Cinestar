@@ -165,39 +165,6 @@ async function updateExternalData() {
 async function getDataOnAppStart() {
   await updateMoviesAndPerformances();
   await updateExternalData();
-
-  // Provjera koji portreti nisu uspješno nabavljeni
-  const actorsWithMissingPictures = [];
-  for (let i = 0; i < movies.length; i++) {
-    // Provjera direktora
-    if (movies[i].englishDirectors) {
-      actorsWithMissingPictures.push(
-        ...movies[i].englishDirectors.filter(
-          (person) => person.portraitUrl === "/images/clockIcon.svg"
-        )
-      );
-    }
-
-    // Provjera glumaca
-    if (movies[i].actors) {
-      actorsWithMissingPictures.push(
-        ...movies[i].actors.filter(
-          (person) => person.portraitUrl === "/images/clockIcon.svg"
-        )
-      );
-    }
-  }
-  console.log(actorsWithMissingPictures);
-  console.log(actorsWithMissingPictures.length);
-
-  setTimeout(async () => {
-    for (let i = 0; i < actorsWithMissingPictures.length; i++) {
-      actorsWithMissingPictures[i].portraitUrl = await getPortraitUrlFromActorProfile(
-        actorsWithMissingPictures[i].lbUrl
-      );
-    }
-    console.log(actorsWithMissingPictures.length);
-  }, 10000);
 }
 
 // Helper functions
