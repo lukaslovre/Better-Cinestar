@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -5,7 +6,7 @@ const port = 3000;
 const cors = require("cors");
 
 app.use(cors());
-app.use(express.static("client/public"));
+app.use(express.static(path.join(__dirname, "client/public")));
 
 const { getCinemaMoviesAndPerformances, getSeating } = require("./cinestarFunctions.js");
 const {
@@ -160,7 +161,7 @@ async function updateExternalData() {
 }
 async function getDataOnAppStart() {
   await updateMoviesAndPerformances();
-  await updateExternalData();
+  // await updateExternalData();
 }
 
 // Helper functions

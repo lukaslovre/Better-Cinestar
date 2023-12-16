@@ -156,12 +156,17 @@
 
 <div class="backdrop">
   <div id="card">
-    <img
+    <button
       id="closeSeatsButton"
-      src="/images/xIcon.svg"
-      alt="close seats icon"
       on:click={closeSeats}
-    />
+      on:keypress={(event) => {
+        if (event.key === "Enter") {
+          closeSeats();
+        }
+      }}
+    >
+      <img src="/images/xIcon.svg" alt="close seats icon" />
+    </button>
 
     <div id="seatsContainer">
       {#await seatsPromise}
@@ -238,7 +243,7 @@
     height: 100vh;
 
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(3px);
   }
   #card {
     position: fixed;
@@ -261,6 +266,12 @@
     margin-bottom: 1rem;
     align-self: flex-end;
     cursor: pointer;
+    background: none;
+    border: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #seatsContainer {
@@ -312,7 +323,7 @@
   }
   #performanceInfo > .performanceInfoRow {
     display: flex;
-    column-gap: 0.25rem;
+    column-gap: 0.5rem;
   }
   #performanceInfo > .performanceInfoRow > p {
     color: #e6e6e6;

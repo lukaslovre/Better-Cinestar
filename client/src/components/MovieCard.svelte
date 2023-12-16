@@ -5,6 +5,7 @@
   export let movie;
   export let fullscreenedMovieNumber;
 
+  // events
   function dispatchFullscreenSelection(filmNumber) {
     dispatch("setFullscreen", filmNumber);
   }
@@ -12,6 +13,7 @@
     dispatch("setPerformanceData", { movie, performance });
   }
 
+  // functions
   function getPerformancesLabel(perfDateTime) {
     const performanceDate = new Date(perfDateTime);
     const today = new Date();

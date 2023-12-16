@@ -215,7 +215,7 @@
     class:fadeout-2-input={dropdownLevelOpen === 2}
     on:click={toggleDropdownLevelOne}
   >
-    <p class="selectedValue">{selectedCinemasForDisplay.join(", ") || "Odaberi"}</p>
+    <p class="selectedValue">{selectedCinemasForDisplay.join(", ") || "Odaberi kino"}</p>
     <svg
       class="fill"
       width="10"

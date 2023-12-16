@@ -7,15 +7,14 @@
 
 <div class="backdrop">
   <div id="card">
-    <img src="images/performancesHelp.svg" alt="performances help" />
-    <p
-      class="button"
+    <img src="/images/performancesHelp.svg" alt="performances help" />
+    <button
       on:click={() => {
         dispatch("showPerformanceInfoPopup", false);
       }}
     >
       Kužim
-    </p>
+    </button>
   </div>
 </div>
 
@@ -28,14 +27,15 @@
     height: 100vh;
 
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(3px);
   }
   #card {
     position: fixed;
-    top: 50%;
+    top: 3rem;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
 
+    max-width: 30rem;
     width: calc(100% - 2rem);
     padding: 2rem;
     border-radius: 0.5rem;
@@ -46,13 +46,15 @@
     width: 100%;
   }
 
-  #card .button {
+  #card button {
     margin-top: 4rem;
+    width: 100%;
     color: #e8c547;
     padding: 0.625rem;
     border-radius: 0.375rem;
     background: rgba(232, 197, 71, 0.2);
-    cursor: pointer;
     text-align: center;
+    border: none;
+    cursor: pointer;
   }
 </style>

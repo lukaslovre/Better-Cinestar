@@ -84,7 +84,7 @@ async function getSeating(cinemaOid, performanceId) {
     height: data.height,
     width: data.width,
     maxX: findLargestX(seatGroups),
-    maxY: seatGroups[seatGroups.length - 1][0].y,
+    maxY: findLargestY(seatGroups),
     seats: seatGroups.flat().map((seat) => {
       return {
         x: seat.x,
@@ -124,7 +124,6 @@ function formatPerformanceFeatures(releaseTypeName) {
 
   return features.slice(0, 2).concat(features.slice(2).sort());
 }
-
 function swap(arr, a, b) {
   if (a === b) return;
   const temp = arr[a];
@@ -141,6 +140,22 @@ function findLargestX(seatGroups) {
   for (let i = 1; i < seatGroups.length; i++) {
     if (seatGroups[i][seatGroups[i].length - 1].x > largest) {
       largest = seatGroups[i][seatGroups[i].length - 1].x; // Update largest if a larger element is found
+    }
+  }
+
+  return largest;
+}
+function findLargestY(seatGroups) {
+  if (seatGroups.length === 0) {
+    return undefined;
+  }
+
+  let largest = seatGroups[seatGroups.length - 1][0].y;
+
+  // Loop seatGroups from last to first, if an element is larger than 'largest', update 'largest'
+  for (let i = seatGroups.length - 2; i >= 0; i--) {
+    if (seatGroups[i][0].y > largest) {
+      largest = seatGroups[i][0].y;
     }
   }
 
