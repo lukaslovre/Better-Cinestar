@@ -2,14 +2,34 @@
   import LocationDropdown from "./LocationDropdown.svelte";
   import DateDropdown from "./DateDropdown.svelte";
   import SortDropdown from "./SortDropdown.svelte";
+
+  let locationDropdownOpen = {
+    level: 0,
+    selectedCity: null,
+  };
+  let dateDropdownOpen = {
+    value: false,
+  };
+  let sortDropdownOpen = {
+    value: false,
+  };
+
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".dropdown-options")) return;
+    if (e.target.closest(".dropdown-element")) return;
+
+    locationDropdownOpen.level = 0;
+    dateDropdownOpen.value = false;
+    sortDropdownOpen.value = false;
+  });
 </script>
 
 <div id="dropdowns">
-  <LocationDropdown on:showPerformanceInfoPopup />
+  <LocationDropdown {locationDropdownOpen} on:showPerformanceInfoPopup />
 
   <div id="dateAndSortContainer">
-    <DateDropdown />
-    <SortDropdown />
+    <DateDropdown {dateDropdownOpen} />
+    <SortDropdown {sortDropdownOpen} />
   </div>
 </div>
 

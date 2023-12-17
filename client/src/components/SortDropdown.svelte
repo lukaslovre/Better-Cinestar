@@ -1,7 +1,8 @@
 <script>
   import { sortBy } from "../stores";
 
-  let dropdownOpen = false;
+  export let sortDropdownOpen;
+
   let selectedSortText = "po Datumu izlaska";
 
   const dropdownOptionValues = [
@@ -13,7 +14,7 @@
   ];
 
   function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
+    sortDropdownOpen.value = !sortDropdownOpen.value;
   }
 </script>
 
@@ -33,7 +34,7 @@
   <!-- Dropdown options -->
   <div
     class="dropdown-options secondary-color-scheme"
-    style:display={dropdownOpen ? "flex" : "none"}
+    style:display={sortDropdownOpen.value ? "flex" : "none"}
   >
     {#each dropdownOptionValues as sortOption}
       <div
@@ -42,7 +43,7 @@
         on:click={() => {
           $sortBy = sortOption.value;
           selectedSortText = sortOption.text;
-          dropdownOpen = false;
+          sortDropdownOpen.value = false;
         }}
       >
         <p>{sortOption.text}</p>

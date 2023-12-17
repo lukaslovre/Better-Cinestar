@@ -8,7 +8,6 @@
   import PerformanceInfoPopup from "./components/PerformanceInfoPopup.svelte";
 
   import { cinemaOids, selectedDate, sortBy } from "./stores";
-  import PerformanceFilterCard from "./components/performanceFilterCard.svelte";
 
   const origin = window.location.origin; // Za radenje API requesta
   let showPerformanceInfoPopup = false;
@@ -26,22 +25,20 @@
   // Api call
   let moviesPromise = getMovies();
   async function getMovies() {
+    if ($cinemaOids.length === 0) return { noCinemasSelected: true };
+
     const res = await fetch(
       `${origin}/api/movies?cinemaOids=${$cinemaOids.join(
         ","
       )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
     );
-    const data = await res.json();
 
     if (res.ok) {
-      return data;
-    } else {
-      throw new Error(data);
+      return await res.json();
     }
   }
   $: {
     // Zove getMovies() svaki put kad se promjeni neka vrijednost u dropdownu
-    console.log($cinemaOids, $selectedDate, $sortBy);
     moviesPromise = getMovies();
   }
 </script>
@@ -54,8 +51,10 @@
   {#await moviesPromise}
     <Loading />
   {:then movies}
-    {#if movies.length == 0}
+    {#if movies.noCinemasSelected}
       <NoResultsGif />
+    {:else if movies.length == 0}
+      <p style:color="red">Nema filmova na odabrani datum</p>
     {:else}
       <MovieList {movies} on:setPerformanceData={setPerformanceData} />
     {/if}

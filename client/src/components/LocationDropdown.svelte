@@ -1,8 +1,8 @@
 <script>
+  import { cinemaOids } from "../stores";
+
   import { createEventDispatcher } from "svelte";
   const dispatch = createEventDispatcher();
-
-  import { cinemaOids } from "../stores";
 
   const cinemaCities = [
     {
@@ -142,63 +142,47 @@
     },
   ];
 
-  let dropdownLevelOpen = 0;
-  let dropdownLevelTwoOpen = null;
-  $: selectedCinemasForDisplay = $cinemaOids.map((cinemaOid) => {
-    return cinemasData
-      .find((cinema) => cinema.cinemaOid === cinemaOid)
-      .cinemaName.split(" ")[0];
-  });
+  export let locationDropdownOpen;
 
-  function toggleDropdownLevelOne() {
-    if (dropdownLevelOpen === 0) {
-      dropdownLevelOpen = 1;
-    } else {
-      dropdownLevelOpen = 0;
+  $: selectedCinemasForDisplay = $cinemaOids.map(
+    (cinemaOid) =>
+      cinemasData
+        .find((cinema) => cinema.cinemaOid === cinemaOid)
+        .cinemaName.split(" ")[0]
+  );
 
-      // Ako je odabrano vise kina i prvi put su na stranici, pokazati info
+  // Kad se zatvori dropdown, ako je odabrano vise kina i prvi put su na stranici, pokazati help popup
+  $: {
+    if (locationDropdownOpen.level === 0) {
       if ($cinemaOids.length > 1 && !localStorage.getItem("visitedWebsiteBefore")) {
         dispatch("showPerformanceInfoPopup", true);
       }
     }
   }
+
+  function toggleDropdownLevelOne() {
+    locationDropdownOpen.level = locationDropdownOpen.level === 0 ? 1 : 0;
+  }
   function toggleDropdownLevelTwo(city) {
-    if (
-      dropdownLevelOpen === 1 ||
-      (dropdownLevelOpen === 2 && dropdownLevelTwoOpen !== city)
-    ) {
-      dropdownLevelOpen = 2;
-      dropdownLevelTwoOpen = city;
-    } else {
-      dropdownLevelOpen = 1;
+    const shouldOpen =
+      locationDropdownOpen.level === 1 || locationDropdownOpen.selectedCity !== city;
+
+    locationDropdownOpen.level = shouldOpen ? 2 : 1;
+
+    if (shouldOpen) {
+      locationDropdownOpen.selectedCity = city;
     }
   }
   function toggleCinemaSelection(cinemaOid) {
-    if ($cinemaOids.includes(cinemaOid)) {
-      $cinemaOids = $cinemaOids.filter((cinema) => cinema !== cinemaOid);
-    } else {
-      $cinemaOids = [...$cinemaOids, cinemaOid];
-    }
+    const cinemaAlreadySelected = $cinemaOids.includes(cinemaOid);
+
+    $cinemaOids = cinemaAlreadySelected
+      ? $cinemaOids.filter((cinema) => cinema !== cinemaOid)
+      : [...$cinemaOids, cinemaOid];
   }
   function checkIfSuboptionSelected(city, selectedOids) {
-    for (const cinema of city.cinemas) {
-      if (selectedOids.includes(cinema.cinemaOid)) {
-        return true;
-      }
-    }
-    return false;
+    return city.cinemas.some((cinema) => selectedOids.includes(cinema.cinemaOid));
   }
-
-  document.body.addEventListener("click", (e) => {
-    // Ako nije neki element location dropdowna
-    if (!e.target.closest(".primary-color-scheme")) {
-      dropdownLevelOpen = 0;
-      // Ako je odabrano vise kina i prvi put su na stranici, pokazati info
-      if ($cinemaOids.length > 1 && !localStorage.getItem("visitedWebsiteBefore")) {
-        dispatch("showPerformanceInfoPopup", true);
-      }
-    }
-  });
 </script>
 
 <div class="input-container">
@@ -211,8 +195,8 @@
   <!-- Dropdown element -->
   <div
     class="dropdown-element primary-color-scheme"
-    class:fadeout-1-input={dropdownLevelOpen === 1}
-    class:fadeout-2-input={dropdownLevelOpen === 2}
+    class:fadeout-1-input={locationDropdownOpen.level === 1}
+    class:fadeout-2-input={locationDropdownOpen.level === 2}
     on:click={toggleDropdownLevelOne}
   >
     <p class="selectedValue">{selectedCinemasForDisplay.join(", ") || "Odaberi kino"}</p>
@@ -235,8 +219,8 @@
   <div class="dropdown-options-container">
     <div
       class="dropdown-options primary-color-scheme"
-      class:fadeout-1-input={dropdownLevelOpen === 2}
-      style:display={dropdownLevelOpen >= 1 ? "flex" : "none"}
+      class:fadeout-1-input={locationDropdownOpen.level === 2}
+      style:display={locationDropdownOpen.level >= 1 ? "flex" : "none"}
     >
       {#each cinemaCities as city}
         {#if city.cinemas.length > 1}
@@ -276,7 +260,7 @@
           >
             <div class="checkbox">
               <img
-                src={dropdownLevelOpen === 2
+                src={locationDropdownOpen.level === 2
                   ? "images/check-fadeout1.svg"
                   : "images/check.svg"}
                 alt="check icon"
@@ -293,7 +277,8 @@
       {#if city.cinemas.length > 1}
         <div
           class="dropdown-options primary-color-scheme dropdown-suboptions"
-          style:display={dropdownLevelOpen == 2 && dropdownLevelTwoOpen === city.city
+          style:display={locationDropdownOpen.level == 2 &&
+          locationDropdownOpen.selectedCity === city.city
             ? "flex"
             : "none"}
         >

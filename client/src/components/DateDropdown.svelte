@@ -1,7 +1,8 @@
 <script>
   import { selectedDate } from "../stores";
 
-  let dropdownOpen = false;
+  export let dateDropdownOpen;
+
   let selectedDateText = "Danas";
 
   const date = new Date();
@@ -20,7 +21,7 @@
   dropdownOptionValues.push({ text: "Sve", value: "any" });
 
   function toggleDropdown() {
-    dropdownOpen = !dropdownOpen;
+    dateDropdownOpen.value = !dateDropdownOpen.value;
   }
   function dateToYMDFormat(date) {
     const year = date.getFullYear();
@@ -50,7 +51,7 @@
   <!-- Dropdown options -->
   <div
     class="dropdown-options secondary-color-scheme"
-    style:display={dropdownOpen ? "flex" : "none"}
+    style:display={dateDropdownOpen.value ? "flex" : "none"}
   >
     {#each dropdownOptionValues as dateOption}
       <div
@@ -59,7 +60,7 @@
         on:click={() => {
           $selectedDate = dateOption.value;
           selectedDateText = dateOption.text;
-          dropdownOpen = false;
+          dateDropdownOpen.value = false;
         }}
       >
         <p>{dateOption.text}</p>
