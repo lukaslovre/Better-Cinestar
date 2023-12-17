@@ -1,8 +1,5 @@
 <div id="noResults">
-  <img
-    src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcW1lYmU0bHN5NTJkazNmd3dkbnp3OHhicWJ6M2g5eDVqd281MDYwOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MuAz5ozYsaC7rkRUe2/giphy.gif"
-    alt="giph"
-  />
+  <img src="/images/seinfeld-speechless.gif" alt="gif of seinfeld being speechless" />
   <p>(server upravo sada jer niste odabrali lokaciju kina)</p>
 </div>
 
