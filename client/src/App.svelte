@@ -8,6 +8,7 @@
   import PerformanceInfoPopup from "./components/PerformanceInfoPopup.svelte";
 
   import { cinemaOids, selectedDate, sortBy } from "./stores";
+  import PerformanceFilterCard from "./components/performanceFilterCard.svelte";
 
   const origin = window.location.origin; // Za radenje API requesta
   let showPerformanceInfoPopup = false;
@@ -31,7 +32,7 @@
       )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
     );
     const data = await res.json();
-
+    console.log(data);
     if (res.ok) {
       return data;
     } else {

@@ -1,16 +1,45 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import PerformanceFilterCard from "./performanceFilterCard.svelte";
   const dispatch = createEventDispatcher();
 
   export let movie;
   export let fullscreenedMovieNumber;
 
+  let filteredPerformances = movie.performances;
+  let filterCardVisible = false;
   // events
   function dispatchFullscreenSelection(filmNumber) {
     dispatch("setFullscreen", filmNumber);
   }
   function dispatchPerformanceData(movie, performance) {
     dispatch("setPerformanceData", { movie, performance });
+  }
+
+  // event listener
+  function filterPerformances(event) {
+    const selectedPerformanceFilters = event.detail;
+    console.log(selectedPerformanceFilters);
+    filteredPerformances = movie.performances.filter((performance) => {
+      const isInTimeRange =
+        performance.performanceTime >= selectedPerformanceFilters.timeFrom &&
+        performance.performanceTime <= selectedPerformanceFilters.timeTo;
+
+      const isVideoFeatureSelected =
+        selectedPerformanceFilters.videoFeatures.length === 0 ||
+        selectedPerformanceFilters.videoFeatures.some((feature) =>
+          performance.performanceFeatures.includes(feature)
+        );
+
+      const isAudioFeatureSelected =
+        selectedPerformanceFilters.audioFeatures.length === 0 ||
+        selectedPerformanceFilters.audioFeatures.some((feature) =>
+          performance.performanceFeatures.includes(feature)
+        );
+
+      return isInTimeRange && isVideoFeatureSelected && isAudioFeatureSelected;
+    });
+    console.log(filteredPerformances);
   }
 
   // functions
@@ -33,6 +62,7 @@
   }
   function groupPerformancesByCinema(performances) {
     const groupedPerformances = new Map();
+
     for (const e of performances) {
       const cinema = cinemasData.find((cinema) => cinema.cinemaOid === e.cinemaOid);
       const cinemaName = cinema.cinemaName + " (" + cinema.cinemaCity + ")";
@@ -43,6 +73,9 @@
     }
 
     return groupedPerformances;
+  }
+  function displayFilterCard() {
+    filterCardVisible = !filterCardVisible;
   }
 
   // Ovo negdje drugdje?
@@ -261,7 +294,7 @@
         class="performanceManipulationContainer"
         style:display={movie.filmNumber === fullscreenedMovieNumber ? "flex" : "none"}
       >
-        <div class="performanceFilter">
+        <div class="performanceFilter" on:click={displayFilterCard}>
           <img src="/images/filterPerfomanceIcon.svg" alt="filter icon" />
         </div>
         <div class="performanceDatePicker">
@@ -274,12 +307,21 @@
           </div>
         </div>
       </div>
+
+      <PerformanceFilterCard
+        on:setSelectedPerformanceFilters={filterPerformances}
+        displayComponent={movie.filmNumber === fullscreenedMovieNumber &&
+        filterCardVisible
+          ? "flex"
+          : "none"}
+      />
+
       <!-- Performances fullscreen (odvojena kina) -->
       <div
         class="performanceContainer"
         style:display={movie.filmNumber === fullscreenedMovieNumber ? "flex" : "none"}
       >
-        {#each [...groupPerformancesByCinema(movie.performances)] as [key, value]}
+        {#each [...groupPerformancesByCinema(filteredPerformances)] as [key, value]}
           <div class="performanceslabel">
             {key}
           </div>
@@ -339,7 +381,7 @@
   }
   .movieCard > .movieData {
     width: 50%;
-    padding: 1.25rem;
+    padding: 1rem;
 
     display: flex;
     flex-direction: column;
@@ -351,6 +393,7 @@
   .fullScreenMovieCard > .movieData {
     width: 100%;
     row-gap: 1rem;
+    padding: 1.5rem 0.75rem;
   }
 
   /* mozda ovo limitirat height */
@@ -467,7 +510,7 @@
     display: flex;
     justify-content: space-between;
     column-gap: 1.5rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
 
     color: #e6e6e6;
     font-size: 1rem;
