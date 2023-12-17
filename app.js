@@ -161,7 +161,7 @@ async function updateExternalData() {
 }
 async function getDataOnAppStart() {
   await updateMoviesAndPerformances();
-  // await updateExternalData();
+  await updateExternalData();
 }
 
 // Helper functions
