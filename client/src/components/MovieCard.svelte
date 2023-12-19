@@ -8,6 +8,7 @@
 
   let filteredPerformances = movie.performances;
   let filterCardVisible = false;
+  let activeFiltersCount = 0;
   // events
   function dispatchFullscreenSelection(filmNumber) {
     dispatch("setFullscreen", filmNumber);
@@ -19,6 +20,10 @@
   // event listener
   function filterPerformances(event) {
     const selectedPerformanceFilters = event.detail;
+    console.log(selectedPerformanceFilters);
+    activeFiltersCount = Object.values(selectedPerformanceFilters)
+      .flat()
+      .filter((item) => item !== "00:00" && item !== "24:00").length;
 
     filteredPerformances = movie.performances.filter((performance) => {
       const isInTimeRange =
@@ -191,6 +196,9 @@
     class="moviePoster"
     src={movie.posterUrl || movie.imageUrl}
     alt="{movie.originalTitle} poster"
+    on:click={() => {
+      dispatchFullscreenSelection(movie.filmNumber);
+    }}
   />
 
   <div class="movieData">
@@ -316,6 +324,9 @@
       >
         <div class="performanceFilter" on:click={displayFilterCard}>
           <img src="/images/filterPerfomanceIcon.svg" alt="filter icon" />
+          {#if activeFiltersCount > 0}
+            <div class="activeFiltersCount">{activeFiltersCount}</div>
+          {/if}
         </div>
         <div class="performanceDatePicker">
           <div class="arrowCircle">
@@ -390,6 +401,7 @@
   }
 
   .movieCard > .moviePoster {
+    cursor: pointer;
     width: 50%;
     border-radius: 0.5rem;
     aspect-ratio: 2/3;
@@ -543,6 +555,23 @@
     border-radius: 0.25rem;
     background: #202b46;
     cursor: pointer;
+    position: relative;
+  }
+  .movieCard .performanceManipulationContainer > .performanceFilter .activeFiltersCount {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: #e8c547;
+    color: #05060b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .movieCard > .movieData .performanceManipulationContainer > .performanceDatePicker {
     padding: 0.125rem;
