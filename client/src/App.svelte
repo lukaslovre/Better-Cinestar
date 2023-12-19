@@ -23,14 +23,15 @@
   }
 
   // Api call
-  let moviesPromise = getMovies();
-  async function getMovies() {
-    if ($cinemaOids.length === 0) return { noCinemasSelected: true };
+  let moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
+
+  async function getMovies(cinemaOids, selectedDate, sortBy) {
+    if (cinemaOids.length === 0) return { noCinemasSelected: true };
 
     const res = await fetch(
-      `${origin}/api/movies?cinemaOids=${$cinemaOids.join(
+      `${origin}/api/movies?cinemaOids=${cinemaOids.join(
         ","
-      )}&selectedDate=${$selectedDate}&sortBy=${$sortBy}`
+      )}&selectedDate=${selectedDate}&sortBy=${sortBy}`
     );
 
     if (res.ok) {
@@ -39,7 +40,7 @@
   }
   $: {
     // Zove getMovies() svaki put kad se promjeni neka vrijednost u dropdownu
-    moviesPromise = getMovies();
+    moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
   }
 </script>
 

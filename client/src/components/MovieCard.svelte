@@ -19,7 +19,7 @@
   // event listener
   function filterPerformances(event) {
     const selectedPerformanceFilters = event.detail;
-    console.log(selectedPerformanceFilters);
+
     filteredPerformances = movie.performances.filter((performance) => {
       const isInTimeRange =
         performance.performanceTime >= selectedPerformanceFilters.timeFrom &&
@@ -27,19 +27,39 @@
 
       const isVideoFeatureSelected =
         selectedPerformanceFilters.videoFeatures.length === 0 ||
-        selectedPerformanceFilters.videoFeatures.some((feature) =>
-          performance.performanceFeatures.includes(feature)
+        selectedPerformanceFilters.videoFeatures.some((selectedFeature) =>
+          performance.performanceFeatures.includes(selectedFeature)
         );
+
+      // if roomFeatures equals "BASIC", then check that the performanceFeatures doesn't contain "4DX" or "IMAX" or "GOLD",
+      // if roomFeatures equals something else, then the performanceFeatures must contain that value
+      const isRoomFeatureSelected =
+        selectedPerformanceFilters.roomFeatures.length === 0 ||
+        selectedPerformanceFilters.roomFeatures.some((selectedFeature) => {
+          if (selectedFeature === "BASIC") {
+            return (
+              !performance.performanceFeatures.includes("4DX") &&
+              !performance.performanceFeatures.includes("IMAX") &&
+              !performance.performanceFeatures.includes("GOLD")
+            );
+          } else {
+            return performance.performanceFeatures.includes(selectedFeature);
+          }
+        });
 
       const isAudioFeatureSelected =
         selectedPerformanceFilters.audioFeatures.length === 0 ||
-        selectedPerformanceFilters.audioFeatures.some((feature) =>
-          performance.performanceFeatures.includes(feature)
+        selectedPerformanceFilters.audioFeatures.some((selectedFeature) =>
+          performance.performanceFeatures.includes(selectedFeature)
         );
 
-      return isInTimeRange && isVideoFeatureSelected && isAudioFeatureSelected;
+      return (
+        isInTimeRange &&
+        isVideoFeatureSelected &&
+        isRoomFeatureSelected &&
+        isAudioFeatureSelected
+      );
     });
-    console.log(filteredPerformances);
   }
 
   // functions
@@ -310,6 +330,7 @@
 
       <PerformanceFilterCard
         on:setSelectedPerformanceFilters={filterPerformances}
+        performances={movie.performances}
         displayComponent={movie.filmNumber === fullscreenedMovieNumber &&
         filterCardVisible
           ? "flex"

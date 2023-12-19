@@ -3,14 +3,34 @@
   const dispatch = createEventDispatcher();
 
   export let displayComponent;
+  export let performances;
+
+  const allUniquePerformanceFeatures = performances
+    .map((performance) => performance.performanceFeatures)
+    .flat()
+    .filter((value, index, self) => self.indexOf(value) === index);
+
+  const availablePerformanceFeatures = {
+    videoFeatures: allUniquePerformanceFeatures.filter(
+      (feature) => feature === "2D" || feature === "3D"
+    ),
+    roomFeatures: allUniquePerformanceFeatures.filter(
+      (feature) => feature === "4DX" || feature === "IMAX" || feature === "GOLD"
+    ),
+    audioFeatures: allUniquePerformanceFeatures.filter(
+      (feature) => feature === "TITL" || feature === "SINK" || feature === "OV"
+    ),
+  };
 
   let selectedPerformanceFilters = {
     videoFeatures: [],
     audioFeatures: [],
+    roomFeatures: [],
     timeFrom: "00:00",
     timeTo: "24:00",
   };
 
+  // gets triggered on checkbox click
   function toggleOption(event) {
     const option = event.target.closest(".option");
     if (!option) return;
@@ -31,23 +51,24 @@
     dispatch("setSelectedPerformanceFilters", selectedPerformanceFilters);
   }
 
+  // time input functions
   function selectInputValue(event) {
     const input = event.target;
     input.select();
   }
-  function convertNumbersToTime(event) {
+  function parseInputWhileTyping(event) {
     const input = event.target;
     const inputValue = input.value;
+
+    // check if the user is using the backspace key
+    if (event.inputType === "deleteContentBackward") {
+      return;
+    }
 
     // remove all non-numeric characters from the input value, except for the colon
     const cleanedInputValue = inputValue.replace(/[^\d:]/g, "");
     if (cleanedInputValue !== inputValue) {
       input.value = cleanedInputValue;
-      return;
-    }
-
-    // check if the user is using the backspace key
-    if (event.inputType === "deleteContentBackward") {
       return;
     }
 
@@ -60,14 +81,19 @@
       }
     }
 
-    // allow only 2 digits after the colon
-    if (inputValue.includes(":") && inputValue.split(":")[1].length > 2) {
-      input.value = inputValue.slice(0, -1);
+    // allow only 2 digits before/after the colon
+    if (
+      inputValue.includes(":") &&
+      (inputValue.split(":")[1].length > 2 || inputValue.split(":")[0].length > 2)
+    ) {
+      const hoursMaxTwoDigits = inputValue.split(":")[0].slice(0, 2);
+      const minutesMaxTwoDigits = inputValue.split(":")[1].slice(0, 2);
+
+      input.value = `${hoursMaxTwoDigits}:${minutesMaxTwoDigits}`;
     }
   }
   function checkIfValidTime(event) {
     const input = event.target;
-    const inputValue = input.value;
     const defaultValue = input.id === "performanceTimeFromInput" ? "00:00" : "24:00";
 
     const previousValue =
@@ -76,22 +102,31 @@
       ];
 
     // if the input value is empty, set it to default
-    if (inputValue === "") {
+    if (input.value === "") {
       input.value = defaultValue;
+
+      selectedPerformanceFilters[
+        input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
+      ] = input.value;
+
+      dispatch("setSelectedPerformanceFilters", selectedPerformanceFilters);
+
+      return;
     }
 
     // pad the input value with zeros if it's missing any digits
-    if (inputValue.length === 1) {
-      input.value = `0${inputValue}:00`;
-    } else if (inputValue.length >= 3) {
-      const hours = inputValue.split(":")[0];
-      const minutes = inputValue.split(":")[1];
+    if (input.value.length === 1) {
+      input.value = `0${input.value}:00`;
+    } else if (input.value.length >= 3) {
+      const hours = input.value.split(":")[0];
+      const minutes = input.value.split(":")[1];
       input.value = `${hours.padStart(2, "0")}:${minutes.padEnd(2, "0")}`;
     }
 
     // if the first two digits are larger than 23 or the last two digits are larger than 59,
     // set the input value to previous
-    if (inputValue.split(":")[0] > 23 || inputValue.split(":")[1] > 59) {
+    if (input.value.split(":")[0] > 23 || input.value.split(":")[1] > 59) {
+      console.log("greška", input.value);
       input.value = previousValue;
       return;
     }
@@ -102,31 +137,46 @@
 
     dispatch("setSelectedPerformanceFilters", selectedPerformanceFilters);
   }
+
+  function unfocusInput(event) {
+    if (event.key === "Enter") {
+      const input = event.target;
+      input.blur();
+    }
+  }
 </script>
 
 <div id="performanceFilterCard" on:click={toggleOption} style:display={displayComponent}>
   <div class="column" id="videoFeatures">
     <div class="label">Slika</div>
     <div class="checkboxesColumn">
-      <div class="option">2D</div>
-      <div class="option">3D</div>
-      <div class="option">4DX</div>
-      <div class="option">IMAX</div>
-      <div class="option">GOLD</div>
+      {#each availablePerformanceFeatures.videoFeatures as videoFeature}
+        <div class="option">{videoFeature}</div>
+      {/each}
       <div class="option selected" style="display: none;"></div>
+    </div>
+  </div>
+
+  <div class="column" id="roomFeatures">
+    <div class="label">Dvorana</div>
+    <div class="checkboxesColumn">
+      <div class="option">BASIC</div>
+      {#each availablePerformanceFeatures.roomFeatures as roomFeature}
+        <div class="option">{roomFeature}</div>
+      {/each}
     </div>
   </div>
 
   <div class="column" id="audioFeatures">
     <div class="label">Zvuk</div>
     <div class="checkboxesColumn">
-      <div class="option">TITL</div>
-      <div class="option">SINK</div>
-      <div class="option">OV</div>
+      {#each availablePerformanceFeatures.audioFeatures as audioFeature}
+        <div class="option">{audioFeature}</div>
+      {/each}
     </div>
   </div>
 
-  <div class="column" style="overflow-x: scroll;">
+  <div class="column">
     <div class="label">Vrijeme</div>
     <div class="inputsColumn">
       <div class="inputContainer">
@@ -135,7 +185,8 @@
           type="text"
           id="performanceTimeFromInput"
           on:focus={selectInputValue}
-          on:input={convertNumbersToTime}
+          on:input={parseInputWhileTyping}
+          on:keydown={unfocusInput}
           on:blur={checkIfValidTime}
           value="00:00"
           inputmode="numeric"
@@ -147,7 +198,8 @@
           type="text"
           id="performanceTimeToInput"
           on:focus={selectInputValue}
-          on:input={convertNumbersToTime}
+          on:input={parseInputWhileTyping}
+          on:keydown={unfocusInput}
           on:blur={checkIfValidTime}
           value="24:00"
           inputmode="numeric"
@@ -161,8 +213,9 @@
   #performanceFilterCard {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
-    column-gap: 0.5rem;
+    gap: 1rem;
     align-items: flex-start;
     padding: 1rem;
     border-radius: 0.25rem;
