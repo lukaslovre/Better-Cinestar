@@ -20,7 +20,7 @@
   // event listener
   function filterPerformances(event) {
     const selectedPerformanceFilters = event.detail;
-    console.log(selectedPerformanceFilters);
+
     activeFiltersCount = Object.values(selectedPerformanceFilters)
       .flat()
       .filter((item) => item !== "00:00" && item !== "24:00").length;
@@ -341,7 +341,7 @@
 
       <PerformanceFilterCard
         on:setSelectedPerformanceFilters={filterPerformances}
-        performances={movie.performances}
+        performances={filteredPerformances}
         displayComponent={movie.filmNumber === fullscreenedMovieNumber &&
         filterCardVisible
           ? "flex"

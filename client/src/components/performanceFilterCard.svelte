@@ -5,24 +5,7 @@
   export let displayComponent;
   export let performances;
 
-  const allUniquePerformanceFeatures = performances
-    .map((performance) => performance.performanceFeatures)
-    .flat()
-    .filter((value, index, self) => self.indexOf(value) === index);
-
-  const availablePerformanceFeatures = {
-    videoFeatures: allUniquePerformanceFeatures.filter(
-      (feature) => feature === "2D" || feature === "3D"
-    ),
-    roomFeatures: allUniquePerformanceFeatures.filter(
-      (feature) => feature === "4DX" || feature === "IMAX" || feature === "GOLD"
-    ),
-    audioFeatures: allUniquePerformanceFeatures.filter(
-      (feature) => feature === "TITL" || feature === "SINK" || feature === "OV"
-    ),
-  };
-
-  let selectedPerformanceFilters = {
+  const selectedPerformanceFilters = {
     videoFeatures: [],
     audioFeatures: [],
     roomFeatures: [],
@@ -30,10 +13,89 @@
     timeTo: "24:00",
   };
 
+  const unfilteredAvailablePerformanceFeatures =
+    getGroupedPerformanceFeaturesFrom(performances);
+
+  $: availablePerformanceFeatures = getFilteredPerformanceFeaturesForDisplay(
+    performances,
+    selectedPerformanceFilters
+  );
+
+  function getUniquePerformanceFeaturesFrom(performances) {
+    return (
+      performances
+        .map((performance) => performance.performanceFeatures)
+        // check for every performanceFeatures array if it contains IMAX, 4DX or GOLD, if not push BASIC to the array
+        .map((performanceFeatures) => {
+          if (
+            !performanceFeatures.includes("IMAX") &&
+            !performanceFeatures.includes("4DX") &&
+            !performanceFeatures.includes("GOLD")
+          ) {
+            return [...performanceFeatures, "BASIC"];
+          } else {
+            return performanceFeatures;
+          }
+        })
+        .flat()
+        .filter((value, index, self) => self.indexOf(value) === index)
+    );
+  }
+
+  function getGroupedPerformanceFeaturesFrom(performances) {
+    const uniquePerformanceFeatures = getUniquePerformanceFeaturesFrom(performances);
+
+    const groupedPerformanceFeatures = {
+      videoFeatures: uniquePerformanceFeatures.filter(
+        (feature) => feature === "2D" || feature === "3D"
+      ),
+      roomFeatures: uniquePerformanceFeatures.filter(
+        (feature) =>
+          feature === "4DX" ||
+          feature === "IMAX" ||
+          feature === "GOLD" ||
+          feature === "BASIC"
+      ),
+      audioFeatures: uniquePerformanceFeatures.filter(
+        (feature) => feature === "TITL" || feature === "SINK" || feature === "OV"
+      ),
+    };
+
+    // sort the features alphabetically
+    Object.keys(groupedPerformanceFeatures).forEach((featureType) => {
+      groupedPerformanceFeatures[featureType].sort((a, b) => a.localeCompare(b));
+    });
+
+    return groupedPerformanceFeatures;
+  }
+
+  function getFilteredPerformanceFeaturesForDisplay(
+    performances,
+    selectedPerformanceFilters
+  ) {
+    const groupedPerformanceFeatures = getGroupedPerformanceFeaturesFrom(performances);
+
+    if (!selectedPerformanceFilters) return groupedPerformanceFeatures;
+
+    // Ako je odabran neki stupac, onda se prikazuju svi checkboxovi iz tog stupca
+    // ( Da se moze vise odjednom odabrati )
+    Object.keys(groupedPerformanceFeatures).forEach((featureType) => {
+      if (selectedPerformanceFilters[featureType].length > 0) {
+        groupedPerformanceFeatures[featureType] = [
+          ...unfilteredAvailablePerformanceFeatures[featureType],
+        ];
+      }
+    });
+
+    return groupedPerformanceFeatures;
+  }
+
   // gets triggered on checkbox click
   function toggleOption(event) {
     const option = event.target.closest(".option");
     if (!option) return;
+
+    if (option.classList.contains("disabled")) return;
 
     const optionText = option.innerText;
     const featureType = option.closest(".column").id;
@@ -150,8 +212,12 @@
   <div class="column" id="videoFeatures">
     <div class="label">Slika</div>
     <div class="checkboxesColumn">
-      {#each availablePerformanceFeatures.videoFeatures as videoFeature}
-        <div class="option">{videoFeature}</div>
+      {#each unfilteredAvailablePerformanceFeatures.videoFeatures as videoFeature}
+        {#if availablePerformanceFeatures.videoFeatures.includes(videoFeature)}
+          <div class="option">{videoFeature}</div>
+        {:else}
+          <div class="option disabled">{videoFeature}</div>
+        {/if}
       {/each}
       <div class="option selected" style="display: none;"></div>
     </div>
@@ -160,9 +226,12 @@
   <div class="column" id="roomFeatures">
     <div class="label">Dvorana</div>
     <div class="checkboxesColumn">
-      <div class="option">BASIC</div>
-      {#each availablePerformanceFeatures.roomFeatures as roomFeature}
-        <div class="option">{roomFeature}</div>
+      {#each unfilteredAvailablePerformanceFeatures.roomFeatures as roomFeature}
+        {#if availablePerformanceFeatures.roomFeatures.includes(roomFeature)}
+          <div class="option">{roomFeature}</div>
+        {:else}
+          <div class="option disabled">{roomFeature}</div>
+        {/if}
       {/each}
     </div>
   </div>
@@ -170,8 +239,12 @@
   <div class="column" id="audioFeatures">
     <div class="label">Zvuk</div>
     <div class="checkboxesColumn">
-      {#each availablePerformanceFeatures.audioFeatures as audioFeature}
-        <div class="option">{audioFeature}</div>
+      {#each unfilteredAvailablePerformanceFeatures.audioFeatures as audioFeature}
+        {#if availablePerformanceFeatures.audioFeatures.includes(audioFeature)}
+          <div class="option">{audioFeature}</div>
+        {:else}
+          <div class="option disabled">{audioFeature}</div>
+        {/if}
       {/each}
     </div>
   </div>
@@ -255,6 +328,10 @@
   #performanceFilterCard .column .checkboxesColumn .option.selected {
     color: #e8c547;
   }
+  #performanceFilterCard .column .checkboxesColumn .option.disabled {
+    color: hsl(222, 10%, 40%);
+  }
+
   #performanceFilterCard .column .checkboxesColumn .option::before {
     content: "";
     display: inline-block;
