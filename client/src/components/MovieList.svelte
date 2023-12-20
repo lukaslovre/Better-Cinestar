@@ -4,15 +4,10 @@
   export let movies;
 
   let fullscreenedMovieNumber = 0;
-  let screenPositionOnMovieCardClick = 0;
   let selectedCardSize = {
     normal: 0,
     fullscreen: 0,
   };
-
-  $: {
-    console.log(selectedCardSize);
-  }
 
   function setFullscreen(event) {
     const filmNumber = event.detail.filmNumber;
