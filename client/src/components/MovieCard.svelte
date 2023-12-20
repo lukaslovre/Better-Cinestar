@@ -16,6 +16,13 @@
   function dispatchPerformanceData(movie, performance) {
     dispatch("setPerformanceData", { movie, performance });
   }
+  function fullscreenCurrentMovie(e) {
+    console.log(e);
+    dispatch("setFullscreen", {
+      filmNumber: movie.filmNumber,
+      movieCard: e.target.closest(".movieCard"),
+    });
+  }
 
   // event listener
   function filterPerformances(event) {
@@ -190,15 +197,14 @@
 
 <div
   class="movieCard"
+  id="movieCard-{movie.filmNumber}"
   class:fullScreenMovieCard={movie.filmNumber === fullscreenedMovieNumber}
 >
   <img
     class="moviePoster"
     src={movie.posterUrl || movie.imageUrl}
     alt="{movie.originalTitle} poster"
-    on:click={() => {
-      dispatchFullscreenSelection(movie.filmNumber);
-    }}
+    on:click={fullscreenCurrentMovie}
   />
 
   <div class="movieData">
@@ -380,9 +386,7 @@
       <img
         src="/images/fullscreen.svg"
         alt="fullscreen"
-        on:click={() => {
-          dispatchFullscreenSelection(movie.filmNumber);
-        }}
+        on:click={fullscreenCurrentMovie}
       />
     </div>
   </div>
