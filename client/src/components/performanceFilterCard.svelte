@@ -1,9 +1,17 @@
 <script>
   import { createEventDispatcher } from "svelte";
+
+  import {
+    filterPerformances,
+    getGroupedPerformanceFeaturesFrom,
+    getPossibleFeaturesWithAppliedFilters,
+    countFeatureOccurences,
+  } from "../utils/utils.js";
+
   const dispatch = createEventDispatcher();
 
-  export let displayComponent;
-  export let performances;
+  export let displayComponent; // flex/none
+  export let performances; // array of performances
 
   const selectedPerformanceFilters = {
     videoFeatures: [],
@@ -13,81 +21,42 @@
     timeTo: "24:00",
   };
 
-  const unfilteredAvailablePerformanceFeatures =
-    getGroupedPerformanceFeaturesFrom(performances);
+  const availableFeatures = getGroupedPerformanceFeaturesFrom(performances);
 
-  $: availablePerformanceFeatures = getFilteredPerformanceFeaturesForDisplay(
-    performances,
-    selectedPerformanceFilters
-  );
+  let possibleFeatures = getGroupedPerformanceFeaturesFrom(performances);
+  let featureOccurenceCounts = getAllFeatureOccurenceCounts();
 
-  function getUniquePerformanceFeaturesFrom(performances) {
-    return (
-      performances
-        .map((performance) => performance.performanceFeatures)
-        // check for every performanceFeatures array if it contains IMAX, 4DX or GOLD, if not push BASIC to the array
-        .map((performanceFeatures) => {
-          if (
-            !performanceFeatures.includes("IMAX") &&
-            !performanceFeatures.includes("4DX") &&
-            !performanceFeatures.includes("GOLD")
-          ) {
-            return [...performanceFeatures, "BASIC"];
-          } else {
-            return performanceFeatures;
-          }
-        })
-        .flat()
-        .filter((value, index, self) => self.indexOf(value) === index)
+  function dispatchPerformanceFilterChange() {
+    possibleFeatures = getPossibleFeaturesWithAppliedFilters(
+      performances,
+      selectedPerformanceFilters
     );
+
+    featureOccurenceCounts = getAllFeatureOccurenceCounts();
+
+    console.log(possibleFeatures, selectedPerformanceFilters);
+
+    dispatch("performanceFilterChange", selectedPerformanceFilters);
   }
 
-  function getGroupedPerformanceFeaturesFrom(performances) {
-    const uniquePerformanceFeatures = getUniquePerformanceFeaturesFrom(performances);
+  function getAllFeatureOccurenceCounts() {
+    const featureOccurenceCounts = {};
 
-    const groupedPerformanceFeatures = {
-      videoFeatures: uniquePerformanceFeatures.filter(
-        (feature) => feature === "2D" || feature === "3D"
-      ),
-      roomFeatures: uniquePerformanceFeatures.filter(
-        (feature) =>
-          feature === "4DX" ||
-          feature === "IMAX" ||
-          feature === "GOLD" ||
-          feature === "BASIC"
-      ),
-      audioFeatures: uniquePerformanceFeatures.filter(
-        (feature) => feature === "TITL" || feature === "SINK" || feature === "OV"
-      ),
-    };
+    const filteredPerformances = filterPerformances(
+      performances,
+      selectedPerformanceFilters
+    );
 
-    // sort the features alphabetically
-    Object.keys(groupedPerformanceFeatures).forEach((featureType) => {
-      groupedPerformanceFeatures[featureType].sort((a, b) => a.localeCompare(b));
-    });
+    Object.values(possibleFeatures)
+      .flat()
+      .forEach((feature) => {
+        featureOccurenceCounts[feature] = countFeatureOccurences(
+          filteredPerformances,
+          feature
+        );
+      });
 
-    return groupedPerformanceFeatures;
-  }
-
-  function getFilteredPerformanceFeaturesForDisplay(
-    performances,
-    selectedPerformanceFilters
-  ) {
-    const groupedPerformanceFeatures = getGroupedPerformanceFeaturesFrom(performances);
-
-    if (!selectedPerformanceFilters) return groupedPerformanceFeatures;
-
-    // Ako je odabran neki stupac, onda se prikazuju svi checkboxovi iz tog stupca
-    // ( Da se moze vise odjednom odabrati )
-    Object.keys(groupedPerformanceFeatures).forEach((featureType) => {
-      if (selectedPerformanceFilters[featureType].length > 0) {
-        groupedPerformanceFeatures[featureType] = [
-          ...unfilteredAvailablePerformanceFeatures[featureType],
-        ];
-      }
-    });
-
-    return groupedPerformanceFeatures;
+    return featureOccurenceCounts;
   }
 
   // gets triggered on checkbox click
@@ -97,7 +66,7 @@
 
     if (option.classList.contains("disabled")) return;
 
-    const optionText = option.innerText;
+    const optionText = option.innerText.split("(")[0].trim();
     const featureType = option.closest(".column").id;
 
     if (option.classList.contains("selected")) {
@@ -110,7 +79,7 @@
       selectedPerformanceFilters[featureType].push(optionText);
     }
 
-    dispatch("setSelectedPerformanceFilters", selectedPerformanceFilters);
+    dispatchPerformanceFilterChange();
   }
 
   // time input functions
@@ -171,7 +140,7 @@
         input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
       ] = input.value;
 
-      dispatch("setSelectedPerformanceFilters", selectedPerformanceFilters);
+      dispatchPerformanceFilterChange();
 
       return;
     }
@@ -197,9 +166,8 @@
       input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
     ] = input.value;
 
-    dispatch("setSelectedPerformanceFilters", selectedPerformanceFilters);
+    dispatchPerformanceFilterChange();
   }
-
   function unfocusInput(event) {
     if (event.key === "Enter") {
       const input = event.target;
@@ -212,11 +180,13 @@
   <div class="column" id="videoFeatures">
     <div class="label">Slika</div>
     <div class="checkboxesColumn">
-      {#each unfilteredAvailablePerformanceFeatures.videoFeatures as videoFeature}
-        {#if availablePerformanceFeatures.videoFeatures.includes(videoFeature)}
-          <div class="option">{videoFeature}</div>
+      {#each availableFeatures.videoFeatures as videoFeature}
+        {#if possibleFeatures.videoFeatures.includes(videoFeature)}
+          <div class="option">
+            {videoFeature} ({featureOccurenceCounts[videoFeature]})
+          </div>
         {:else}
-          <div class="option disabled">{videoFeature}</div>
+          <div class="option disabled">{videoFeature} (0)</div>
         {/if}
       {/each}
       <div class="option selected" style="display: none;"></div>
@@ -226,11 +196,11 @@
   <div class="column" id="roomFeatures">
     <div class="label">Dvorana</div>
     <div class="checkboxesColumn">
-      {#each unfilteredAvailablePerformanceFeatures.roomFeatures as roomFeature}
-        {#if availablePerformanceFeatures.roomFeatures.includes(roomFeature)}
-          <div class="option">{roomFeature}</div>
+      {#each availableFeatures.roomFeatures as roomFeature}
+        {#if possibleFeatures.roomFeatures.includes(roomFeature)}
+          <div class="option">{roomFeature} ({featureOccurenceCounts[roomFeature]})</div>
         {:else}
-          <div class="option disabled">{roomFeature}</div>
+          <div class="option disabled">{roomFeature} (0)</div>
         {/if}
       {/each}
     </div>
@@ -239,11 +209,13 @@
   <div class="column" id="audioFeatures">
     <div class="label">Zvuk</div>
     <div class="checkboxesColumn">
-      {#each unfilteredAvailablePerformanceFeatures.audioFeatures as audioFeature}
-        {#if availablePerformanceFeatures.audioFeatures.includes(audioFeature)}
-          <div class="option">{audioFeature}</div>
+      {#each availableFeatures.audioFeatures as audioFeature}
+        {#if possibleFeatures.audioFeatures.includes(audioFeature)}
+          <div class="option">
+            {audioFeature} ({featureOccurenceCounts[audioFeature]})
+          </div>
         {:else}
-          <div class="option disabled">{audioFeature}</div>
+          <div class="option disabled">{audioFeature} (0)</div>
         {/if}
       {/each}
     </div>

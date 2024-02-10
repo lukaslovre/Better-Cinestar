@@ -1,5 +1,16 @@
+<script>
+  function toggleCardDesign() {
+    const movieCardDesign = localStorage.getItem("movieCardDesign");
+    if (movieCardDesign === "v1") {
+      localStorage.setItem("movieCardDesign", "v2");
+    } else {
+      localStorage.setItem("movieCardDesign", "v1");
+    }
+  }
+</script>
+
 <nav>
-  <img src="/images/logo.png" alt="Better CineStar logo" />
+  <img src="/images/logo.png" alt="Better CineStar logo" on:click={toggleCardDesign} />
   <div class="hamburger">
     <div class="line"></div>
     <div class="line"></div>
@@ -13,7 +24,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #262b36;
+    background: #273454;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
     margin-bottom: 3rem;
   }

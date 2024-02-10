@@ -10,16 +10,15 @@
   import { cinemaOids, selectedDate, sortBy } from "./stores";
 
   const origin = window.location.origin; // Za radenje API requesta
-  let showPerformanceInfoPopup = false;
-  let performanceData = null;
+  let showTooltipPopup = false;
+  let openedPerformance = null;
 
   // Event catcheri
-
-  function setPerformanceData(event) {
-    performanceData = event.detail;
+  function setOpenedPerformance(event) {
+    openedPerformance = event.detail;
   }
-  function setShowPerformanceInfoPopup(event) {
-    showPerformanceInfoPopup = event.detail;
+  function setShowTooltipPopup(event) {
+    showTooltipPopup = event.detail;
   }
 
   // Api call
@@ -47,7 +46,7 @@
 <Navigation />
 
 <div id="content">
-  <Dropdowns on:showPerformanceInfoPopup={setShowPerformanceInfoPopup} />
+  <Dropdowns on:showPerformanceInfoPopup={setShowTooltipPopup} />
 
   {#await moviesPromise}
     <Loading />
@@ -57,18 +56,21 @@
     {:else if movies.length == 0}
       <p style:color="red">Nema filmova na odabrani datum</p>
     {:else}
-      <MovieList {movies} on:setPerformanceData={setPerformanceData} />
+      <MovieList {movies} on:selectedPerformance={setOpenedPerformance} />
     {/if}
   {/await}
 </div>
 
 <!-- Popup prozori -->
-{#if performanceData}
-  <PerformanceSeats {performanceData} on:setPerformanceData={setPerformanceData} />
+{#if openedPerformance}
+  <PerformanceSeats
+    performanceData={openedPerformance}
+    on:selectedPerformance={setOpenedPerformance}
+  />
 {/if}
 
-{#if showPerformanceInfoPopup}
-  <PerformanceInfoPopup on:showPerformanceInfoPopup={setShowPerformanceInfoPopup} />
+{#if showTooltipPopup}
+  <PerformanceInfoPopup on:showPerformanceInfoPopup={setShowTooltipPopup} />
 {/if}
 
 <style>

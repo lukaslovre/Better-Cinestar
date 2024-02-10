@@ -1,5 +1,5 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="material-symbols:fullscreen">
-<path id="Vector" d="M5 19V14H7V17H10V19H5ZM5 10V5H10V7H7V10H5ZM14 19V17H17V14H19V19H14ZM17 10V7H14V5H19V10H17Z" fill="#BFBFBF"/>
+<path id="Vector" d="M5 19.7879V14.7879H7V17.7879H10V19.7879H5ZM5 10.7879V5.78787H10V7.78787H7V10.7879H5ZM14 19.7879V17.7879H17V14.7879H19V19.7879H14ZM17 10.7879V7.78787H14V5.78787H19V10.7879H17Z" fill="white"/>
 </g>
 </svg>

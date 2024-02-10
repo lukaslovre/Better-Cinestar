@@ -103,7 +103,7 @@
     return time + ", " + formattedDate;
   }
   function closeSeats() {
-    dispatch("setPerformanceData", null);
+    dispatch("selectedPerformance", null);
   }
   function getAverageSeatDistance(seats) {
     let distances = [];
@@ -236,6 +236,7 @@
 
 <style>
   .backdrop {
+    z-index: 1;
     position: fixed;
     top: 0;
     left: 0;

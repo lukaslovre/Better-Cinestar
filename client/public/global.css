@@ -10,40 +10,41 @@ a {
   text-decoration: none;
 }
 body {
-  background-color: #0e131f;
+  background-color: #202b46;
   max-width: 30rem;
   margin: auto;
 }
 .primary-color-scheme {
-  background-color: #454954;
-  color: #c7cad1;
+  background-color: #4065bf;
+  color: #fff;
 }
 .primary-color-scheme .checkbox {
-  border-color: #5c6270;
+  border-color: #e6e6e6;
 }
 .primary-color-scheme .stroke > path {
-  stroke: #c7cad1;
+  stroke: #fff;
 }
 .primary-color-scheme .fill > path {
-  fill: #c7cad1;
+  fill: #fff;
 }
 
 .secondary-color-scheme {
-  background-color: #1d2435;
-  color: #abafba;
+  background-color: #5c6270;
+  color: #fff;
 }
 .secondary-color-scheme .stroke > path {
-  stroke: #abafba;
+  stroke: #fff;
 }
 .secondary-color-scheme .fill > path {
-  fill: #abafba;
+  fill: #fff;
 }
 
 .fadeout-1-input {
-  background-color: #292f3d;
-  color: #5c6270;
+  /* background-color: #292f3d;
+  color: #5c6270; */
+  opacity: 0.25;
 }
-.fadeout-1-input .checkbox {
+/* .fadeout-1-input .checkbox {
   border-color: #5c6270;
 }
 .fadeout-1-input .stroke > path {
@@ -51,18 +52,19 @@ body {
 }
 .fadeout-1-input .fill > path {
   fill: #5c6270;
-}
+} */
 
 .fadeout-2-input {
-  background-color: #141926;
-  color: #212633;
+  /* background-color: #141926;
+  color: #212633; */
+  opacity: 0.125;
 }
-.fadeout-2-input .stroke > path {
+/* .fadeout-2-input .stroke > path {
   stroke: #212633;
 }
 .fadeout-2-input .fill > path {
   fill: #212633;
-}
+} */
 
 .input-container {
   display: flex;
@@ -77,7 +79,7 @@ body {
 }
 .input-container .label .label-text {
   font-size: 0.6875rem;
-  color: #767d8f;
+  color: #9da2af;
 }
 .input-container .dropdown-element {
   padding: 0.75rem;
@@ -88,7 +90,7 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 0.875rem;
-  transition: all 350ms ease-out;
+  transition: all 200ms ease-out;
 }
 .input-container .dropdown-options-container {
   display: flex;
@@ -103,6 +105,7 @@ body {
   padding: 0.75rem;
   border-radius: 0.25rem;
   font-size: 1rem;
+  transition: all 200ms ease-out;
 }
 .input-container .dropdown-suboptions {
   /* flex-shrink: 1; */
@@ -131,6 +134,9 @@ body {
 .input-container .dropdown-options .selected .checkbox {
   background-color: #e8c547;
 }
+.input-container .dropdown-options .selected .checkbox img {
+  visibility: visible;
+}
 
 .input-container .dropdown-options .checkbox {
   display: flex;
@@ -141,4 +147,13 @@ body {
 }
 .input-container .dropdown-options .checkbox img {
   width: 0.75rem;
+  visibility: hidden;
+}
+
+.button {
+  background: #2057df;
+  color: #fff;
+}
+button {
+  border: none;
 }

@@ -1,288 +1,197 @@
+const RUN_WITHOUT_FETCHING_MOVIES = true;
+
 const path = require("path");
 const express = require("express");
 const app = express();
 const port = 3000;
-// const fs = require("fs");
 const cors = require("cors");
 
-app.use(cors());
-app.use(express.static(path.join(__dirname, "client/public")));
+const { saveMoviesToDatabase, savePerformancesToDatabase } = require("./db.js");
 
-const { getCinemaMoviesAndPerformances, getSeating } = require("./cinestarFunctions.js");
+const { fetchMoviesAndPerformances } = require("./scraping/cinestarFunctions.js");
 const {
   fillMoviesWithLetterboxdData,
   fillMoviesWithImdbData,
-  getPortraitUrlFromActorProfile,
-} = require("./scraperFunctions.js");
+} = require("./scraping/imdbAndLetterboxdFunctions.js");
 
-const cinemas = [
-  {
-    cinemaOid: "10000000014OCPXCOG",
-    cinemaName: "Branimir mingle mall",
-    cinemaCity: "Zagreb",
-  },
-  {
-    cinemaOid: "20000000014FEPADHG",
-    cinemaName: "Avenue mall",
-    cinemaCity: "Zagreb",
-  },
-  {
-    cinemaOid: "37000000014FEPADHG",
-    cinemaName: "Arena centar",
-    cinemaCity: "Zagreb",
-  },
-  {
-    cinemaOid: "B7000000014FEPADHG",
-    cinemaName: "Z centar",
-    cinemaCity: "Zagreb",
-  },
-  {
-    cinemaOid: "87000000014FEPADHG",
-    cinemaName: "Kaptol boutique",
-    cinemaCity: "Zagreb",
-  },
-  {
-    cinemaOid: "57000000014FEPADHG",
-    cinemaName: "Dvori lapad",
-    cinemaCity: "Dubrovnik",
-  },
-  {
-    cinemaOid: "27000000014FEPADHG",
-    cinemaName: "Portanova centar",
-    cinemaCity: "Osijek",
-  },
-  {
-    cinemaOid: "A7000000014FEPADHG",
-    cinemaName: "Max city",
-    cinemaCity: "Pula",
-  },
-  {
-    cinemaOid: "40000000014FEPADHG",
-    cinemaName: "Tower centar",
-    cinemaCity: "Rijeka",
-  },
-  {
-    cinemaOid: "67000000014FEPADHG",
-    cinemaName: "City colosseum",
-    cinemaCity: "Slavonski Brod",
-  },
-  {
-    cinemaOid: "17000000014FEPADHG",
-    cinemaName: "Joker centar",
-    cinemaCity: "Split",
-  },
-  {
-    cinemaOid: "97000000014FEPADHG",
-    cinemaName: "Mall of split",
-    cinemaCity: "Split",
-  },
-  {
-    cinemaOid: "47000000014FEPADHG",
-    cinemaName: "Lumini centar",
-    cinemaCity: "Varaždin",
-  },
-  {
-    cinemaOid: "77000000014FEPADHG",
-    cinemaName: "K centar golubica",
-    cinemaCity: "Vukovar",
-  },
-  {
-    cinemaOid: "D4000000014FEPADHG",
-    cinemaName: "City galleria",
-    cinemaCity: "Zadar",
-  },
-  {
-    cinemaOid: "07000000014FEPADHG",
-    cinemaName: "Dalmare centar",
-    cinemaCity: "Šibenik",
-  },
-];
-let movies = [];
-let performances = [];
-// let movies = JSON.parse(fs.readFileSync("./data/movies.json"));
-// let performances = JSON.parse(fs.readFileSync("./data/performances.json"));
+const { getFormattedMovies } = require("./serving/index.js");
 
-app.get("/api/movies", (req, res) => {
-  console.log(req.query);
-  const { cinemaOids, selectedDate, sortBy } = req.query;
+app.use(cors());
 
-  if (movies.length === 0 || performances.length === 0) {
-    res.send([]);
+app.get("/api/movies", async (req, res) => {
+  const { cinemaOids, date, sortBy } = req.query;
+  console.log(cinemaOids, date, sortBy);
+
+  // if any of the parameters is missing, return an error
+  if (!cinemaOids || !date || !sortBy) {
+    res.status(400).send("Missing parameters");
     return;
   }
 
-  const formattedMovies = formatDataForFrontend(
-    cinemaOids.split(","),
-    selectedDate,
-    sortBy
-  );
+  // transform cinemaOids to array
+  const cinemaOidsArray = Array.isArray(cinemaOids) ? cinemaOids : [cinemaOids];
+
+  // check that parameters are of expected type
+  // cinemaOids: string[]
+  // date: string
+  // sortBy: string
+  if (Array.isArray(date) || Array.isArray(sortBy)) {
+    res.status(400).send("Invalid parameters");
+    return;
+  }
+
+  if (
+    cinemaOidsArray.every((cinemaOid) => cinemaOid.length !== 18) ||
+    date.length !== 10
+  ) {
+    res.status(400).send("Invalid parameters");
+    return;
+  }
+
+  // Movies matching the filters
+  // and with performances added to them
+  const formattedMovies = await getFormattedMovies(cinemaOidsArray, date, sortBy);
+
   res.send(formattedMovies);
 });
+
 app.get("/api/seating", async (req, res) => {
   console.log(req.query);
   const { cinemaOid, performanceId } = req.query;
   res.send(await getSeating(cinemaOid, performanceId));
 });
-app.get("/getMovies", async (req, res) => {
-  res.send("Dohvacanje filmova i performance-a sa CineStar-a.");
-  await updateMoviesAndPerformances();
-  updateExternalData();
-});
+// app.get("/getMovies", async (req, res) => {
+//   res.send("Dohvacanje filmova i performance-a sa CineStar-a.");
+//   await updateMoviesAndPerformances();
+//   updateExternalData();
+// });
+
+app.use(express.static(path.join(__dirname, "client/public")));
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-getDataOnAppStart();
+const cinemas = getCinemas(); //.slice(0, 2);
 
-async function updateMoviesAndPerformances() {
-  console.log("Dohvacanje filmova i performance-a sa CineStar-a.");
-  const tempMovies = [];
-  const tempPerformances = [];
+let movies = [];
+let performances = [];
 
-  for (const cinema of cinemas) {
-    const { moviesFormatted, performancesFormatted } =
-      await getCinemaMoviesAndPerformances(cinema);
-    tempMovies.push(...moviesFormatted);
-    tempPerformances.push(...performancesFormatted);
-  }
-
-  movies = tempMovies.filter(uniqueMovies);
-  performances = tempPerformances;
-
-  console.log(
-    "Pronadeno " + movies.length + " filmova (" + performances.length + " performances)."
-  );
+if (!RUN_WITHOUT_FETCHING_MOVIES) {
+  getDataOnAppStart();
 }
-async function updateExternalData() {
-  movies = await fillMoviesWithLetterboxdData(movies);
-  movies = await fillMoviesWithImdbData(movies);
 
-  console.log("Gotovo popunjavanje sa eksternim podacima");
-}
 async function getDataOnAppStart() {
   await updateMoviesAndPerformances();
-  await updateExternalData();
+  await enrichMoviesWithExternalData();
+
+  await saveMoviesToDatabase(movies);
+  await savePerformancesToDatabase(performances);
+}
+
+async function updateMoviesAndPerformances() {
+  console.log("Fetching movies and performances from CineStar.");
+
+  const { moviesFormatted, performancesFormatted } = await fetchMoviesAndPerformances(
+    cinemas
+  );
+
+  movies = moviesFormatted;
+  performances = performancesFormatted;
+
+  console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
+}
+async function enrichMoviesWithExternalData() {
+  movies = await fillMoviesWithLetterboxdData(movies);
+  console.log("\nFinished enriching with Letterboxd data\n");
+
+  movies = await fillMoviesWithImdbData(movies);
+  console.log("\nFinished enriching with IMDb data\n");
 }
 
 // Helper functions
-function dateToYYYYMMDD(date) {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-function uniqueMovies(value, index, array) {
-  for (let i = 0; i < array.length; i++) {
-    if (value.filmNumber === array[i].filmNumber) {
-      return index === i;
-    }
-  }
-}
-function formatDataForFrontend(cinemaOids, selectedDate, sortBy) {
-  const anyDate = selectedDate == "any";
-  const today = new Date();
-  const todayString = dateToYYYYMMDD(today);
-  if (!selectedDate) {
-    selectedDate = todayString;
-  }
 
-  const currentTime =
-    today.getHours().toString().padStart(2, "0") +
-    ":" +
-    today.getMinutes().toString().padStart(2, "0");
-
-  // Ako je u trazenom kinu, na odabrani datum i vremenski nakon *sad*
-  const filteredPerformances = performances
-    .filter((performance) => {
-      // Ako nije odabrano kino, odbaciti
-      if (!cinemaOids.includes(performance.cinemaOid)) return false;
-
-      // Ako nije nije nakon trenutnog vremena danas, odbaciti
-      if (performance.cinemaDate === todayString) {
-        if (currentTime.localeCompare(performance.performanceTime) !== -1) return false;
-      }
-
-      // Ako je 'anyDate', prihvatiti
-      if (anyDate) {
-        return true;
-      } else {
-        // Ako je odabrani datum
-        return selectedDate === performance.cinemaDate;
-      }
-    })
-    .sort((a, b) => ("" + a.performanceTime).localeCompare(b.performanceTime));
-  console.log("Performances: " + filteredPerformances.length);
-
-  // Grupiranje performanca po filmu
-  const groupedPerformances = new Map();
-  for (const e of filteredPerformances) {
-    if (!groupedPerformances.has(e.filmId)) {
-      groupedPerformances.set(e.filmId, []);
-    }
-    groupedPerformances.get(e.filmId).push(e);
-  }
-
-  // Ako je anyDate, maknuti sve osim samo jednog datuma (najraniji od danas)
-  if (anyDate) {
-    today.setDate(today.getDate() - 1);
-    const jucer = dateToYYYYMMDD(today);
-
-    for (const filmId of groupedPerformances.keys()) {
-      let najranijiDatum = "9999-99-99";
-      let earliestPerformances = [];
-      for (const perf of groupedPerformances.get(filmId)) {
-        if (perf.cinemaDate.localeCompare(jucer) === 1) {
-          if (perf.cinemaDate.localeCompare(najranijiDatum) === -1) {
-            najranijiDatum = perf.cinemaDate;
-            earliestPerformances = [perf];
-          } else if (perf.cinemaDate.localeCompare(najranijiDatum) === 0) {
-            earliestPerformances.push(perf);
-          }
-        }
-      }
-
-      groupedPerformances.set(filmId, earliestPerformances);
-    }
-  }
-
-  // Spajanje perfromanca sa podacima o filmu
-  // moze se efikasnije mozda, jer .keys() vrati niz i onda gledati isto
-  // sa contains
-  const formattedData = [];
-  for (const filmId of groupedPerformances.keys()) {
-    const movieData = structuredClone(movies.find((movie) => movie.id === filmId));
-    movieData.performances = groupedPerformances.get(filmId);
-    formattedData.push(movieData);
-  }
-
-  // Sortiranje filmova
-  if (
-    sortBy === "durationMins" ||
-    sortBy === "imdbRating" ||
-    sortBy === "letterboxdRating"
-  ) {
-    formattedData.sort((a, b) => b[sortBy] - a[sortBy]);
-  } else if (sortBy === "genre") {
-    formattedData.sort((a, b) => {
-      const aGenre = a.englishCategories || a.genres;
-      const bGenre = b.englishCategories || b.genres;
-      const comparison = ("" + bGenre[0]).localeCompare(aGenre[0]);
-      if (comparison === 0) {
-        return b.imdbRating - a.imdbRating;
-      } else {
-        return comparison;
-      }
-    });
-  } else {
-    formattedData.sort((a, b) => {
-      const comparison = b.nationwideStart.localeCompare(a.nationwideStart);
-      if (comparison === 0) {
-        return b.imdbRating - a.imdbRating;
-      } else {
-        return comparison;
-      }
-    });
-  }
-
-  return formattedData;
+function getCinemas() {
+  return [
+    {
+      cinemaOid: "10000000014OCPXCOG",
+      cinemaName: "Branimir mingle mall",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "20000000014FEPADHG",
+      cinemaName: "Avenue mall",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "37000000014FEPADHG",
+      cinemaName: "Arena centar",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "B7000000014FEPADHG",
+      cinemaName: "Z centar",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "87000000014FEPADHG",
+      cinemaName: "Kaptol boutique",
+      cinemaCity: "Zagreb",
+    },
+    {
+      cinemaOid: "57000000014FEPADHG",
+      cinemaName: "Dvori lapad",
+      cinemaCity: "Dubrovnik",
+    },
+    {
+      cinemaOid: "27000000014FEPADHG",
+      cinemaName: "Portanova centar",
+      cinemaCity: "Osijek",
+    },
+    {
+      cinemaOid: "A7000000014FEPADHG",
+      cinemaName: "Max city",
+      cinemaCity: "Pula",
+    },
+    {
+      cinemaOid: "40000000014FEPADHG",
+      cinemaName: "Tower centar",
+      cinemaCity: "Rijeka",
+    },
+    {
+      cinemaOid: "67000000014FEPADHG",
+      cinemaName: "City colosseum",
+      cinemaCity: "Slavonski Brod",
+    },
+    {
+      cinemaOid: "17000000014FEPADHG",
+      cinemaName: "Joker centar",
+      cinemaCity: "Split",
+    },
+    {
+      cinemaOid: "97000000014FEPADHG",
+      cinemaName: "Mall of split",
+      cinemaCity: "Split",
+    },
+    {
+      cinemaOid: "47000000014FEPADHG",
+      cinemaName: "Lumini centar",
+      cinemaCity: "Varaždin",
+    },
+    {
+      cinemaOid: "77000000014FEPADHG",
+      cinemaName: "K centar golubica",
+      cinemaCity: "Vukovar",
+    },
+    {
+      cinemaOid: "D4000000014FEPADHG",
+      cinemaName: "City galleria",
+      cinemaCity: "Zadar",
+    },
+    {
+      cinemaOid: "07000000014FEPADHG",
+      cinemaName: "Dalmare centar",
+      cinemaCity: "Šibenik",
+    },
+  ];
 }

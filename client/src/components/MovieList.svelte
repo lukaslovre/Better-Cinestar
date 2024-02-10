@@ -1,7 +1,14 @@
 <script>
-  import MovieCard from "./MovieCard.svelte";
+  import MovieCardV1 from "./card_v1/MovieCardV1.svelte";
+  import MovieCardV2 from "./card_v2/MovieCardV2.svelte";
 
   export let movies;
+
+  const movieCardDesign = localStorage.getItem("movieCardDesign");
+  if (!movieCardDesign) {
+    localStorage.setItem("movieCardDesign", "v1");
+  }
+  console.log(movieCardDesign);
 
   let fullscreenedMovieNumber = 0;
   let selectedCardSize = {
@@ -46,12 +53,21 @@
 
 <div id="movieCardsContainer">
   {#each movies as movie}
-    <MovieCard
-      {movie}
-      {fullscreenedMovieNumber}
-      on:setFullscreen={setFullscreen}
-      on:setPerformanceData
-    />
+    {#if movieCardDesign === "v1"}
+      <MovieCardV1
+        {movie}
+        {fullscreenedMovieNumber}
+        on:setFullscreen={setFullscreen}
+        on:selectedPerformance
+      />
+    {:else}
+      <MovieCardV2
+        {movie}
+        {fullscreenedMovieNumber}
+        on:setFullscreen={setFullscreen}
+        on:selectedPerformance
+      />
+    {/if}
   {/each}
 </div>
 
