@@ -4,8 +4,9 @@
   import { cinemas } from "../utils/cinemas.js";
   import { getAverageSeatDistance } from "../utils/performanceSeats";
 
-  const dispatch = createEventDispatcher();
   export let performanceData;
+  const dispatch = createEventDispatcher();
+  const origin = window.location.origin; // Za radenje API requesta
 
   function formatDate(dateString, time) {
     const options = {
@@ -34,8 +35,7 @@
     urlParams.append("cinemaOid", cinemaOid);
     urlParams.append("performanceId", performanceId);
 
-    // const getMoviesUrl = `${origin}/api/movies`;
-    const getSeatingUrl = `http://localhost:3000/api/seating`;
+    const getSeatingUrl = `${origin}/api/seating`;
 
     const res = await fetch(`${getSeatingUrl}?${urlParams.toString()}`);
 

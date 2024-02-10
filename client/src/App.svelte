@@ -33,8 +33,8 @@
     urlParams.append("date", selectedDate);
     urlParams.append("sortBy", sortBy);
 
-    // const getMoviesUrl = `${origin}/api/movies`;
-    const getMoviesUrl = `http://localhost:3000/api/movies`;
+    const getMoviesUrl = `${origin}/api/movies`;
+    // const getMoviesUrl = `http://localhost:3000/api/movies`;
 
     const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
 
