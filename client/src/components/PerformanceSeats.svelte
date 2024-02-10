@@ -1,93 +1,11 @@
 <script>
   import Loading from "./Loading.svelte";
   import { createEventDispatcher } from "svelte";
+  import { cinemas } from "../utils/cinemas.js";
+  import { getAverageSeatDistance } from "../utils/performanceSeats";
+
   const dispatch = createEventDispatcher();
-
   export let performanceData;
-
-  // Ovo biranje imena se moze drukcije vjv
-  const cinemas = [
-    {
-      cinemaOid: "10000000014OCPXCOG",
-      cinemaName: "Branimir mingle mall",
-      cinemaCity: "Zagreb",
-    },
-    {
-      cinemaOid: "20000000014FEPADHG",
-      cinemaName: "Avenue mall",
-      cinemaCity: "Zagreb",
-    },
-    {
-      cinemaOid: "37000000014FEPADHG",
-      cinemaName: "Arena centar",
-      cinemaCity: "Zagreb",
-    },
-    {
-      cinemaOid: "B7000000014FEPADHG",
-      cinemaName: "Z centar",
-      cinemaCity: "Zagreb",
-    },
-    {
-      cinemaOid: "87000000014FEPADHG",
-      cinemaName: "Kaptol boutique",
-      cinemaCity: "Zagreb",
-    },
-    {
-      cinemaOid: "57000000014FEPADHG",
-      cinemaName: "Dvori lapad",
-      cinemaCity: "Dubrovnik",
-    },
-    {
-      cinemaOid: "27000000014FEPADHG",
-      cinemaName: "Portanova centar",
-      cinemaCity: "Osijek",
-    },
-    {
-      cinemaOid: "A7000000014FEPADHG",
-      cinemaName: "Max city",
-      cinemaCity: "Pula",
-    },
-    {
-      cinemaOid: "40000000014FEPADHG",
-      cinemaName: "Tower centar",
-      cinemaCity: "Rijeka",
-    },
-    {
-      cinemaOid: "67000000014FEPADHG",
-      cinemaName: "City colosseum",
-      cinemaCity: "Slavonski Brod",
-    },
-    {
-      cinemaOid: "17000000014FEPADHG",
-      cinemaName: "Joker centar",
-      cinemaCity: "Split",
-    },
-    {
-      cinemaOid: "97000000014FEPADHG",
-      cinemaName: "Mall of split",
-      cinemaCity: "Split",
-    },
-    {
-      cinemaOid: "47000000014FEPADHG",
-      cinemaName: "Lumini centar",
-      cinemaCity: "Varaždin",
-    },
-    {
-      cinemaOid: "77000000014FEPADHG",
-      cinemaName: "K centar golubica",
-      cinemaCity: "Vukovar",
-    },
-    {
-      cinemaOid: "D4000000014FEPADHG",
-      cinemaName: "City galleria",
-      cinemaCity: "Zadar",
-    },
-    {
-      cinemaOid: "07000000014FEPADHG",
-      cinemaName: "Dalmare centar",
-      cinemaCity: "Šibenik",
-    },
-  ];
 
   function formatDate(dateString, time) {
     const options = {
@@ -105,19 +23,34 @@
   function closeSeats() {
     dispatch("selectedPerformance", null);
   }
-  function getAverageSeatDistance(seats) {
-    let distances = [];
-    for (let i = 0; i < 5; i++) {
-      distances.push(seats.seats[i + 1].x - seats.seats[i].x);
+
+  let seatsPromise = getSeats();
+
+  async function getSeats() {
+    const { cinemaOid, id: performanceId } = performanceData.performance;
+
+    // create a URL parameter from the arguments
+    const urlParams = new URLSearchParams();
+    urlParams.append("cinemaOid", cinemaOid);
+    urlParams.append("performanceId", performanceId);
+
+    // const getMoviesUrl = `${origin}/api/movies`;
+    const getSeatingUrl = `http://localhost:3000/api/seating`;
+
+    const res = await fetch(`${getSeatingUrl}?${urlParams.toString()}`);
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log(data);
+      setSeatingLayoutValues(data);
+      return data;
     }
-    console.log(distances.sort((a, b) => b - a).slice(1, -1));
-    // Vraća zadnji element
-    return distances.sort((a, b) => b - a).slice(1, -1)[2];
   }
 
   let seatLocationMultiplier = 2.5;
   let seatOffsetX = 0;
   let seatSize = 9;
+
   function setSeatingLayoutValues(seats) {
     const seatsContainer = document.getElementById("seatsContainer");
     const containerWidth = seatsContainer.clientWidth - 10;
@@ -131,27 +64,12 @@
     seatsContainer.style.setProperty("height", 48 + seatsHeight + seatSize + "px");
   }
 
-  // Api call
-  let seatsPromise = getSeats();
-  async function getSeats() {
-    const origin = window.location.origin; // Za radenje API requesta
-    const res = await fetch(
-      `${origin}/api/seating?cinemaOid=${performanceData.performance.cinemaOid}&performanceId=${performanceData.performance.id}`
-    );
-    const data = await res.json();
-
-    if (res.ok) {
-      setSeatingLayoutValues(data);
-      return data;
-    } else {
-      throw new Error(data);
-    }
-  }
-  $: {
-    // Zove getSeats() svaki put kad se promjeni performanceData
-    console.log(performanceData);
-    seatsPromise = getSeats();
-  }
+  // Cini mi se da radi bez ovog, ne sjecam se zasto postoji
+  // $: {
+  //   // Zove getSeats() svaki put kad se promjeni performanceData
+  //   console.log(performanceData);
+  //   seatsPromise = getSeats();
+  // }
 </script>
 
 <div class="backdrop">

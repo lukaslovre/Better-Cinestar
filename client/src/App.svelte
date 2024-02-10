@@ -27,14 +27,21 @@
   async function getMovies(cinemaOids, selectedDate, sortBy) {
     if (cinemaOids.length === 0) return { noCinemasSelected: true };
 
-    const res = await fetch(
-      `${origin}/api/movies?cinemaOids=${cinemaOids.join(
-        ","
-      )}&selectedDate=${selectedDate}&sortBy=${sortBy}`
-    );
+    // create a URL parameter from the arguments
+    const urlParams = new URLSearchParams();
+    cinemaOids.forEach((oid) => urlParams.append("cinemaOids", oid));
+    urlParams.append("date", selectedDate);
+    urlParams.append("sortBy", sortBy);
+
+    // const getMoviesUrl = `${origin}/api/movies`;
+    const getMoviesUrl = `http://localhost:3000/api/movies`;
+
+    const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
 
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      console.log(data);
+      return data;
     }
   }
   $: {

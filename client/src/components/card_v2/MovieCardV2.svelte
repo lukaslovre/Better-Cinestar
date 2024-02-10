@@ -83,7 +83,7 @@
     backdrop-filter: blur(21.5px);
   }
   .posterContainer > .moviePoster {
-    width: 66%;
+    width: 55%;
     border-radius: 0.5rem;
     z-index: 1;
   }

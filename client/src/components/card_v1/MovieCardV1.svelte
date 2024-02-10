@@ -34,13 +34,13 @@
 
   <div class="rightSide">
     <div class="movieData">
-      <TitleAndStats {movie} />
+      <TitleAndStats {movie} {isFullscreened} />
 
       {#if isFullscreened}
         <FullInfo {movie} />
       {/if}
 
-      <Performances {movie} {fullscreenedMovieNumber} on:selectedPerformance />
+      <Performances {movie} {isFullscreened} on:selectedPerformance />
     </div>
 
     <img

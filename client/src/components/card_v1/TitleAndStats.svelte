@@ -1,11 +1,12 @@
 <script>
   export let movie;
+  export let isFullscreened;
 </script>
 
 <div class="titleAndStats">
-  <p class="movieTitle">{movie.title}</p>
+  <p class="movieTitle" class:fullscreened={isFullscreened}>{movie.title}</p>
 
-  <div class="movieStats">
+  <div class="movieStats" class:fullscreened={isFullscreened}>
     {#if movie.englishCategories}
       <p>{movie.englishCategories[0]}</p>
     {:else}
@@ -40,11 +41,11 @@
     color: #e6e6e6;
     font-size: 0.875rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
-  /* .movieTitle {
+  .movieTitle.fullscreened {
     font-size: 1.125rem;
-  } */
+  }
   .movieStats {
     display: flex;
     align-items: center;
@@ -52,14 +53,14 @@
     column-gap: 0.375rem;
     row-gap: 0.25rem;
 
-    color: #bfbfbf;
+    color: #e6e6e6;
     font-size: 0.75rem;
     font-weight: 500;
     text-transform: capitalize;
   }
-  /* .movieStats {
+  .movieStats.fullscreened {
     justify-content: space-between;
-  } */
+  }
   .movieStats .ratingIconAndValue {
     display: flex;
     align-items: center;

@@ -96,7 +96,8 @@
 
   .movieExtraInfo .infoLabel {
     color: #e6e6e6;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     margin-bottom: 0.5rem;
   }
   .movieExtraInfo .infoText {

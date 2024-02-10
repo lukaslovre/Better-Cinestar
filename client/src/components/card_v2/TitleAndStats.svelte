@@ -7,20 +7,35 @@
   <p class="movieTitle">{movie.title}</p>
 
   <div class="movieStats">
-    <p>{movie.englishCategories ? movie.englishCategories[0] : movie.genres[0]}</p>
-
-    {#if movie.duration}
-      <p>·</p>
-      <p>{movie.duration}</p>
-    {/if}
-
-    {#if movie.imdbRating}
-      <p>·</p>
-      <div class="ratingIconAndValue">
-        <img src="/images/imdbIcon.png" alt="imdb icon" />
-        <p>{movie.imdbRating}/10</p>
+    <div class="row">
+      <div>
+        <p>{movie.englishCategories ? movie.englishCategories[0] : movie.genres[0]}</p>
       </div>
-    {/if}
+
+      <div>
+        {#if movie.imdbRating}
+          <div class="ratingIconAndValue">
+            <img src="/images/imdbIcon.png" alt="imdb icon" />
+            <p>{movie.imdbRating}/10</p>
+          </div>
+        {/if}
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        {#if movie.duration}
+          <p>{movie.duration}</p>
+        {/if}
+      </div>
+      <div>
+        {#if movie.letterboxdRating}
+          <div class="ratingIconAndValue">
+            <img src="/images/letterboxdIcon.png" alt="letterboxd icon" />
+            <p>{movie.letterboxdRating}/5</p>
+          </div>
+        {/if}
+      </div>
+    </div>
   </div>
 </div>
 
@@ -38,16 +53,13 @@
     margin-bottom: 0.75rem;
   }
   .movieStats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    justify-items: center;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.75rem;
   }
-  .movieStats :nth-child(1) {
-    justify-self: start;
-  }
-  .movieStats :nth-child(5) {
-    justify-self: end;
+  .movieStats .row {
+    display: flex;
+    justify-content: space-between;
   }
   .movieStats p {
     color: #e6e6e6;
