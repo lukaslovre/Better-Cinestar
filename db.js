@@ -1,8 +1,9 @@
+const path = require("path");
 const { Sequelize, DataTypes, Op } = require("sequelize");
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "./Database.sqlite",
+  storage: path.join(__dirname, "Database.sqlite"),
   logging: false,
 });
 
@@ -89,7 +90,7 @@ const Performance = sequelize.define(
 async function init() {
   try {
     await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
+    console.log("Connection with the DB has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
