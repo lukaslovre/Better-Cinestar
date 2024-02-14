@@ -12,10 +12,10 @@
     <div class="peopleContainer">
       {#if movie.englishDirectors}
         {#each movie.englishDirectors as director}
-          <div class="person">
+          <a href={director.lbUrl} class="person">
             <img src={director.portraitUrl} alt={director.name + "portrait"} />
             <p class="personName">{director.name}</p>
-          </div>
+          </a>
         {/each}
       {:else}
         <div class="person">
@@ -31,10 +31,10 @@
       <p class="infoLabel">Glumci</p>
       <div class="peopleContainer">
         {#each movie.actors as actor}
-          <div class="person">
+          <a href={actor.lbUrl} class="person">
             <img src={actor.portraitUrl} alt={actor.name + " portrait"} />
             <p class="personName">{actor.name}</p>
-          </div>
+          </a>
         {/each}
       </div>
     </div>
