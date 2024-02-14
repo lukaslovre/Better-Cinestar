@@ -100,10 +100,16 @@ async function init() {
 }
 
 async function saveMoviesToDatabase(movies) {
+  // clear the table before inserting new data
+  await Movie.destroy({ truncate: true });
+
   await Movie.bulkCreate(movies);
 }
 
 async function savePerformancesToDatabase(performances) {
+  // clear the table before inserting new data
+  await Performance.destroy({ truncate: true });
+
   await Performance.bulkCreate(performances);
 }
 
