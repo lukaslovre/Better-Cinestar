@@ -3,8 +3,6 @@
 
   export let sortDropdownOpen;
 
-  let selectedSortText = "po Datumu izlaska";
-
   const dropdownOptionValues = [
     { text: "po Datumu izlaska", value: "nationwideStart" },
     { text: "po IMDB ocjeni", value: "imdbRating" },
@@ -12,6 +10,10 @@
     { text: "po Žanru", value: "genre" },
     { text: "po Trajanju", value: "durationMins" },
   ];
+
+  let selectedSortText = dropdownOptionValues.find(
+    (option) => option.value === $sortBy
+  )?.text;
 
   function toggleDropdown() {
     sortDropdownOpen.value = !sortDropdownOpen.value;
@@ -65,4 +67,7 @@
 </div>
 
 <style>
+  .input-container {
+    max-width: calc(55% - 0.5rem);
+  }
 </style>

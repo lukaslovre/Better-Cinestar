@@ -222,8 +222,12 @@
 </div>
 
 <style>
+  .input-container {
+    max-width: 75%;
+  }
   .dropdown-element {
-    max-width: 66%;
+    max-width: 100%;
+    width: auto;
   }
   .dropdown-element > .selectedValue {
     overflow: hidden;

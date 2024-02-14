@@ -44,33 +44,20 @@ body {
   color: #5c6270; */
   opacity: 0.25;
 }
-/* .fadeout-1-input .checkbox {
-  border-color: #5c6270;
-}
-.fadeout-1-input .stroke > path {
-  stroke: #5c6270;
-}
-.fadeout-1-input .fill > path {
-  fill: #5c6270;
-} */
 
 .fadeout-2-input {
   /* background-color: #141926;
   color: #212633; */
   opacity: 0.125;
 }
-/* .fadeout-2-input .stroke > path {
-  stroke: #212633;
-}
-.fadeout-2-input .fill > path {
-  fill: #212633;
-} */
 
 .input-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.375rem;
+  /* max-width: calc(50% - 0.5rem) gap izmedu containera je 1rem; */
+  /* ovo je na svakom input-contaneru rucno drukcija vrijednost stavljena  */
 }
 .input-container .label {
   display: flex;
@@ -82,6 +69,7 @@ body {
   color: #9da2af;
 }
 .input-container .dropdown-element {
+  width: 100%;
   padding: 0.75rem;
   border-radius: 0.25rem;
   font-size: 1rem;
@@ -92,6 +80,12 @@ body {
   gap: 0.875rem;
   transition: all 200ms ease-out;
 }
+.input-container .dropdown-element p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .input-container .dropdown-options-container {
   display: flex;
   gap: 0.375rem;
@@ -110,6 +104,15 @@ body {
 .input-container .dropdown-suboptions {
   /* flex-shrink: 1; */
 }
+.input-container .dropdown-suboptions .option {
+}
+.input-container .dropdown-suboptions .option p {
+  /* width: max-content;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; */
+}
+
 .input-container .dropdown-options .expandable-option {
   padding-left: 2rem;
   display: flex;
@@ -123,7 +126,7 @@ body {
   cursor: pointer;
 }
 .input-container .dropdown-options .option p {
-  flex: 1;
+  /* flex: 1; */
   /* white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis; */

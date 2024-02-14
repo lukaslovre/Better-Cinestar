@@ -13,6 +13,8 @@
   let showTooltipPopup = false;
   let openedPerformance = null;
 
+  setStoreValuesFromUrl();
+
   // Event catcheri
   function setOpenedPerformance(event) {
     openedPerformance = event.detail;
@@ -21,8 +23,12 @@
     showTooltipPopup = event.detail;
   }
 
-  // Api call
-  let moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
+  let moviesPromise;
+
+  // Zove getMovies() svaki put kad se promjeni neka vrijednost u dropdownu
+  $: {
+    moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
+  }
 
   async function getMovies(cinemaOids, selectedDate, sortBy) {
     if (cinemaOids.length === 0) return { noCinemasSelected: true };
@@ -34,7 +40,6 @@
     urlParams.append("sortBy", sortBy);
 
     const getMoviesUrl = `${origin}/api/movies`;
-    // const getMoviesUrl = `http://localhost:3000/api/movies`;
 
     const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
 
@@ -44,9 +49,21 @@
       return data;
     }
   }
-  $: {
-    // Zove getMovies() svaki put kad se promjeni neka vrijednost u dropdownu
-    moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
+
+  function setStoreValuesFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.has("cinemaOids")) {
+      cinemaOids.set(urlParams.getAll("cinemaOids"));
+    }
+
+    if (urlParams.has("date")) {
+      selectedDate.set(urlParams.get("date"));
+    }
+
+    if (urlParams.has("sortBy")) {
+      sortBy.set(urlParams.get("sortBy"));
+    }
   }
 </script>
 

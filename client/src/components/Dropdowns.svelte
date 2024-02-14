@@ -3,6 +3,19 @@
   import DateDropdown from "./DateDropdown.svelte";
   import SortDropdown from "./SortDropdown.svelte";
 
+  import { cinemaOids, selectedDate, sortBy } from "../stores";
+
+  // when any of the store values change, add it to the URL as a query parameter
+  $: {
+    const parameters = new URLSearchParams();
+
+    $cinemaOids.forEach((oid) => parameters.append("cinemaOids", oid));
+    parameters.append("date", $selectedDate);
+    parameters.append("sortBy", $sortBy);
+
+    history.replaceState(null, "", `?${parameters.toString()}`);
+  }
+
   let locationDropdownOpen = {
     level: 0,
     selectedCity: null,

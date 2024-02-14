@@ -6,9 +6,8 @@
 
   const movieCardDesign = localStorage.getItem("movieCardDesign");
   if (!movieCardDesign) {
-    localStorage.setItem("movieCardDesign", "v1");
+    localStorage.setItem("movieCardDesign", "v2");
   }
-  console.log(movieCardDesign);
 
   let fullscreenedMovieNumber = 0;
   let selectedCardSize = {

@@ -19,7 +19,7 @@
         {/each}
       {:else}
         <div class="person">
-          <img src="/images/clockIcon.svg" alt={movie.director + "portrait"} />
+          <img src="/images/defaultPersonImage.jpg" alt={movie.director + "portrait"} />
           <p class="personName">{movie.director}</p>
         </div>
       {/if}

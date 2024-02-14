@@ -1,14 +1,16 @@
 <script>
   import { selectedDate } from "../stores";
+  import { dateToYMDFormat } from "../utils/utils";
 
   export let dateDropdownOpen;
 
-  let selectedDateText = "Danas";
-
   const date = new Date();
+
   const dropdownOptionValues = [{ text: "Danas", value: dateToYMDFormat(date) }];
+
   date.setDate(date.getDate() + 1);
   dropdownOptionValues.push({ text: "Sutra", value: dateToYMDFormat(date) });
+
   for (let i = 0; i < 5; i++) {
     date.setDate(date.getDate() + 1);
     const dateString = date.toLocaleDateString("hr-HR", {
@@ -18,16 +20,16 @@
     });
     dropdownOptionValues.push({ text: dateString, value: dateToYMDFormat(date) });
   }
+
   dropdownOptionValues.push({ text: "Sve", value: "any" });
+
+  // set the selected date to the value in the store
+  let selectedDateText = dropdownOptionValues.find(
+    (option) => option.value === $selectedDate
+  )?.text;
 
   function toggleDropdown() {
     dateDropdownOpen.value = !dateDropdownOpen.value;
-  }
-  function dateToYMDFormat(date) {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
   }
 </script>
 
@@ -82,4 +84,7 @@
 </div>
 
 <style>
+  .input-container {
+    max-width: calc(45% - 0.5rem);
+  }
 </style>

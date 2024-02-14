@@ -34,7 +34,7 @@
 
     featureOccurenceCounts = getAllFeatureOccurenceCounts();
 
-    console.log(possibleFeatures, selectedPerformanceFilters);
+    // console.log(possibleFeatures, selectedPerformanceFilters);
 
     dispatch("performanceFilterChange", selectedPerformanceFilters);
   }

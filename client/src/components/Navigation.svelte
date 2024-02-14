@@ -6,6 +6,8 @@
     } else {
       localStorage.setItem("movieCardDesign", "v1");
     }
+
+    alert("Promjenili ste dizajn kartica, osvježite stranicu da bi se promjene vidjele.");
   }
 </script>
 

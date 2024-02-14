@@ -41,7 +41,7 @@
 
     if (res.ok) {
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       setSeatingLayoutValues(data);
       return data;
     }
