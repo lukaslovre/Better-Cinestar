@@ -4,6 +4,7 @@ const app = express();
 const port = 3000;
 const cors = require("cors");
 
+const { dateToHHMM } = require("./serving/utils.js");
 const { getFormattedMovies } = require("./serving/index.js");
 const { fetchSeating } = require("./serving/seating.js");
 
@@ -14,31 +15,15 @@ app.get("/api/movies", async (req, res) => {
   const startTime = Date.now();
 
   const { cinemaOids, date, sortBy } = req.query;
-  console.log(cinemaOids, date, sortBy);
 
-  // if any of the parameters is missing, return an error
-  if (!cinemaOids || !date || !sortBy) {
-    res.status(400).send("Missing parameters");
-    return;
-  }
+  const { valid, message, cinemaOidsArray } = validateParameters(
+    cinemaOids,
+    date,
+    sortBy
+  );
 
-  // transform cinemaOids to array
-  const cinemaOidsArray = Array.isArray(cinemaOids) ? cinemaOids : [cinemaOids];
-
-  // check that parameters are of expected type
-  // cinemaOids: string[]
-  // date: string
-  // sortBy: string
-  if (Array.isArray(date) || Array.isArray(sortBy)) {
-    res.status(400).send("Invalid parameters");
-    return;
-  }
-
-  if (
-    cinemaOidsArray.every((cinemaOid) => cinemaOid.length !== 18) ||
-    date.length !== 10
-  ) {
-    res.status(400).send("Invalid parameters");
+  if (!valid) {
+    res.status(400).send(message);
     return;
   }
 
@@ -88,3 +73,30 @@ app.use(express.static(path.join(__dirname, "client/public")));
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+console.log("Current time:", dateToHHMM(new Date()));
+
+function validateParameters(cinemaOids, date, sortBy) {
+  // if any of the parameters is missing, return an error
+  if (!cinemaOids || !date || !sortBy) {
+    return { valid: false, message: "Missing parameters" };
+  }
+
+  // transform cinemaOids to array
+  const cinemaOidsArray = Array.isArray(cinemaOids) ? cinemaOids : [cinemaOids];
+
+  // check that parameters are of expected type
+  if (Array.isArray(date) || Array.isArray(sortBy)) {
+    return { valid: false, message: "Invalid parameters" };
+  }
+
+  if (
+    cinemaOidsArray.every((cinemaOid) => cinemaOid.length !== 18) ||
+    (date.length !== 10 && date !== "any")
+  ) {
+    return { valid: false, message: "Invalid parameters" };
+  }
+
+  // If we reach this point, the parameters are valid
+  return { valid: true, message: "", cinemaOidsArray };
+}

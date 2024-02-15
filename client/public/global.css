@@ -80,6 +80,10 @@ body {
   gap: 0.875rem;
   transition: all 200ms ease-out;
 }
+.input-container .dropdown-element svg {
+  flex-shrink: 0;
+}
+
 .input-container .dropdown-element p {
   white-space: nowrap;
   overflow: hidden;

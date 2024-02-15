@@ -13,7 +13,7 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
   const currentTime = dateToHHMM(present);
 
   // console.log("today", today);
-  console.log("currentTime", currentTime);
+  // console.log("currentTime", currentTime);
 
   const performances = await getPerformancesFiltered(
     cinemaOids,

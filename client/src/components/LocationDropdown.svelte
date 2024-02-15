@@ -223,10 +223,10 @@
 
 <style>
   .input-container {
-    max-width: 75%;
+    max-width: 100%;
   }
   .dropdown-element {
-    max-width: 100%;
+    max-width: 75%;
     width: auto;
   }
   .dropdown-element > .selectedValue {
