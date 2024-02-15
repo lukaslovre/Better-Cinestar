@@ -64,6 +64,10 @@
     if (urlParams.has("sortBy")) {
       sortBy.set(urlParams.get("sortBy"));
     }
+
+    // if (urlParams.has("goToMovie")) {
+    //   scrollToMovieId.set(urlParams.get("goToMovie"));
+    // }
   }
 </script>
 

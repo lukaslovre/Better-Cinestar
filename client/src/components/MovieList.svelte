@@ -1,8 +1,24 @@
 <script>
+  // import { onMount } from "svelte";
   import MovieCardV1 from "./card_v1/MovieCardV1.svelte";
   import MovieCardV2 from "./card_v2/MovieCardV2.svelte";
 
+  // import { scrollToMovieId } from "../stores";
+
   export let movies;
+
+  // onMount(() => {
+  //   // wait for 200ms, then scroll to the movie
+  //   setTimeout(() => {
+  //     const movieCard = document.getElementById(`movieCard-${$scrollToMovieId}`);
+  //     if (movieCard) {
+  //       window.scrollBy({
+  //         top: movieCard.getBoundingClientRect().top - 32,
+  //         behavior: "smooth",
+  //       });
+  //     }
+  //   }, 250);
+  // });
 
   const movieCardDesign = localStorage.getItem("movieCardDesign");
   if (!movieCardDesign) {
@@ -19,29 +35,41 @@
     const filmNumber = event.detail.filmNumber;
     const selectedMovieCard = event.detail.movieCard;
 
+    // If the user has clicked on a card that is already in fullscreen mode
     if (filmNumber === fullscreenedMovieNumber) {
-      // scroll up the difference between normal and fullscreen card size
+      // Scroll up the difference between normal and fullscreen card size
+      // to make the bottom of the card appear to stay in the same place
       selectedCardSize.fullscreen = selectedMovieCard.offsetHeight;
       const difference = selectedCardSize.fullscreen - selectedCardSize.normal;
       window.scrollBy(0, -difference);
 
       fullscreenedMovieNumber = 0;
-    } else {
-      if (fullscreenedMovieNumber !== 0) {
-        const previousFullscreenedMovieCard = document.getElementById(
-          `movieCard-${fullscreenedMovieNumber}`
-        );
+    } else if (filmNumber !== fullscreenedMovieNumber) {
+      /*
+       *
+       *  izgleda da ovo ne treba, ali ostavljam kod ako
+       *  nadem neku gresku
+       *
+       */
 
-        const prevY = previousFullscreenedMovieCard.getBoundingClientRect().y;
-        const currentY = selectedMovieCard.getBoundingClientRect().y;
-        // if the previous card is higher that the current one
-        if (prevY < currentY) {
-          const prefFullscreenHeight = previousFullscreenedMovieCard.offsetHeight;
-          const prefDiff = prefFullscreenHeight - selectedCardSize.normal;
+      // // If the user has clicked on a different card while one is already in fullscreen mode
+      // if (fullscreenedMovieNumber !== 0) {
+      //   const previousFullscreenedMovieCard = document.getElementById(
+      //     `movieCard-${fullscreenedMovieNumber}`
+      //   );
 
-          window.scrollBy(0, -prefDiff);
-        }
-      }
+      //   const previousFullscreenedY =
+      //     previousFullscreenedMovieCard.getBoundingClientRect().y;
+      //   const currentY = selectedMovieCard.getBoundingClientRect().y;
+
+      //   // if the previous card is higher that the current one
+      //   if (previousFullscreenedY < currentY) {
+      //     const prefFullscreenHeight = previousFullscreenedMovieCard.offsetHeight;
+      //     const prefDiff = prefFullscreenHeight - selectedCardSize.normal;
+
+      //     window.scrollBy(0, -prefDiff);
+      //   }
+      // }
 
       selectedCardSize.normal = selectedMovieCard.offsetHeight;
 

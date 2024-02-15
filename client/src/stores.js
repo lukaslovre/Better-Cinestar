@@ -7,3 +7,5 @@ const danas = dateToYMDFormat(new Date());
 export const cinemaOids = writable([]);
 export const selectedDate = writable(danas);
 export const sortBy = writable("nationwideStart");
+
+// export const scrollToMovieId = writable(null);
