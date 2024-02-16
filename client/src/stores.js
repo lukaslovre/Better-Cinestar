@@ -8,4 +8,10 @@ export const cinemaOids = writable([]);
 export const selectedDate = writable(danas);
 export const sortBy = writable("nationwideStart");
 
+export function resetFiltersToDefault() {
+  cinemaOids.set([]);
+  selectedDate.set(danas);
+  sortBy.set("nationwideStart");
+}
+
 // export const scrollToMovieId = writable(null);

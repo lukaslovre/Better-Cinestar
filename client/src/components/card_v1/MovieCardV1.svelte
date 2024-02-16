@@ -4,20 +4,12 @@
   import TitleAndStats from "./TitleAndStats.svelte";
   import FullInfo from "../FullInfo.svelte";
   import Performances from "../Performances.svelte";
-
-  const dispatch = createEventDispatcher();
+  import MovieCardBottomButtons from "../MovieCardBottomButtons.svelte";
 
   export let movie;
   export let fullscreenedMovieNumber;
 
   $: isFullscreened = movie.filmNumber === fullscreenedMovieNumber;
-
-  function fullscreenCurrentMovie(e) {
-    dispatch("setFullscreen", {
-      filmNumber: movie.filmNumber,
-      movieCard: e.target.closest(".movieCard"),
-    });
-  }
 </script>
 
 <div
@@ -29,7 +21,6 @@
     class="moviePoster"
     src={movie.posterUrl || movie.imageUrl}
     alt="{movie.originalTitle} poster"
-    on:click={fullscreenCurrentMovie}
   />
 
   <div class="rightSide">
@@ -43,12 +34,7 @@
       <Performances {movie} {isFullscreened} on:selectedPerformance />
     </div>
 
-    <img
-      class="fullscreenIcon"
-      src="/images/fullscreen.svg"
-      alt="fullscreen"
-      on:click={fullscreenCurrentMovie}
-    />
+    <MovieCardBottomButtons {movie} {isFullscreened} on:setFullscreen />
   </div>
 </div>
 
@@ -95,10 +81,5 @@
   }
   .fullScreenMovieCard .movieData {
     row-gap: 1rem;
-  }
-  .fullscreenIcon {
-    cursor: pointer;
-    align-self: flex-end;
-    margin-top: 0.5rem;
   }
 </style>

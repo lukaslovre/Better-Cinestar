@@ -11,7 +11,7 @@
     { text: "po Trajanju", value: "durationMins" },
   ];
 
-  let selectedSortText = dropdownOptionValues.find(
+  $: selectedSortText = dropdownOptionValues.find(
     (option) => option.value === $sortBy
   )?.text;
 
@@ -56,7 +56,6 @@
         class:selected={$sortBy === sortOption.value}
         on:click={() => {
           $sortBy = sortOption.value;
-          selectedSortText = sortOption.text;
           sortDropdownOpen.value = false;
         }}
       >

@@ -24,7 +24,7 @@
   dropdownOptionValues.push({ text: "Sve", value: "any" });
 
   // set the selected date to the value in the store
-  let selectedDateText = dropdownOptionValues.find(
+  $: selectedDateText = dropdownOptionValues.find(
     (option) => option.value === $selectedDate
   )?.text;
 
@@ -73,7 +73,6 @@
         class:selected={$selectedDate === dateOption.value}
         on:click={() => {
           $selectedDate = dateOption.value;
-          selectedDateText = dateOption.text;
           dateDropdownOpen.value = false;
         }}
       >
