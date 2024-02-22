@@ -25,7 +25,7 @@
     {
       question: "Postoje li planovi za dodavanje novih značajki?",
       answer:
-        "Da, budući planovi uključuju dodavanje mogućnosti da korisnici recenziraju filmove i razlikovanje različitih vrsta sjedala, poput ljubavnih sjedala, VIP sjedala, itd. Ako vi imate neku ideju, pošaljite na email.",
+        "Da, budući planovi uključuju dodavanje mogućnosti da korisnici recenziraju filmove i razlikovanje različitih vrsta sjedala, poput ljubavnih sjedala, VIP sjedala, itd. Ako vi imate neku ideju, pošaljite ju na email.",
     },
   ];
 
@@ -42,7 +42,7 @@
   }
 
   function copyEmailToClipboard() {
-    const email = "lovretic2002@gmail.com";
+    const email = "r0pzrgabp@mozmail.com";
     navigator.clipboard.writeText(email);
   }
 
@@ -112,7 +112,11 @@
             <div class="question">
               <p class="text">{faqItem.question}</p>
               <button>
-                <img src="/images/leftArrow.svg" alt="Expand" class:open={false} />
+                <img
+                  src="/images/downArrowFramedD9.svg"
+                  alt="Show answer"
+                  class:open={false}
+                />
               </button>
             </div>
             <p class="text answer" class:open={false}>{faqItem.answer}</p>
@@ -125,7 +129,7 @@
       >
         <p class="title">Kontakt</p>
         <div class="emailAndCopyButton">
-          <p class="text">lovretic2002@gmail.com</p>
+          <p class="text">r0pzrgabp@mozmail.com</p>
           <button on:click={copyEmailToClipboard}>
             <img src="/images/copyToClipboard.svg" alt="" />
           </button>
@@ -297,18 +301,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     background-color: transparent;
+    border-radius: 0.25rem;
+    cursor: pointer;
   }
+  .menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
   .menu img {
     width: 100%;
     height: 100%;
   }
   .menu .question img {
-    transform: rotate(-90deg);
+    transform: rotate(0);
     transition: transform 200ms ease-out;
   }
   .menu .question img.open {
-    transform: rotate(90deg);
+    transform: rotate(-180deg);
   }
 </style>
