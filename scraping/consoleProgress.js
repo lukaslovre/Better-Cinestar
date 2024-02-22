@@ -10,9 +10,14 @@ function drawProgressBar(percent) {
   const progressBarString = progressBar.join("");
 
   // Write the message and progress bar to the console
-  process.stdout.clearLine();
-  process.stdout.cursorTo(0);
-  process.stdout.write(`[${progressBarString}] ${Math.floor(percent * 100)}%`);
+  if (process.stdout.clearLine && process.stdout.cursorTo) {
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    process.stdout.write(`[${progressBarString}] ${Math.floor(percent * 100)}%`);
+  } else {
+    // Fallback behavior if clearLine() or cursorTo() are not available
+    process.stdout.write(`[${progressBarString}] ${Math.floor(percent * 100)}%\n`);
+  }
 }
 
 // Test the progress bar
