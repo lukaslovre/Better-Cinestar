@@ -13,6 +13,10 @@
         "Osnovni podaci, uključujući popis filmova, raspored prikazivanja i informacije o sjedalima, preuzimaju se sa službene web stranice Cinestar-a. Dodatni detalji poput liste glumaca, redatelja i ocjena dolaze sa Letterboxd-a. Može se dogoditi da program pronađe krivu Letterboxd stranicu za film, ali to se lako primjeti jer naslov filma i slika neće odgovarati.",
     },
     {
+      question: "Koliko se često ažuriraju podaci na ovoj web stranici?",
+      answer: "Svi podaci (Cinestar i Letterboxd) se ažuriraju jednom dnevno, u 00:30",
+    },
+    {
       question: "Zašto nema filmova nakon srijede?",
       answer:
         "Cinestar objavljuje novi raspored filmova svake srijede. Ako ih nema na ovoj stranici, nema ni na cinestaru.",
@@ -37,8 +41,16 @@
   }
 
   let menuOpen = false;
+
   function toggleMenu() {
     menuOpen = !menuOpen;
+
+    // prevent scrolling when menu is open
+    if (menuOpen) {
+      document.getElementById("content").style.display = "none";
+    } else {
+      document.getElementById("content").style.display = "flex";
+    }
   }
 
   function copyEmailToClipboard() {
@@ -194,6 +206,7 @@
     top: 100%;
     left: 0;
     width: 100%;
+
     /* max-width: 30rem; */
     /* height: 100vh; */
     display: flex;
