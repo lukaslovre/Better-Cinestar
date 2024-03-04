@@ -260,7 +260,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1rem;
+    column-gap: 2rem;
+    row-gap: 3rem;
     align-items: flex-start;
     padding: 1rem;
     border-radius: 0.25rem;

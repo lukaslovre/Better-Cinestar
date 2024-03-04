@@ -78,7 +78,7 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 0.875rem;
-  transition: all 200ms ease-out;
+  transition: all 100ms ease-out;
 }
 .input-container .dropdown-element svg {
   flex-shrink: 0;
@@ -103,7 +103,7 @@ body {
   padding: 0.75rem;
   border-radius: 0.25rem;
   font-size: 1rem;
-  transition: all 200ms ease-out;
+  transition: all 100ms ease-out;
 }
 .input-container .dropdown-suboptions {
   /* flex-shrink: 1; */
