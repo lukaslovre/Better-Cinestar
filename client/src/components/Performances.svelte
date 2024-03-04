@@ -20,7 +20,9 @@
   export let movie;
   export let isFullscreened;
 
-  $: performanceDateText = getFormattedPerformanceDateLabel(movie.performances[0]);
+  $: performanceDateText = getFormattedPerformanceDateLabel(
+    new Date(movie.performances[0].performanceDateTime)
+  );
 
   let filteredPerformances = movie.performances;
   let filterCardVisible = false;

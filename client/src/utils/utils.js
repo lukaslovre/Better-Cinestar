@@ -1,16 +1,15 @@
-function getFormattedPerformanceDateLabel(performance) {
-  const performanceDate = new Date(performance.performanceDateTime);
+function getFormattedPerformanceDateLabel(performanceDate) {
   const today = new Date();
   const dateDiff = performanceDate.getDate() - today.getDate();
 
   if (dateDiff < 0) {
-    return "prošlost";
+    return "Prošlost";
   }
   if (dateDiff === 0) {
-    return "danas";
+    return "Danas";
   }
   if (dateDiff === 1) {
-    return "sutra";
+    return "Sutra";
   }
 
   return performanceDate.toLocaleDateString("hr-HR", {

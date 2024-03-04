@@ -1,32 +1,32 @@
 <script>
   import { selectedDate } from "../stores";
-  import { dateToYMDFormat } from "../utils/utils";
+  import { dateToYMDFormat, getFormattedPerformanceDateLabel } from "../utils/utils";
 
   export let dateDropdownOpen;
 
+  const dropdownOptionValues = [];
+
   const date = new Date();
-
-  const dropdownOptionValues = [{ text: "Danas", value: dateToYMDFormat(date) }];
-
-  date.setDate(date.getDate() + 1);
-  dropdownOptionValues.push({ text: "Sutra", value: dateToYMDFormat(date) });
-
-  for (let i = 0; i < 5; i++) {
-    date.setDate(date.getDate() + 1);
-    const dateString = date.toLocaleDateString("hr-HR", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
+  for (let i = 0; i < 7; i++) {
+    dropdownOptionValues.push({
+      text: getFormattedPerformanceDateLabel(date),
+      value: dateToYMDFormat(date),
     });
-    dropdownOptionValues.push({ text: dateString, value: dateToYMDFormat(date) });
+
+    date.setDate(date.getDate() + 1);
   }
 
   dropdownOptionValues.push({ text: "Sve", value: "any" });
 
   // set the selected date to the value in the store
-  $: selectedDateText = dropdownOptionValues.find(
-    (option) => option.value === $selectedDate
-  )?.text;
+  $: selectedDateText =
+    $selectedDate === "any"
+      ? "Sve"
+      : getFormattedPerformanceDateLabel(new Date($selectedDate));
+
+  // dropdownOptionValues.find(
+  //   (option) => option.value === $selectedDate
+  // )?.text;
 
   function toggleDropdown() {
     dateDropdownOpen.value = !dateDropdownOpen.value;
