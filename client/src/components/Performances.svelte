@@ -103,6 +103,8 @@
 
     console.log(performances);
 
+    if (performances === undefined) return;
+
     movie.performances = performances;
   }
 </script>

@@ -24,25 +24,21 @@ export async function getPerformances(cinemaOids, date, movieId) {
 export function getPreviousAndNextPerformanceDatesForMovie(availableDates, date) {
   const dateIndex = availableDates.indexOf(date);
 
+  let previousDate = null;
+  let nextDate = null;
+
   if (dateIndex === -1) {
-    return {
-      previousDate: null,
-      nextDate: null,
-    };
-  } else if (dateIndex === 0) {
-    return {
-      previousDate: null,
-      nextDate: availableDates.at(dateIndex + 1),
-    };
-  } else if (dateIndex === availableDates.length - 1) {
-    return {
-      previousDate: availableDates.at(dateIndex - 1),
-      nextDate: null,
-    };
-  } else {
-    return {
-      previousDate: availableDates.at(dateIndex - 1),
-      nextDate: availableDates.at(dateIndex + 1),
-    };
+    console.log("Date not found in available dates");
+    return { previousDate, nextDate };
   }
+
+  if (dateIndex > 0) {
+    previousDate = availableDates[dateIndex - 1];
+  }
+
+  if (dateIndex < availableDates.length - 1) {
+    nextDate = availableDates[dateIndex + 1];
+  }
+
+  return { previousDate, nextDate };
 }
