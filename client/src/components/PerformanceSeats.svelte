@@ -117,7 +117,12 @@
     </div>
 
     <div id="performanceInfo">
-      <p class="movieTitle">{performanceData.movie.title}</p>
+      <p class="movieTitle">
+        {performanceData.movie.title}
+        {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== "0"}
+          ({performanceData.movie.ageRating}+)
+        {/if}
+      </p>
       <div class="performanceInfoRow">
         <img src="/images/clockIcon.svg" alt="clock icon" />
         <p>
@@ -161,7 +166,7 @@
     width: 100vw;
     height: 100vh;
 
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(3px);
   }
   #card {
@@ -229,17 +234,19 @@
   }
 
   #performanceInfo {
-    margin: 2.5rem 0;
+    margin-top: 2.5rem;
+    margin-bottom: 4rem;
     display: flex;
     flex-direction: column;
-    row-gap: 0.3125rem;
+    row-gap: 0.625rem;
   }
   #performanceInfo > .movieTitle {
     color: #bfbfbf;
     font-weight: 400;
     font-size: 0.875rem;
-    margin-bottom: 0.125rem;
+    margin-bottom: 0.25rem;
   }
+
   #performanceInfo > .performanceInfoRow {
     display: flex;
     column-gap: 0.5rem;

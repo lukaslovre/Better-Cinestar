@@ -4,7 +4,14 @@
 </script>
 
 <div class="titleAndStats" class:sticky={isFullscreened}>
-  <p class="movieTitle">{movie.title}</p>
+  <p class="movieTitle">
+    {movie.title}
+    {#if movie.ageRating && movie.ageRating !== "0"}
+      <span class="ageRating">
+        ({movie.ageRating}+)
+      </span>
+    {/if}
+  </p>
 
   <div class="movieStats">
     <div class="row">
@@ -51,6 +58,9 @@
     font-size: 1.25rem;
     font-weight: 500;
     margin-bottom: 0.75rem;
+  }
+  .movieTitle .ageRating {
+    color: #b3b3b3;
   }
   .movieStats {
     display: flex;
