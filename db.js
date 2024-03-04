@@ -87,6 +87,18 @@ const Performance = sequelize.define(
   }
 );
 
+const PerformanceDates = sequelize.define(
+  "PerformanceDates",
+  {
+    cinemaOid: DataTypes.STRING,
+    filmId: DataTypes.STRING,
+    date: DataTypes.JSON,
+  },
+  {
+    timestamps: false,
+  }
+);
+
 async function init() {
   try {
     await sequelize.authenticate();
@@ -95,7 +107,7 @@ async function init() {
     console.error("Unable to connect to the database:", error);
   }
 
-  //   await sequelize.sync({ force: true });
+  // await sequelize.sync({ force: true });
   await sequelize.sync();
 }
 
@@ -113,12 +125,34 @@ async function savePerformancesToDatabase(performances) {
   await Performance.bulkCreate(performances);
 }
 
+async function savePerformanceDatesToDatabase(performancesByCinemaFilmAndDates) {
+  // clear the table before inserting new data
+  await PerformanceDates.destroy({ truncate: true });
+
+  await PerformanceDates.bulkCreate(performancesByCinemaFilmAndDates);
+
+  console.log("Performance dates saved to the database.");
+}
+
+async function getPerformanceDatesFor(cinemaOid, filmId) {
+  const queryResult = await PerformanceDates.findAll({
+    where: {
+      cinemaOid,
+      filmId,
+    },
+  });
+
+  return queryResult.at(0).toJSON();
+}
+
 module.exports = {
   Movie,
   Performance,
   Op,
   saveMoviesToDatabase,
   savePerformancesToDatabase,
+  savePerformanceDatesToDatabase,
+  getPerformanceDatesFor,
 };
 
 // define two models: Movie and Performance

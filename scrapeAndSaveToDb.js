@@ -1,6 +1,11 @@
-const { saveMoviesToDatabase, savePerformancesToDatabase } = require("./db.js");
+const {
+  saveMoviesToDatabase,
+  savePerformancesToDatabase,
+  savePerformanceDatesToDatabase,
+} = require("./db.js");
 
 const { fetchMoviesAndPerformances } = require("./scraping/cinestarFunctions.js");
+const { getPerformanceDatesFrom } = require("./scraping/getPerformanceDates.js");
 const {
   fillMoviesWithLetterboxdData,
   fillMoviesWithImdbData,
@@ -30,6 +35,11 @@ async function updateMoviesAndPerformances() {
 
   movies = moviesFormatted;
   performances = performancesFormatted;
+
+  const performanceDates = await getPerformanceDatesFrom(performances);
+
+  //   save to db
+  await savePerformanceDatesToDatabase(performanceDates);
 
   console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
 }

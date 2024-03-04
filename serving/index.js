@@ -7,6 +7,8 @@ const { dateToYYYYMMDD, dateToHHMM } = require("./utils");
 
 const { getMoviesByIds, sortMovies } = require("./movies");
 
+const { getPerformanceDatesFor } = require("../db.js");
+
 async function getFormattedMovies(cinemaOids, date, sortBy) {
   const present = new Date();
   const today = dateToYYYYMMDD(present);
@@ -44,6 +46,10 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
     );
 
     movie.performances = performanceGroup ? performanceGroup.performances : [];
+
+    movie.availableDates = (await getPerformanceDatesFor(cinemaOids, movie.id)).date.sort(
+      (a, b) => (a < b ? -1 : a > b ? 1 : 0)
+    );
   }
 
   // sortirati filmove
