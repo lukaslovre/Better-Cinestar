@@ -48,7 +48,11 @@ function groupPerformancesByFilmid(performances) {
   return performancesGroupedByFilmid;
 }
 
-function filterPerformancesByEarliestDate(performancesGroupedByFilmid, today) {
+function filterPerformancesByEarliestDate(
+  performancesGroupedByFilmid,
+  today,
+  currentTime
+) {
   for (const group of performancesGroupedByFilmid) {
     let firstAppearingDate = "9999-99-99";
     let filteredPerformances = [];
@@ -56,6 +60,9 @@ function filterPerformancesByEarliestDate(performancesGroupedByFilmid, today) {
     for (const perf of group.performances) {
       // ako je datum prije danas, odbaciti
       if (perf.cinemaDate < today) continue;
+
+      // ako je datum danas, a vrijeme je prije trenutnog, odbaciti
+      if (perf.cinemaDate === today && perf.performanceTime < currentTime) continue;
 
       //ako je novi najraniji, resetirati listu
       if (perf.cinemaDate < firstAppearingDate) {

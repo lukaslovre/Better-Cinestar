@@ -29,7 +29,7 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
 
   // ako je "any", maknuti sve osim samo jednog datuma (najraniji od danas)
   if (date === "any") {
-    filterPerformancesByEarliestDate(performancesGroupedByFilmid, today);
+    filterPerformancesByEarliestDate(performancesGroupedByFilmid, today, currentTime);
   }
 
   // nabaviti filmove

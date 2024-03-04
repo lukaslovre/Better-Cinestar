@@ -20,8 +20,12 @@
   export let movie;
   export let isFullscreened;
 
+  let currentPerformanceDate = movie.performances[0].cinemaDate;
+
+  console.log(currentPerformanceDate);
+
   $: performanceDateText = getFormattedPerformanceDateLabel(
-    new Date(movie.performances[0].performanceDateTime)
+    new Date(currentPerformanceDate)
   );
 
   let filteredPerformances = movie.performances;
@@ -66,16 +70,10 @@
     filteredPerformances = filterPerformances(movie.performances, selectedFilters);
   }
 
-  function logAllAvailableDates() {
-    console.log(movie.availableDates);
-
-    getPerformances($cinemaOids, movie.performances[0].cinemaDate, movie.id);
-  }
-
   async function getPrevDatePerformances() {
     const prevDate = getPreviousAndNextPerformanceDatesForMovie(
       movie.availableDates,
-      movie.performances[0].cinemaDate
+      currentPerformanceDate
     ).previousDate;
 
     if (prevDate === null) {
@@ -87,13 +85,16 @@
 
     console.log(performances);
 
+    if (performances === undefined) return;
+
+    currentPerformanceDate = prevDate;
     movie.performances = performances;
   }
 
   async function getNextDatePerformances() {
     const nextDate = getPreviousAndNextPerformanceDatesForMovie(
       movie.availableDates,
-      movie.performances[0].cinemaDate
+      currentPerformanceDate
     ).nextDate;
 
     if (nextDate === null) {
@@ -107,6 +108,7 @@
 
     if (performances === undefined) return;
 
+    currentPerformanceDate = nextDate;
     movie.performances = performances;
   }
 </script>
@@ -152,7 +154,7 @@
         class="arrowCircle button"
         class:disabled={getPreviousAndNextPerformanceDatesForMovie(
           movie.availableDates,
-          movie.performances[0].cinemaDate
+          currentPerformanceDate
         ).previousDate === null}
         on:click={getPrevDatePerformances}
       >
@@ -163,7 +165,7 @@
         class="arrowCircle button"
         class:disabled={getPreviousAndNextPerformanceDatesForMovie(
           movie.availableDates,
-          movie.performances[0].cinemaDate
+          currentPerformanceDate
         ).nextDate === null}
         on:click={getNextDatePerformances}
       >
