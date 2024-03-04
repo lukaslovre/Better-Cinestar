@@ -277,6 +277,10 @@
     justify-content: space-between;
     align-items: center;
   }
+  .menu .faqItem .question button {
+    flex-shrink: 0;
+  }
+
   .menu .faqItem .answer {
     display: none;
     margin-left: 1rem;
