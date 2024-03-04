@@ -2,6 +2,10 @@ function getFormattedPerformanceDateLabel(performance) {
   const performanceDate = new Date(performance.performanceDateTime);
   const today = new Date();
   const dateDiff = performanceDate.getDate() - today.getDate();
+
+  if (dateDiff < 0) {
+    return "prošlost";
+  }
   if (dateDiff === 0) {
     return "danas";
   }
@@ -14,6 +18,43 @@ function getFormattedPerformanceDateLabel(performance) {
     month: "short",
     day: "numeric",
   });
+}
+
+export function getRelativeDate(date, time) {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const diff = date.getTime() - now.getTime();
+  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (diffInDays < -1) {
+    return `prije ${Math.abs(diffInDays)} dana`;
+  } else if (diffInDays === -1) {
+    return "jučer";
+  } else if (diffInDays === 0) {
+    // if today, show how much hours and minutes is left from now
+    const correctNow = new Date();
+    const currentHours = correctNow.getHours();
+    const currentMinutes = correctNow.getMinutes();
+
+    console.log("Current time: ", currentHours, ":", currentMinutes);
+
+    const [hours, minutes] = time.split(":").map((x) => parseInt(x));
+
+    console.log("Performance time: ", hours, ":", minutes);
+
+    const diffInHours = (hours * 60 + minutes - currentHours * 60 - currentMinutes) / 60;
+    const diffInMinutes =
+      (hours * 60 + minutes - currentHours * 60 - currentMinutes) % 60;
+
+    const diffInHoursString = Math.floor(diffInHours);
+    const diffInMinutesString = diffInMinutes.toString().padStart(2, "0");
+
+    return `za ${diffInHoursString}h ${diffInMinutesString}m`;
+  } else if (diffInDays === 1) {
+    return "sutra";
+  } else {
+    return `za ${diffInDays} dana`;
+  }
 }
 
 function dateToYMDFormat(date) {
@@ -32,10 +73,13 @@ function countSelectedFilters(filters) {
 function filterPerformances(performances, filters) {
   return performances.filter((performance) => {
     const isInTimeRange =
-      performance.performanceTime >= filters.timeFrom &&
-      performance.performanceTime <= filters.timeTo;
+      filters.timeFrom === undefined ||
+      filters.timeTo === undefined ||
+      (performance.performanceTime >= filters.timeFrom &&
+        performance.performanceTime <= filters.timeTo);
 
     const isVideoFeatureSelected =
+      filters.videoFeatures === undefined ||
       filters.videoFeatures.length === 0 ||
       filters.videoFeatures.some((selectedFeature) =>
         performance.performanceFeatures.includes(selectedFeature)
@@ -44,6 +88,7 @@ function filterPerformances(performances, filters) {
     // if roomFeatures equals "BASIC", then check that the performanceFeatures doesn't contain "4DX" or "IMAX" or "GOLD",
     // if roomFeatures equals something else, then the performanceFeatures must contain that value
     const isRoomFeatureSelected =
+      filters.roomFeatures === undefined ||
       filters.roomFeatures.length === 0 ||
       filters.roomFeatures.some((selectedFeature) => {
         if (selectedFeature === "BASIC") {
@@ -58,6 +103,7 @@ function filterPerformances(performances, filters) {
       });
 
     const isAudioFeatureSelected =
+      filters.audioFeatures === undefined ||
       filters.audioFeatures.length === 0 ||
       filters.audioFeatures.some((selectedFeature) =>
         performance.performanceFeatures.includes(selectedFeature)

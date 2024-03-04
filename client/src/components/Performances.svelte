@@ -20,11 +20,12 @@
   export let movie;
   export let isFullscreened;
 
-  const performanceDateText = getFormattedPerformanceDateLabel(movie.performances[0]);
+  $: performanceDateText = getFormattedPerformanceDateLabel(movie.performances[0]);
 
   let filteredPerformances = movie.performances;
   let filterCardVisible = false;
   let activeFiltersCount = 0;
+  let selectedFilters = {};
 
   // dispactheri
   function openPerformance(movie, performance) {
@@ -52,17 +53,57 @@
   }
 
   function handlePerformanceFilterChange(event) {
-    const selectedFilters = event.detail;
+    selectedFilters = event.detail;
 
     activeFiltersCount = countSelectedFilters(selectedFilters);
 
     filteredPerformances = filterPerformances(movie.performances, selectedFilters);
   }
 
-  function logAllAvailableDates(movie) {
+  $: {
+    filteredPerformances = filterPerformances(movie.performances, selectedFilters);
+  }
+
+  function logAllAvailableDates() {
     console.log(movie.availableDates);
 
     getPerformances($cinemaOids, movie.performances[0].cinemaDate, movie.id);
+  }
+
+  async function getPrevDatePerformances() {
+    const prevDate = getPreviousAndNextPerformanceDatesForMovie(
+      movie.availableDates,
+      movie.performances[0].cinemaDate
+    ).previousDate;
+
+    if (prevDate === null) {
+      console.log("No previous date available");
+      return;
+    }
+
+    const performances = await getPerformances($cinemaOids, prevDate, movie.id);
+
+    console.log(performances);
+
+    movie.performances = performances;
+  }
+
+  async function getNextDatePerformances() {
+    const nextDate = getPreviousAndNextPerformanceDatesForMovie(
+      movie.availableDates,
+      movie.performances[0].cinemaDate
+    ).nextDate;
+
+    if (nextDate === null) {
+      console.log("No next date available");
+      return;
+    }
+
+    const performances = await getPerformances($cinemaOids, nextDate, movie.id);
+
+    console.log(performances);
+
+    movie.performances = performances;
   }
 </script>
 
@@ -102,19 +143,14 @@
       {/if}
     </button>
 
-    <!-- bio div -->
-    <button
-      class="performanceDatePicker"
-      on:click={async () => {
-        logAllAvailableDates(movie);
-      }}
-    >
+    <div class="performanceDatePicker">
       <button
         class="arrowCircle button"
         class:disabled={getPreviousAndNextPerformanceDatesForMovie(
           movie.availableDates,
           movie.performances[0].cinemaDate
         ).previousDate === null}
+        on:click={getPrevDatePerformances}
       >
         <img src="images/leftArrow.svg" alt="left arrow" />
       </button>
@@ -125,11 +161,11 @@
           movie.availableDates,
           movie.performances[0].cinemaDate
         ).nextDate === null}
+        on:click={getNextDatePerformances}
       >
         <img src="images/rightArrow.svg" alt="right arrow" />
       </button>
-      <!-- bio div -->
-    </button>
+    </div>
   </div>
 
   <PerformanceFilterCard

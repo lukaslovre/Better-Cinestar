@@ -1,8 +1,9 @@
 <script>
   import Loading from "./Loading.svelte";
   import { createEventDispatcher } from "svelte";
-  import { cinemas } from "../utils/cinemas.js";
+  import { cinemas } from "../utils/cinemas";
   import { getAverageSeatDistance } from "../utils/performanceSeats";
+  import { getRelativeDate } from "../utils/utils";
 
   export let performanceData;
   const dispatch = createEventDispatcher();
@@ -10,7 +11,7 @@
 
   function formatDate(dateString, time) {
     const options = {
-      weekday: "long",
+      weekday: "short",
       day: "2-digit",
       month: "2-digit",
     };
@@ -19,7 +20,9 @@
     const localeString = date.toLocaleDateString("hr-HR", options);
     const formattedDate = localeString.replace(/\s+/g, "").replace(/,/g, " ");
 
-    return time + ", " + formattedDate;
+    const relativeDate = getRelativeDate(date, time);
+
+    return time + ", " + formattedDate + " (" + relativeDate + ")";
   }
   function closeSeats() {
     dispatch("selectedPerformance", null);

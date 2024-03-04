@@ -7,6 +7,9 @@ export async function getPerformances(cinemaOids, date, movieId) {
   urlParams.append("date", date);
   urlParams.append("movieId", movieId);
 
+  console.log("Going to fetch performances with params: ", urlParams.toString());
+
+  // Fetch the performances
   const res = await fetch(`/api/performances?${urlParams.toString()}`);
 
   if (!res.ok) {
@@ -14,8 +17,8 @@ export async function getPerformances(cinemaOids, date, movieId) {
     return;
   }
 
-  const data = await res.json();
-  console.log(data);
+  // Return the performances
+  return await res.json();
 }
 
 export function getPreviousAndNextPerformanceDatesForMovie(availableDates, date) {
