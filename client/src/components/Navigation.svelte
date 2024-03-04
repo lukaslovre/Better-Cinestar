@@ -81,16 +81,6 @@
         <div class="segmentedButton">
           <div
             class="option"
-            class:selected={selectedCardDesign === "v2"}
-            on:click={() => {
-              changeCardDesign("v2");
-            }}
-          >
-            <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
-            <p>Novi</p>
-          </div>
-          <div
-            class="option"
             class:selected={selectedCardDesign === "v1"}
             on:click={() => {
               changeCardDesign("v1");
@@ -98,6 +88,16 @@
           >
             <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
             <p>Stari</p>
+          </div>
+          <div
+            class="option"
+            class:selected={selectedCardDesign === "v2"}
+            on:click={() => {
+              changeCardDesign("v2");
+            }}
+          >
+            <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
+            <p>Novi</p>
           </div>
         </div>
       </section>
