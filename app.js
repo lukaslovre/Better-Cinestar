@@ -17,7 +17,7 @@ app.get("/api/movies", async (req, res) => {
 
   const { cinemaOids, date, sortBy } = req.query;
 
-  const { valid, message, cinemaOidsArray } = validateParameters(
+  const { valid, message, cinemaOidsArray } = validateMovieParameters(
     cinemaOids,
     date,
     sortBy
@@ -28,8 +28,7 @@ app.get("/api/movies", async (req, res) => {
     return;
   }
 
-  // Movies matching the filters
-  // and with performances added to them
+  // Movies matching the filters and with performances added to them
   const formattedMovies = await getFormattedMovies(cinemaOidsArray, date, sortBy);
 
   // for measuring response time
@@ -42,20 +41,10 @@ app.get("/api/movies", async (req, res) => {
 app.get("/api/seating", async (req, res) => {
   const { cinemaOid, performanceId } = req.query;
 
-  // validate parameters
-  if (!cinemaOid || !performanceId) {
-    res.status(400).send("Missing parameters");
-    return;
-  }
+  const { valid, message } = validateSeatingParameters(cinemaOid, performanceId);
 
-  // they mustnt be arrays
-  if (Array.isArray(cinemaOid) || Array.isArray(performanceId)) {
-    res.status(400).send("Invalid parameters");
-    return;
-  }
-
-  if (cinemaOid.length !== 18) {
-    res.status(400).send("Invalid parameters");
+  if (!valid) {
+    res.status(400).send(message);
     return;
   }
 
@@ -102,7 +91,7 @@ app.listen(port, () => {
 
 console.log("Current time:", dateToHHMM(new Date()));
 
-function validateParameters(cinemaOids, date, sortBy) {
+function validateMovieParameters(cinemaOids, date, sortBy) {
   // if any of the parameters is missing, return an error
   if (!cinemaOids || !date || !sortBy) {
     return { valid: false, message: "Missing parameters" };
@@ -125,6 +114,24 @@ function validateParameters(cinemaOids, date, sortBy) {
 
   // If we reach this point, the parameters are valid
   return { valid: true, message: "", cinemaOidsArray };
+}
+function validateSeatingParameters(cinemaOid, performanceId) {
+  // if any of the parameters is missing, return an error
+  if (!cinemaOid || !performanceId) {
+    return { valid: false, message: "Missing parameters" };
+  }
+
+  // they mustnt be arrays
+  if (Array.isArray(cinemaOid) || Array.isArray(performanceId)) {
+    return { valid: false, message: "Invalid parameters" };
+  }
+
+  if (cinemaOid.length !== 18) {
+    return { valid: false, message: "Invalid parameters" };
+  }
+
+  // If we reach this point, the parameters are valid
+  return { valid: true, message: "" };
 }
 
 function validatePerformanceParameters(cinemaOids, date, movieId) {
