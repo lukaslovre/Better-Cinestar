@@ -1,7 +1,7 @@
 const { Performance, Op } = require("../db");
 
 async function getPerformancesFiltered(cinemaOids, date, today, currentTime) {
-  const performances = [];
+  let performances;
 
   if (date === "any") {
     const performanceResult = await Performance.findAll({
@@ -19,33 +19,9 @@ async function getPerformancesFiltered(cinemaOids, date, today, currentTime) {
       ],
     });
 
-    performanceResult.forEach((performance) => {
-      performances.push(performance.toJSON());
-    });
+    performances = performanceResult.map((performance) => performance.toJSON());
   } else {
-    let whereClause = {
-      cinemaOid: {
-        [Op.in]: cinemaOids,
-      },
-      cinemaDate: {
-        [Op.eq]: date,
-      },
-    };
-
-    if (date === today) {
-      whereClause.performanceTime = {
-        [Op.gte]: currentTime,
-      };
-    }
-
-    const performancesResult = await Performance.findAll({
-      where: whereClause,
-      order: [["performanceTime", "ASC"]],
-    });
-
-    performancesResult.forEach((performance) => {
-      performances.push(performance.toJSON());
-    });
+    performances = await getPerformancesForDate(cinemaOids, date, today, currentTime);
   }
 
   return performances;
@@ -98,4 +74,62 @@ module.exports = {
   getPerformancesFiltered,
   groupPerformancesByFilmid,
   filterPerformancesByEarliestDate,
+  getPerformancesForDateAndMovie,
 };
+
+async function getPerformancesForDate(cinemaOids, date, today, currentTime) {
+  let whereClause = {
+    cinemaOid: {
+      [Op.in]: cinemaOids,
+    },
+    cinemaDate: {
+      [Op.eq]: date,
+    },
+  };
+
+  if (date === today) {
+    whereClause.performanceTime = {
+      [Op.gte]: currentTime,
+    };
+  }
+
+  const performancesResult = await Performance.findAll({
+    where: whereClause,
+    order: [["performanceTime", "ASC"]],
+  });
+
+  return performancesResult.map((performance) => performance.toJSON());
+}
+
+async function getPerformancesForDateAndMovie(
+  cinemaOids,
+  date,
+  today,
+  currentTime,
+  movieId
+) {
+  let whereClause = {
+    cinemaOid: {
+      [Op.in]: cinemaOids,
+    },
+    cinemaDate: {
+      [Op.eq]: date,
+    },
+    filmId: {
+      [Op.eq]: movieId,
+    },
+  };
+
+  if (date === today) {
+    whereClause.performanceTime = {
+      [Op.gte]: currentTime,
+    };
+  }
+
+  const performancesResult = await Performance.findAll({
+    where: whereClause,
+    order: [["performanceTime", "ASC"]],
+  });
+
+  return performancesResult.map((performance) => performance.toJSON());
+}

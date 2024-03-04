@@ -8,6 +8,12 @@
     countSelectedFilters,
   } from "../utils/utils.js";
   import { cinemas as cinemasData } from "../utils/cinemas";
+  import {
+    getPerformances,
+    getPreviousAndNextPerformanceDatesForMovie,
+  } from "../utils/performances";
+
+  import { cinemaOids, selectedDate, sortBy } from "../stores";
 
   const dispatch = createEventDispatcher();
 
@@ -52,6 +58,12 @@
 
     filteredPerformances = filterPerformances(movie.performances, selectedFilters);
   }
+
+  function logAllAvailableDates(movie) {
+    console.log(movie.availableDates);
+
+    getPerformances($cinemaOids, movie.performances[0].cinemaDate, movie.id);
+  }
 </script>
 
 <div class="performancesContainer">
@@ -90,15 +102,34 @@
       {/if}
     </button>
 
-    <div class="performanceDatePicker">
-      <button class="arrowCircle button">
+    <!-- bio div -->
+    <button
+      class="performanceDatePicker"
+      on:click={async () => {
+        logAllAvailableDates(movie);
+      }}
+    >
+      <button
+        class="arrowCircle button"
+        class:disabled={getPreviousAndNextPerformanceDatesForMovie(
+          movie.availableDates,
+          movie.performances[0].cinemaDate
+        ).previousDate === null}
+      >
         <img src="images/leftArrow.svg" alt="left arrow" />
       </button>
       {performanceDateText}
-      <button class="arrowCircle button">
+      <button
+        class="arrowCircle button"
+        class:disabled={getPreviousAndNextPerformanceDatesForMovie(
+          movie.availableDates,
+          movie.performances[0].cinemaDate
+        ).nextDate === null}
+      >
         <img src="images/rightArrow.svg" alt="right arrow" />
       </button>
-    </div>
+      <!-- bio div -->
+    </button>
   </div>
 
   <PerformanceFilterCard

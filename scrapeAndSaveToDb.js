@@ -36,9 +36,8 @@ async function updateMoviesAndPerformances() {
   movies = moviesFormatted;
   performances = performancesFormatted;
 
+  //  Get performance dates and save them to the database
   const performanceDates = await getPerformanceDatesFrom(performances);
-
-  //   save to db
   await savePerformanceDatesToDatabase(performanceDates);
 
   console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);

@@ -161,6 +161,10 @@ body {
   background: #2057df;
   color: #fff;
 }
+.button.disabled {
+  background: #5c6270;
+  color: #fff;
+}
 button {
   border: none;
 }
