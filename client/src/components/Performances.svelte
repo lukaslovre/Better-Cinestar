@@ -22,8 +22,6 @@
 
   let currentPerformanceDate = movie.performances[0].cinemaDate;
 
-  console.log(currentPerformanceDate);
-
   $: performanceDateText = getFormattedPerformanceDateLabel(
     new Date(currentPerformanceDate)
   );
@@ -70,6 +68,8 @@
     filteredPerformances = filterPerformances(movie.performances, selectedFilters);
   }
 
+  let loadingPerformances = false;
+
   async function getPrevDatePerformances() {
     const prevDate = getPreviousAndNextPerformanceDatesForMovie(
       movie.availableDates,
@@ -81,9 +81,13 @@
       return;
     }
 
+    loadingPerformances = true;
+
     const performances = await getPerformances($cinemaOids, prevDate, movie.id);
 
     console.log(performances);
+
+    loadingPerformances = false;
 
     if (performances === undefined) return;
 
@@ -102,9 +106,13 @@
       return;
     }
 
+    loadingPerformances = true;
+
     const performances = await getPerformances($cinemaOids, nextDate, movie.id);
 
     console.log(performances);
+
+    loadingPerformances = false;
 
     if (performances === undefined) return;
 
@@ -160,7 +168,7 @@
       >
         <img src="images/leftArrow.svg" alt="left arrow" />
       </button>
-      {performanceDateText}
+      {loadingPerformances ? "Loading..." : performanceDateText}
       <button
         class="arrowCircle button"
         class:disabled={getPreviousAndNextPerformanceDatesForMovie(
