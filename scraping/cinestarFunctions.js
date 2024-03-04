@@ -1,22 +1,28 @@
+// Define the base API URL and default headers
 const API_URL = "https://shop.cinestarcinemas.hr/api";
 const DEFAULT_HEADERS = {
   "Accept-Encoding": "gzip, deflate, br",
 };
 
+// Function to make a request to the Cinestar API
 async function cinestarApi(endpoint, cinemaOid) {
+  // Construct the full URL and headers
   const url = `${API_URL}${endpoint}`;
   const headers = { ...DEFAULT_HEADERS, "CENTER-OID": cinemaOid };
 
+  // Make the request and parse the response as JSON
   const response = await fetch(url, { headers });
   const data = await response.json();
 
   return data;
 }
 
+// Function to fetch movies and performances for a list of cinemas
 async function fetchMoviesAndPerformances(cinemas) {
   const movies = [];
   const performances = [];
 
+  // Fetch movies and performances for each cinema
   for (const cinema of cinemas) {
     const { movies: moviesFormatted, formattedPerformances: performancesFormatted } =
       await getCinemaMoviesAndPerformances(cinema);
@@ -24,15 +30,27 @@ async function fetchMoviesAndPerformances(cinemas) {
     performances.push(...performancesFormatted);
   }
 
+  // Filter out duplicate movies
   const uniqueMovies = filterUniqueMovies(movies);
 
   return { moviesFormatted: uniqueMovies, performancesFormatted: performances };
 }
 
+// Function to fetch movies and performances for a single cinema
 async function getCinemaMoviesAndPerformances(cinema) {
-  const data = await cinestarApi("/films", cinema.cinemaOid);
+  let data;
+
+  // Fetch the data from the API
+  try {
+    data = await cinestarApi("/films", cinema.cinemaOid);
+  } catch (error) {
+    console.error("Error fetching movies for cinema", cinema.cinemaOid, error);
+    return;
+  }
+
   let performances = [];
 
+  // Format the movies and performances
   const movies = data.map(({ performances: moviePerformances, ...movie }) => {
     performances.push(...moviePerformances);
     return formatMovie(movie);
@@ -45,6 +63,7 @@ async function getCinemaMoviesAndPerformances(cinema) {
   return { movies, formattedPerformances };
 }
 
+// Function to format a movie object
 function formatMovie(movie) {
   return {
     ...movie,
@@ -61,6 +80,7 @@ function formatMovie(movie) {
   };
 }
 
+// Function to format a performance object
 function formatPerformance(performance, cinemaOid) {
   return {
     ...performance,
@@ -70,9 +90,11 @@ function formatPerformance(performance, cinemaOid) {
   };
 }
 
+// Function to format the features of a performance
 function formatPerformanceFeatures(releaseTypeName) {
   const features = releaseTypeName.split("/");
 
+  // Reorder the features according to certain rules
   let index;
   if ((index = features.indexOf("3D")) !== -1) {
     swap(features, 0, index);
@@ -94,6 +116,7 @@ function formatPerformanceFeatures(releaseTypeName) {
   return features.slice(0, 2).concat(features.slice(2).sort());
 }
 
+// Function to swap two elements in an array
 function swap(arr, a, b) {
   if (a === b) return;
   const temp = arr[a];
@@ -101,6 +124,7 @@ function swap(arr, a, b) {
   arr[b] = temp;
 }
 
+// Function to filter out duplicate movies
 function filterUniqueMovies(movies) {
   return movies.filter(
     (value, index, array) =>
@@ -108,6 +132,7 @@ function filterUniqueMovies(movies) {
   );
 }
 
+// Export the main function
 module.exports = { fetchMoviesAndPerformances };
 
 // // ovo ce se izvrsavat na klijentu?
