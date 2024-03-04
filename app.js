@@ -62,11 +62,6 @@ app.get("/api/seating", async (req, res) => {
 
   res.send(seating);
 });
-// app.get("/getMovies", async (req, res) => {
-//   res.send("Dohvacanje filmova i performance-a sa CineStar-a.");
-//   await updateMoviesAndPerformances();
-//   updateExternalData();
-// });
 
 app.use(express.static(path.join(__dirname, "client/public")));
 
