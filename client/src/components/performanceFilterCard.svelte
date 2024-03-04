@@ -313,10 +313,10 @@
     border-radius: 0.125rem;
   }
   #performanceFilterCard .column .checkboxesColumn .option.selected::before {
-    border-color: #e8c547;
+    border-color: #ffcc00;
     background:
       url(/images/check.svg) no-repeat center / contain,
-      #e8c547;
+      #ffcc00;
   }
   #performanceFilterCard .column .inputsColumn .inputContainer {
     display: flex;

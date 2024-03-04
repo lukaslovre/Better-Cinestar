@@ -172,7 +172,7 @@
     width: 1.25rem;
     height: 1.25rem;
     border-radius: 50%;
-    background-color: #e8c547;
+    background-color: #ffcc00;
     color: #05060b;
     font-size: 0.75rem;
     font-weight: 600;

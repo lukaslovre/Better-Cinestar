@@ -136,10 +136,10 @@ body {
   text-overflow: ellipsis; */
 }
 .input-container .dropdown-options .selected {
-  color: #e8c547;
+  color: #ffcc00;
 }
 .input-container .dropdown-options .selected .checkbox {
-  background-color: #e8c547;
+  background-color: #ffcc00;
 }
 .input-container .dropdown-options .selected .checkbox img {
   visibility: visible;

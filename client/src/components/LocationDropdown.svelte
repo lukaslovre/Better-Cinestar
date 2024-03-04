@@ -162,7 +162,7 @@
                 d="M1 1L5.38848 5.82733C5.73523 6.20875 5.73523 6.79125 5.38848 7.17267L1 12"
                 stroke="#454954"
                 style:stroke={checkIfSuboptionSelected(city, $cinemaOids)
-                  ? "#e8c547"
+                  ? "#FFCC00"
                   : ""}
                 stroke-width="2"
                 stroke-linecap="round"
