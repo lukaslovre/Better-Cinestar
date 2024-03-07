@@ -37,8 +37,13 @@
     new Date(currentPerformanceDate)
   );
 
+  let firstRender = true;
   $: {
-    updatePerformances(currentPerformanceDate);
+    if (firstRender) {
+      firstRender = false;
+    } else {
+      updatePerformances(currentPerformanceDate);
+    }
   }
 
   let loadingPerformances = false;

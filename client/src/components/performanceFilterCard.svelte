@@ -14,6 +14,7 @@
   export let performances; // array of performances
   export let filteredPerformances; // array of performances
 
+  // Initial values
   let selectedPerformanceFilters = {
     videoFeatures: [],
     audioFeatures: [],
@@ -45,32 +46,18 @@
     },
   ];
 
-  $: {
-    whenPerformancesUpdate(performances);
-  }
+  $: whenPerformancesUpdate(performances);
 
-  $: {
-    whenFilteredPerformancesUpdate(filteredPerformances);
-  }
+  $: whenFilteredPerformancesUpdate(filteredPerformances);
 
-  $: {
-    dispatch("performanceFilterChange", selectedPerformanceFilters);
-  }
+  $: dispatch("performanceFilterChange", selectedPerformanceFilters);
 
   function whenPerformancesUpdate(perf) {
-    console.log("Performances updated");
-
     setInitialColumnDataValues(perf);
-
-    console.log(columns);
   }
 
   function whenFilteredPerformancesUpdate(filteredPerf) {
-    console.log("Filtered performances updated");
-
     setColumnDataValuesOnFilterChange(filteredPerf);
-
-    console.log(columns);
   }
 
   // Functions
