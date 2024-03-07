@@ -185,6 +185,7 @@
   <PerformanceFilterCard
     on:performanceFilterChange={handlePerformanceFilterChange}
     performances={movie.performances}
+    {filteredPerformances}
     displayComponent={isFullscreened && filterCardVisible ? "flex" : "none"}
   />
 

@@ -118,6 +118,18 @@ function filterPerformances(performances, filters) {
 }
 
 // performance filter card
+
+/**
+ * Returns an array of unique performance features from an array of performances.
+ * Each performance is an object that includes a `performanceFeatures` property,
+ * which is an array of strings. If a performance does not include "IMAX", "4DX",
+ * or "GOLD" in its features, "BASIC" is added to its features.
+ *
+ * @param {Object[]} performances - The performances to extract features from.
+ * @param {string[]} performances[].performanceFeatures - The features of each performance.
+ *
+ * @returns {string[]} An array of unique performance features.
+ */
 function getUniquePerformanceFeaturesFrom(performances) {
   return (
     performances
@@ -167,7 +179,7 @@ function getGroupedPerformanceFeaturesFrom(performances) {
 }
 
 function getPossibleFeaturesWithAppliedFilters(performances, filters) {
-  const columnNames = ["videoFeatures", "roomFeatures", "audioFeatures"];
+  // const columnNames = ["videoFeatures", "roomFeatures", "audioFeatures"];
 
   const possibleFeatures = {
     videoFeatures: [],
@@ -175,14 +187,16 @@ function getPossibleFeaturesWithAppliedFilters(performances, filters) {
     audioFeatures: [],
   };
 
-  for (const columnName of columnNames) {
+  for (const columnName of Object.keys(possibleFeatures)) {
     const filtersWithoutOneColumn = JSON.parse(JSON.stringify(filters));
+
     filtersWithoutOneColumn[columnName] = [];
 
     const filteredPerformances = filterPerformances(
       performances,
       filtersWithoutOneColumn
     );
+
     possibleFeatures[columnName] =
       getGroupedPerformanceFeaturesFrom(filteredPerformances)[columnName];
   }
@@ -193,19 +207,21 @@ function getPossibleFeaturesWithAppliedFilters(performances, filters) {
 // function that for each feature counts the number of performances that contain it
 function countFeatureOccurences(performances, feature) {
   let count = 0;
+
   for (const performance of performances) {
     if (feature === "BASIC") {
       if (
-        !performance.performanceFeatures.includes("4DX") &&
-        !performance.performanceFeatures.includes("IMAX") &&
-        !performance.performanceFeatures.includes("GOLD")
+        !performance.performanceFeatures?.includes("4DX") &&
+        !performance.performanceFeatures?.includes("IMAX") &&
+        !performance.performanceFeatures?.includes("GOLD")
       ) {
         count++;
       }
-    } else if (performance.performanceFeatures.includes(feature)) {
+    } else if (performance.performanceFeatures?.includes(feature)) {
       count++;
     }
   }
+
   return count;
 }
 
