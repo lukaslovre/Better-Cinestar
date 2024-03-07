@@ -14,11 +14,13 @@ export async function getPerformances(cinemaOids, date, movieId) {
 
   if (!res.ok) {
     console.log("Error fetching performances");
-    return;
+    return [];
   }
 
+  const performances = await res.json();
+
   // Return the performances
-  return await res.json();
+  return performances;
 }
 
 export function getPreviousAndNextPerformanceDatesForMovie(availableDates, date) {

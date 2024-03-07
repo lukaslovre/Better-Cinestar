@@ -22,14 +22,33 @@
 
   let currentPerformanceDate = movie.performances[0].cinemaDate;
 
+  let filteredPerformances = movie.performances;
+
+  let filterCardVisible = false;
+  let selectedFilters = {};
+
+  $: {
+    filteredPerformances = filterPerformances(movie.performances, selectedFilters);
+  }
+
+  $: activeFiltersCount = countSelectedFilters(selectedFilters);
+
   $: performanceDateText = getFormattedPerformanceDateLabel(
     new Date(currentPerformanceDate)
   );
 
-  let filteredPerformances = movie.performances;
-  let filterCardVisible = false;
-  let activeFiltersCount = 0;
-  let selectedFilters = {};
+  $: {
+    updatePerformances(currentPerformanceDate);
+  }
+
+  let loadingPerformances = false;
+  async function updatePerformances(date) {
+    loadingPerformances = true;
+
+    movie.performances = await getPerformances($cinemaOids, date, movie.id);
+
+    loadingPerformances = false;
+  }
 
   // dispactheri
   function openPerformance(movie, performance) {
@@ -52,23 +71,9 @@
     return groupedPerformances;
   }
 
-  function displayFilterCard() {
-    filterCardVisible = !filterCardVisible;
-  }
-
   function handlePerformanceFilterChange(event) {
     selectedFilters = event.detail;
-
-    activeFiltersCount = countSelectedFilters(selectedFilters);
-
-    filteredPerformances = filterPerformances(movie.performances, selectedFilters);
   }
-
-  $: {
-    filteredPerformances = filterPerformances(movie.performances, selectedFilters);
-  }
-
-  let loadingPerformances = false;
 
   async function getPrevDatePerformances() {
     const prevDate = getPreviousAndNextPerformanceDatesForMovie(
@@ -81,18 +86,7 @@
       return;
     }
 
-    loadingPerformances = true;
-
-    const performances = await getPerformances($cinemaOids, prevDate, movie.id);
-
-    console.log(performances);
-
-    loadingPerformances = false;
-
-    if (performances === undefined) return;
-
     currentPerformanceDate = prevDate;
-    movie.performances = performances;
   }
 
   async function getNextDatePerformances() {
@@ -106,18 +100,11 @@
       return;
     }
 
-    loadingPerformances = true;
-
-    const performances = await getPerformances($cinemaOids, nextDate, movie.id);
-
-    console.log(performances);
-
-    loadingPerformances = false;
-
-    if (performances === undefined) return;
-
     currentPerformanceDate = nextDate;
-    movie.performances = performances;
+  }
+
+  function resetPerformanceDatePickerToDefault() {
+    currentPerformanceDate = $selectedDate;
   }
 </script>
 
@@ -150,7 +137,12 @@
     class="performanceManipulationContainer"
     style:display={isFullscreened ? "flex" : "none"}
   >
-    <button class="performanceFilter button" on:click={displayFilterCard}>
+    <button
+      class="performanceFilter button"
+      on:click={() => {
+        filterCardVisible = !filterCardVisible;
+      }}
+    >
       <img src="/images/filterPerfomanceIcon.svg" alt="filter icon" />
       {#if activeFiltersCount > 0}
         <div class="activeFiltersCount">{activeFiltersCount}</div>
@@ -168,7 +160,15 @@
       >
         <img src="images/leftArrow.svg" alt="left arrow" />
       </button>
-      {loadingPerformances ? "Loading..." : performanceDateText}
+
+      <button
+        type="button"
+        class="dateText"
+        on:click={resetPerformanceDatePickerToDefault}
+        class:italic={$selectedDate !== currentPerformanceDate}
+      >
+        {loadingPerformances ? "Loading..." : performanceDateText}
+      </button>
       <button
         class="arrowCircle button"
         class:disabled={getPreviousAndNextPerformanceDatesForMovie(
@@ -261,16 +261,20 @@
     align-items: center;
     justify-content: center;
   }
+
   .performanceManipulationContainer > .performanceDatePicker {
-    padding: 0.125rem;
     flex-grow: 1;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 1.5rem;
-    background: #101623;
-    text-transform: capitalize;
+    column-gap: 0.5rem;
+
+    border-radius: 3rem;
+    padding: 0.125rem;
+    background-color: #101623;
   }
+
   .performanceManipulationContainer .performanceDatePicker > .arrowCircle {
     width: 2.5rem;
     height: 2.5rem;
@@ -279,6 +283,26 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+  }
+
+  .performanceManipulationContainer .performanceDatePicker .dateText {
+    padding: 0.25rem 0.375rem;
+    border-radius: 0.25rem;
+    color: #e6e6e6;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: capitalize;
+
+    background-color: rgba(255, 255, 255, 0);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .performanceManipulationContainer .performanceDatePicker .dateText:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .performanceManipulationContainer .performanceDatePicker .dateText.italic {
+    font-style: italic;
   }
 
   .performanceContainer {
