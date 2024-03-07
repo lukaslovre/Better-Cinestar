@@ -12,8 +12,10 @@
 
   export let displayComponent; // flex/none
   export let performances; // array of performances
+  export let filteredPerformances; // array of performances
 
-  const selectedPerformanceFilters = {
+  // Initial values
+  let selectedPerformanceFilters = {
     videoFeatures: [],
     audioFeatures: [],
     roomFeatures: [],
@@ -21,65 +23,112 @@
     timeTo: "24:00",
   };
 
-  const availableFeatures = getGroupedPerformanceFeaturesFrom(performances);
+  let columns = [
+    {
+      id: "videoFeatures",
+      label: "Slika",
+      data: [],
+    },
+    {
+      id: "roomFeatures",
+      label: "Dvorana",
+      data: [],
+    },
+    {
+      id: "audioFeatures",
+      label: "Zvuk",
+      data: [],
+    },
+    {
+      id: "time",
+      label: "Vrijeme",
+      data: [],
+    },
+  ];
 
-  let possibleFeatures = getGroupedPerformanceFeaturesFrom(performances);
-  let featureOccurenceCounts = getAllFeatureOccurenceCounts();
+  $: whenPerformancesUpdate(performances);
 
-  function dispatchPerformanceFilterChange() {
-    possibleFeatures = getPossibleFeaturesWithAppliedFilters(
-      performances,
-      selectedPerformanceFilters
-    );
+  $: whenFilteredPerformancesUpdate(filteredPerformances);
 
-    featureOccurenceCounts = getAllFeatureOccurenceCounts();
+  $: dispatch("performanceFilterChange", selectedPerformanceFilters);
 
-    // console.log(possibleFeatures, selectedPerformanceFilters);
-
-    dispatch("performanceFilterChange", selectedPerformanceFilters);
+  function whenPerformancesUpdate(perf) {
+    setInitialColumnDataValues(perf);
   }
 
-  function getAllFeatureOccurenceCounts() {
-    const featureOccurenceCounts = {};
+  function whenFilteredPerformancesUpdate(filteredPerf) {
+    setColumnDataValuesOnFilterChange(filteredPerf);
+  }
 
-    const filteredPerformances = filterPerformances(
-      performances,
-      selectedPerformanceFilters
-    );
+  // Functions
 
-    Object.values(possibleFeatures)
-      .flat()
-      .forEach((feature) => {
-        featureOccurenceCounts[feature] = countFeatureOccurences(
-          filteredPerformances,
-          feature
-        );
+  function setInitialColumnDataValues(perf) {
+    for (let i = 0; i < columns.length; i++) {
+      if (columns[i].id === "time") continue;
+
+      const possibleFeatures = getGroupedPerformanceFeaturesFrom(perf)[columns[i].id];
+
+      columns[i].data = possibleFeatures.map((feature) => {
+        return {
+          name: feature,
+          state: selectedPerformanceFilters[columns[i].id].includes(feature)
+            ? "selected"
+            : "possible",
+        };
       });
-
-    return featureOccurenceCounts;
+    }
   }
 
-  // gets triggered on checkbox click
-  function toggleOption(event) {
-    const option = event.target.closest(".option");
-    if (!option) return;
+  function setColumnDataValuesOnFilterChange(filteredPerf) {
+    for (let i = 0; i < columns.length; i++) {
+      if (columns[i].id === "time") continue;
 
-    if (option.classList.contains("disabled")) return;
+      const possibleFeatures = getPossibleFeaturesWithAppliedFilters(
+        performances,
+        selectedPerformanceFilters
+      )[columns[i].id];
 
-    const optionText = option.innerText.split("(")[0].trim();
-    const featureType = option.closest(".column").id;
+      columns[i].data = columns[i].data.map((feature) => {
+        if (!possibleFeatures.includes(feature.name)) {
+          feature.state = "notPossible";
+        } else {
+          if (feature.state !== "selected") {
+            feature.state = "possible";
+          }
+        }
 
-    if (option.classList.contains("selected")) {
-      option.classList.remove("selected");
-      selectedPerformanceFilters[featureType] = selectedPerformanceFilters[
-        featureType
-      ].filter((item) => item !== optionText);
+        return feature;
+      });
+    }
+  }
+
+  function updateSelectedFilters() {
+    for (let i = 0; i < columns.length; i++) {
+      const selectedFeatures = columns[i].data
+        .filter((feature) => feature.state === "selected")
+        .map((feature) => feature.name);
+
+      selectedPerformanceFilters[columns[i].id] = selectedFeatures;
+    }
+  }
+
+  function toggleOption(featureName, featureCategory) {
+    const categoryIndex = columns.findIndex((column) => column.id === featureCategory);
+    const featureIndex = columns[categoryIndex].data.findIndex(
+      (feature) => feature.name === featureName
+    );
+
+    const featureState = columns[categoryIndex]["data"][featureIndex].state;
+
+    if (featureState === "notPossible") return;
+
+    if (featureState === "selected") {
+      columns[categoryIndex]["data"][featureIndex].state = "possible";
     } else {
-      option.classList.add("selected");
-      selectedPerformanceFilters[featureType].push(optionText);
+      columns[categoryIndex]["data"][featureIndex].state = "selected";
     }
 
-    dispatchPerformanceFilterChange();
+    updateSelectedFilters();
   }
 
   // time input functions
@@ -140,7 +189,7 @@
         input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
       ] = input.value;
 
-      dispatchPerformanceFilterChange();
+      // dispatchPerformanceFilterChange();
 
       return;
     }
@@ -166,7 +215,7 @@
       input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
     ] = input.value;
 
-    dispatchPerformanceFilterChange();
+    // dispatchPerformanceFilterChange();
   }
   function unfocusInput(event) {
     if (event.key === "Enter") {
@@ -176,82 +225,69 @@
   }
 </script>
 
-<div id="performanceFilterCard" on:click={toggleOption} style:display={displayComponent}>
-  <div class="column" id="videoFeatures">
-    <div class="label">Slika</div>
-    <div class="checkboxesColumn">
-      {#each availableFeatures.videoFeatures as videoFeature}
-        {#if possibleFeatures.videoFeatures.includes(videoFeature)}
-          <div class="option">
-            {videoFeature} ({featureOccurenceCounts[videoFeature]})
-          </div>
-        {:else}
-          <div class="option disabled">{videoFeature} (0)</div>
-        {/if}
-      {/each}
-      <div class="option selected" style="display: none;"></div>
-    </div>
-  </div>
-
-  <div class="column" id="roomFeatures">
-    <div class="label">Dvorana</div>
-    <div class="checkboxesColumn">
-      {#each availableFeatures.roomFeatures as roomFeature}
-        {#if possibleFeatures.roomFeatures.includes(roomFeature)}
-          <div class="option">{roomFeature} ({featureOccurenceCounts[roomFeature]})</div>
-        {:else}
-          <div class="option disabled">{roomFeature} (0)</div>
-        {/if}
-      {/each}
-    </div>
-  </div>
-
-  <div class="column" id="audioFeatures">
-    <div class="label">Zvuk</div>
-    <div class="checkboxesColumn">
-      {#each availableFeatures.audioFeatures as audioFeature}
-        {#if possibleFeatures.audioFeatures.includes(audioFeature)}
-          <div class="option">
-            {audioFeature} ({featureOccurenceCounts[audioFeature]})
-          </div>
-        {:else}
-          <div class="option disabled">{audioFeature} (0)</div>
-        {/if}
-      {/each}
-    </div>
-  </div>
-
-  <div class="column">
-    <div class="label">Vrijeme</div>
-    <div class="inputsColumn">
-      <div class="inputContainer">
-        od
-        <input
-          type="text"
-          id="performanceTimeFromInput"
-          on:focus={selectInputValue}
-          on:input={parseInputWhileTyping}
-          on:keydown={unfocusInput}
-          on:blur={checkIfValidTime}
-          value="00:00"
-          inputmode="numeric"
-        />
+<div id="performanceFilterCard" style:display={displayComponent}>
+  {#each columns as column}
+    {#if column.id !== "time"}
+      <div class="column" id={column.id}>
+        <div class="label">{column.label}</div>
+        <div class="checkboxesColumn">
+          {#each column.data as feature}
+            <button
+              class="option"
+              class:selected={feature.state === "selected"}
+              class:disabled={feature.state === "notPossible"}
+              type="button"
+              on:click={() => {
+                toggleOption(feature.name, column.id);
+              }}
+            >
+              {feature.name} ({column.data.some((f) => f.state === "selected")
+                ? countFeatureOccurences(
+                    filterPerformances(performances, {
+                      ...selectedPerformanceFilters,
+                      [column.id]: [],
+                    }),
+                    feature.name
+                  )
+                : countFeatureOccurences(filteredPerformances, feature.name)})
+            </button>
+          {/each}
+        </div>
       </div>
-      <div class="inputContainer">
-        do
-        <input
-          type="text"
-          id="performanceTimeToInput"
-          on:focus={selectInputValue}
-          on:input={parseInputWhileTyping}
-          on:keydown={unfocusInput}
-          on:blur={checkIfValidTime}
-          value="24:00"
-          inputmode="numeric"
-        />
+    {:else if column.id === "time"}
+      <div class="column">
+        <div class="label">Vrijeme</div>
+        <div class="inputsColumn">
+          <div class="inputContainer">
+            od
+            <input
+              type="text"
+              id="performanceTimeFromInput"
+              on:focus={selectInputValue}
+              on:input={parseInputWhileTyping}
+              on:keydown={unfocusInput}
+              on:blur={checkIfValidTime}
+              value="00:00"
+              inputmode="numeric"
+            />
+          </div>
+          <div class="inputContainer">
+            do
+            <input
+              type="text"
+              id="performanceTimeToInput"
+              on:focus={selectInputValue}
+              on:input={parseInputWhileTyping}
+              on:keydown={unfocusInput}
+              on:blur={checkIfValidTime}
+              value="24:00"
+              inputmode="numeric"
+            />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    {/if}
+  {/each}
 </div>
 
 <style>
@@ -293,13 +329,15 @@
     align-items: center;
     column-gap: 0.75rem;
 
+    background-color: transparent;
     color: #b9bdc6;
     font-size: 1rem;
     font-weight: 500;
+
     cursor: pointer;
   }
   #performanceFilterCard .column .checkboxesColumn .option.selected {
-    color: #e8c547;
+    color: #ffcc00;
   }
   #performanceFilterCard .column .checkboxesColumn .option.disabled {
     color: hsl(222, 10%, 40%);
