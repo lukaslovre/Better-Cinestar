@@ -62,4 +62,5 @@ function findLargestY(seatGroups) {
 
 module.exports = {
   fetchSeating,
+  cinestarApi,
 };
