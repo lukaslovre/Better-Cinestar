@@ -9,12 +9,12 @@ const { getFormattedMovies } = require("./serving/index.js");
 const { fetchSeating } = require("./serving/seating.js");
 const { getPerformancesForDateAndMovie } = require("./serving/performances.js");
 
+const { analyticsMiddleware } = require("./analytics.js");
+const { getAnalytics } = require("./db.js");
+
 app.use(cors());
 
-app.get("/api/movies", async (req, res) => {
-  // for measuring response time
-  const startTime = Date.now();
-
+app.get("/api/movies", analyticsMiddleware, async (req, res) => {
   const { cinemaOids, date, sortBy } = req.query;
 
   const { valid, message, cinemaOidsArray } = validateMovieParameters(
@@ -31,14 +31,10 @@ app.get("/api/movies", async (req, res) => {
   // Movies matching the filters and with performances added to them
   const formattedMovies = await getFormattedMovies(cinemaOidsArray, date, sortBy);
 
-  // for measuring response time
-  const endTime = Date.now();
-  console.log(`Response time: ${endTime - startTime}ms`);
-
   res.send(formattedMovies);
 });
 
-app.get("/api/seating", async (req, res) => {
+app.get("/api/seating", analyticsMiddleware, async (req, res) => {
   const { cinemaOid, performanceId } = req.query;
 
   const { valid, message } = validateSeatingParameters(cinemaOid, performanceId);
@@ -53,7 +49,7 @@ app.get("/api/seating", async (req, res) => {
   res.send(seating);
 });
 
-app.get("/api/performances", async (req, res) => {
+app.get("/api/performances", analyticsMiddleware, async (req, res) => {
   const { cinemaOids, date, movieId } = req.query;
 
   const { valid, message, cinemaOidsArray } = validatePerformanceParameters(
@@ -82,6 +78,11 @@ app.get("/api/performances", async (req, res) => {
 
   res.send(performances);
 });
+
+// app.get("/status", async (req, res) => {
+//   const analytics = await getAnalytics();
+//   res.send(analytics);
+// });
 
 app.use(express.static(path.join(__dirname, "client/public")));
 

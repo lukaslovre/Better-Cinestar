@@ -99,6 +99,23 @@ const PerformanceDates = sequelize.define(
   }
 );
 
+const Analytics = sequelize.define(
+  "Analytics",
+  {
+    uniqueVisitors: DataTypes.STRING,
+    userAgent: DataTypes.STRING,
+    url: DataTypes.STRING,
+    statusCode: DataTypes.INTEGER,
+    referrer: DataTypes.STRING,
+    responseTime: DataTypes.INTEGER,
+  },
+  {
+    // only allow the createdAt field and not the updatedAt
+    timestamps: true,
+    updatedAt: false,
+  }
+);
+
 async function init() {
   try {
     await sequelize.authenticate();
@@ -108,9 +125,11 @@ async function init() {
   }
 
   // await sequelize.sync({ force: true });
+
   await sequelize.sync();
 }
 
+// INSERTING
 async function saveMoviesToDatabase(movies) {
   // clear the table before inserting new data
   await Movie.destroy({ truncate: true });
@@ -134,6 +153,11 @@ async function savePerformanceDatesToDatabase(performancesByCinemaFilmAndDates) 
   console.log("Performance dates saved to the database.");
 }
 
+async function saveAnalyticsToDatabase(analytics) {
+  await Analytics.bulkCreate(analytics);
+}
+
+// SELECTING
 async function getPerformanceDatesFor(cinemaOid, filmId) {
   const queryResult = await PerformanceDates.findAll({
     where: {
@@ -144,6 +168,10 @@ async function getPerformanceDatesFor(cinemaOid, filmId) {
 
   return queryResult.at(0).toJSON();
 }
+async function getAnalytics() {
+  const queryResult = await Analytics.findAll();
+  return queryResult.map((a) => a.toJSON());
+}
 
 module.exports = {
   Movie,
@@ -153,6 +181,8 @@ module.exports = {
   savePerformancesToDatabase,
   savePerformanceDatesToDatabase,
   getPerformanceDatesFor,
+  saveAnalyticsToDatabase,
+  getAnalytics,
 };
 
 // define two models: Movie and Performance
