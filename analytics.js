@@ -12,7 +12,7 @@ const analyticsMiddleware = (req, res, next) => {
   const startHrTime = process.hrtime();
 
   // Check request address to generate unique visitors field
-  const uniqueVisitors = req.ip; // Assuming IP address is used for uniqueness
+  const uniqueVisitors = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
   // Your other essential fields for analytics
   const userAgent = req.get("User-Agent");
