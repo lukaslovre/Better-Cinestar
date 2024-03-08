@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    row-gap: 0.5rem;
+    row-gap: 0.75rem;
   }
   img {
     width: 100%;
@@ -16,7 +16,7 @@
     opacity: 0.75;
   }
   p {
-    color: #666;
+    color: hsl(0, 0%, 75%);
     font-size: 0.75rem;
     font-weight: 400;
   }
