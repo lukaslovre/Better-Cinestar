@@ -81,6 +81,7 @@ module.exports = {
   getPerformancesFiltered,
   groupPerformancesByFilmid,
   filterPerformancesByEarliestDate,
+  getPerformancesForDate,
   getPerformancesForDateAndMovie,
 };
 

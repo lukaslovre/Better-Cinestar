@@ -17,7 +17,6 @@ async function cinestarApi(endpoint, cinemaOid) {
   return data;
 }
 
-// ovo ce se izvrsavat na klijentu?
 async function fetchSeating(cinemaOid, performanceId) {
   try {
     const data = await cinestarApi(
