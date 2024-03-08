@@ -31,6 +31,9 @@ export function getPreviousAndNextPerformanceDatesForMovie(availableDates, date)
 
   if (dateIndex === -1) {
     console.log("Date not found in available dates");
+    console.log("Available dates: ", availableDates);
+    console.log("Date: ", date);
+
     return { previousDate, nextDate };
   }
 

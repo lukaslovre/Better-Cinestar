@@ -94,7 +94,9 @@ function filterPerformances(performances, filters) {
           return (
             !performance.performanceFeatures.includes("4DX") &&
             !performance.performanceFeatures.includes("IMAX") &&
-            !performance.performanceFeatures.includes("GOLD")
+            !performance.performanceFeatures.includes("GOLD") &&
+            !performance.performanceFeatures.includes("KIDS") &&
+            !performance.performanceFeatures.includes("SCREENX")
           );
         } else {
           return performance.performanceFeatures.includes(selectedFeature);
@@ -123,7 +125,7 @@ function filterPerformances(performances, filters) {
  * Returns an array of unique performance features from an array of performances.
  * Each performance is an object that includes a `performanceFeatures` property,
  * which is an array of strings. If a performance does not include "IMAX", "4DX",
- * or "GOLD" in its features, "BASIC" is added to its features.
+ * "GOLD", "KIDS" or "SCREENX" in its features, "BASIC" is added to its features.
  *
  * @param {Object[]} performances - The performances to extract features from.
  * @param {string[]} performances[].performanceFeatures - The features of each performance.
@@ -134,12 +136,14 @@ function getUniquePerformanceFeaturesFrom(performances) {
   return (
     performances
       .map((performance) => performance.performanceFeatures)
-      // check for every performanceFeatures array if it contains IMAX, 4DX or GOLD, if not push BASIC to the array
+      // check for every performanceFeatures array if it contains IMAX, 4DX or GOLD or KIDS or SCREENX, if not push BASIC to the array
       .map((performanceFeatures) => {
         if (
           !performanceFeatures.includes("IMAX") &&
           !performanceFeatures.includes("4DX") &&
-          !performanceFeatures.includes("GOLD")
+          !performanceFeatures.includes("GOLD") &&
+          !performanceFeatures.includes("KIDS") &&
+          !performanceFeatures.includes("SCREENX")
         ) {
           return [...performanceFeatures, "BASIC"];
         } else {
@@ -163,7 +167,9 @@ function getGroupedPerformanceFeaturesFrom(performances) {
         feature === "4DX" ||
         feature === "IMAX" ||
         feature === "GOLD" ||
-        feature === "BASIC"
+        feature === "BASIC" ||
+        feature === "KIDS" ||
+        feature === "SCREENX"
     ),
     audioFeatures: uniquePerformanceFeatures.filter(
       (feature) => feature === "TITL" || feature === "SINK" || feature === "OV"
@@ -179,8 +185,6 @@ function getGroupedPerformanceFeaturesFrom(performances) {
 }
 
 function getPossibleFeaturesWithAppliedFilters(performances, filters) {
-  // const columnNames = ["videoFeatures", "roomFeatures", "audioFeatures"];
-
   const possibleFeatures = {
     videoFeatures: [],
     roomFeatures: [],
@@ -213,7 +217,9 @@ function countFeatureOccurences(performances, feature) {
       if (
         !performance.performanceFeatures?.includes("4DX") &&
         !performance.performanceFeatures?.includes("IMAX") &&
-        !performance.performanceFeatures?.includes("GOLD")
+        !performance.performanceFeatures?.includes("GOLD") &&
+        !performance.performanceFeatures?.includes("KIDS") &&
+        !performance.performanceFeatures?.includes("SCREENX")
       ) {
         count++;
       }
