@@ -47,9 +47,9 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
 
     movie.performances = performanceGroup ? performanceGroup.performances : [];
 
-    movie.availableDates = (await getPerformanceDatesFor(cinemaOids, movie.id)).date.sort(
-      (a, b) => (a < b ? -1 : a > b ? 1 : 0)
-    );
+    movie.availableDates = (await getPerformanceDatesFor(cinemaOids, movie.id)).date
+      .filter((date) => date >= today)
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   }
 
   // sortirati filmove
