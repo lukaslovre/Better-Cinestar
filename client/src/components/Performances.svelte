@@ -6,6 +6,7 @@
     getFormattedPerformanceDateLabel,
     filterPerformances,
     countSelectedFilters,
+    dateToYMDFormat,
   } from "../utils/utils.js";
   import { cinemas as cinemasData } from "../utils/cinemas";
   import {
@@ -109,7 +110,13 @@
   }
 
   function resetPerformanceDatePickerToDefault() {
-    currentPerformanceDate = $selectedDate;
+    if (currentPerformanceDate === $selectedDate) return;
+
+    if ($selectedDate === "any") {
+      currentPerformanceDate = movie.availableDates[0];
+    } else {
+      currentPerformanceDate = $selectedDate;
+    }
   }
 </script>
 
@@ -170,10 +177,13 @@
         type="button"
         class="dateText"
         on:click={resetPerformanceDatePickerToDefault}
-        class:italic={$selectedDate !== currentPerformanceDate}
+        class:italic={$selectedDate === "any"
+          ? currentPerformanceDate !== movie.availableDates[0]
+          : currentPerformanceDate !== $selectedDate}
       >
         {loadingPerformances ? "Loading..." : performanceDateText}
       </button>
+
       <button
         class="arrowCircle button"
         class:disabled={getPreviousAndNextPerformanceDatesForMovie(
