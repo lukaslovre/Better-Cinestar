@@ -205,7 +205,9 @@
 
     // if the first two digits are larger than 23 or the last two digits are larger than 59,
     // set the input value to previous
-    if (input.value.split(":")[0] > 23 || input.value.split(":")[1] > 59) {
+    const [hours, minutes] = input.value.split(":");
+
+    if (hours > 24 || (hours == 24 && minutes != "00") || minutes > 59) {
       console.log("greška", input.value);
       input.value = previousValue;
       return;
