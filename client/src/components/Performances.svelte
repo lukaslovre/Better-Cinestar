@@ -1,7 +1,7 @@
 <script>
   import PerformanceFilterCard from "./performanceFilterCard.svelte";
 
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import {
     getFormattedPerformanceDateLabel,
     filterPerformances,
@@ -46,6 +46,16 @@
       updatePerformances(currentPerformanceDate);
     }
   }
+
+  onMount(() => {
+    document.addEventListener("click", (e) => {
+      if (filterCardVisible === false) return;
+      if (e.target.closest(".column") !== null) return;
+      if (e.target.closest(".performanceFilter") !== null) return;
+
+      filterCardVisible = false;
+    });
+  });
 
   let loadingPerformances = false;
   async function updatePerformances(date) {
@@ -151,6 +161,7 @@
   >
     <button
       class="performanceFilter button"
+      type="button"
       on:click={() => {
         filterCardVisible = !filterCardVisible;
       }}
