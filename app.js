@@ -84,7 +84,7 @@ app.get("/api/performances", analyticsMiddleware, async (req, res) => {
 //   res.send(analytics);
 // });
 
-app.use(express.static(path.join(__dirname, "client", "public")));
+app.use(express.static(path.join(__dirname, "client/public")));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -31,7 +31,6 @@
       src={isFullscreened ? "/images/fullscreen-exit.svg" : "/images/fullscreen.svg"}
       alt="Toggle fullscreen mode"
     />
-    <span class="label">{isFullscreened ? "Manje informacija" : "Više informacija"}</span>
   </button>
 </div>
 
@@ -43,20 +42,13 @@
   }
 
   .imageButton {
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 0.5rem;
     padding: 0.5rem;
     border-radius: 0.25rem;
-    cursor: pointer;
   }
-  .imageButton .label {
-    font-weight: 500;
-    color: white;
-    font-size: 1rem;
-  }
-
   .secondaryButton {
     background-color: #0c1a40;
   }

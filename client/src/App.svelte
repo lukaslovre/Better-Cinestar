@@ -3,7 +3,7 @@
   import Dropdowns from "./components/Dropdowns.svelte";
   import Loading from "./components/Loading.svelte";
   import MovieList from "./components/MovieList.svelte";
-  import Seating from "./components/Seating.svelte";
+  import PerformanceSeats from "./components/PerformanceSeats.svelte";
   import NoResultsGif from "./components/NoResultsGif.svelte";
   import PerformanceInfoPopup from "./components/PerformanceInfoPopup.svelte";
 
@@ -91,7 +91,7 @@
 
 <!-- Popup prozori -->
 {#if openedPerformance}
-  <Seating
+  <PerformanceSeats
     performanceData={openedPerformance}
     on:selectedPerformance={setOpenedPerformance}
   />
