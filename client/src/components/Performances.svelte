@@ -241,9 +241,10 @@
 
   .performanceManipulationContainer {
     /* Linija koja odvaja info i performance je ovdje gornji border */
-    margin-top: 2rem; /* + 1rem row-gap */
-    border-top: 2px solid #808080;
-    padding-top: 3rem;
+    /* + 2.5rem row-gap */
+    /* margin-top: 1.5rem;  */
+    border-top: 2px solid rgba(255, 255, 255, 0.15);
+    padding-top: 2.5rem;
 
     display: flex;
     justify-content: space-between;

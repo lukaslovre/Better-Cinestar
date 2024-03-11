@@ -77,6 +77,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    row-gap: 2rem;
+    row-gap: 2.5rem;
   }
 </style>

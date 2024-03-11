@@ -6,8 +6,8 @@
   <div class="infoContainer">
     <p class="infoLabel">
       {movie.englishDirectors && movie.englishDirectors.length > 1
-        ? "Direktori"
-        : "Direktor"}
+        ? "Redatelji"
+        : "Redatelj"}
     </p>
     <div class="peopleContainer">
       {#if movie.englishDirectors}
@@ -50,8 +50,10 @@
   </div>
 
   {#if movie.trailerLink}
-    <a href={movie.trailerLink} class="trailerButton button">
-      <img src="images/trailerPlayIcon.svg" alt="play trailer icon" /> Trailer
+    <a href={movie.trailerLink} class="trailerButton">
+      <img src="images/trailerPlayIcon.svg" alt="play trailer icon" />
+      <span>Trailer</span>
+      <span class="secondary">(youtube.com)</span>
     </a>
   {/if}
 </div>
@@ -61,7 +63,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    row-gap: 1rem;
+    row-gap: 1.5rem;
   }
   .movieExtraInfo .infoContainer {
     width: 100%;
@@ -70,7 +72,7 @@
     display: flex;
     column-gap: 1rem;
     margin-left: 0.75rem;
-    overflow-x: scroll;
+    overflow-x: auto;
     padding-bottom: 0.25rem;
   }
   .movieExtraInfo .peopleContainer .person {
@@ -110,10 +112,19 @@
   .movieExtraInfo .trailerButton {
     display: flex;
     align-items: center;
-    column-gap: 0.375rem;
-    padding: 0.375rem 0.875rem;
+    column-gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
     font-weight: 500;
+
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #336eff;
+
+    margin-top: 0.5rem;
+  }
+  .movieExtraInfo .trailerButton .secondary {
+    color: hsla(223, 100%, 60%, 0.75);
+    font-weight: 400;
   }
 </style>
