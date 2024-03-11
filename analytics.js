@@ -28,7 +28,6 @@ const analyticsMiddleware = (req, res, next) => {
       userAgent,
       url,
       statusCode: res.statusCode,
-      referrer: req.get("Referrer") || "",
       responseTime: parseInt(elapsedTimeInMs),
     });
 

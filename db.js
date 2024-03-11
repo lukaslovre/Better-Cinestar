@@ -106,7 +106,6 @@ const Analytics = sequelize.define(
     userAgent: DataTypes.STRING,
     url: DataTypes.STRING,
     statusCode: DataTypes.INTEGER,
-    referrer: DataTypes.STRING,
     responseTime: DataTypes.INTEGER,
   },
   {
