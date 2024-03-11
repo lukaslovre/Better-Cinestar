@@ -3,12 +3,13 @@ const { getCinemas } = require("../cinemasList");
 const { cinestarApi } = require("../serving/seating");
 
 const fs = require("fs");
+const { group } = require("console");
 
 const cinemas = getCinemas();
 
 const cinemaOids = cinemas.map((cinema) => cinema.cinemaOid); //.slice(0, 3);
 
-init();
+// init();
 
 async function init() {
   const performances = await getPerformancesForDate(
@@ -87,4 +88,46 @@ function cleanSeatGroups(seatGroups) {
       return { sg: seat.sg, stat: seat.stat, row: seat.row, column: seat.col };
     })
   );
+}
+
+// getSeatsForLink();
+
+async function getSeatsForLink() {
+  // https://shop.cinestarcinemas.hr/landingpage?center=97000000014FEPADHG&page=seatingplan&performance=C3A41000023BTRKFXU
+
+  let seating = await fetchSeating("87000000014FEPADHG", "99CC0000023EDZCTNJ");
+
+  seating = cleanSeatGroups(seating.seatGroups);
+
+  // filter out unique seats
+  seating = seating.filter((seat, index, self) => {
+    return index === self.findIndex((s) => s.sg === seat.sg && s.stat === seat.stat);
+  });
+
+  console.log(seating);
+}
+
+init2();
+
+async function init2() {
+  //   console.log(performances.slice(0, 3));
+
+  let seating = await fetchSeating("87000000014FEPADHG", "99CC0000023EDZCTNJ");
+
+  const seatingAreas = seating.seatingAreas;
+
+  const seats = seating.seatGroups.flatMap((group) => {
+    return group.seats.map((seat) => {
+      return {
+        sg: seat.sg,
+        stat: seat.stat,
+        row: seat.row,
+        column: seat.col,
+        sar: seat.sar,
+        name: seatingAreas.find((area) => area.id === seat.sar).name,
+      };
+    });
+  });
+
+  console.log(seats);
 }

@@ -67,6 +67,27 @@
     seatsContainer.style.setProperty("height", 48 + seatsHeight + seatSize + "px");
   }
 
+  function getSeatColor(seat) {
+    // Ako je slobodno
+    if ([4, 256, 260].includes(seat.stat)) {
+      if ([161, 162, 171, 172].includes(seat.sg)) {
+        // Ako je ljubavno
+        return "#EA80FF";
+      } else if ([160, 180, 250].includes(seat.sg)) {
+        // Ako je VIP / BOUTIQUE
+        return "#EFEF8F";
+      } else if ([163, 193].includes(seat.sg)) {
+        // Ako je invalidsko
+        return "#A1DF9F";
+      } else {
+        return "#80A6FF";
+      }
+    } else {
+      // Ako je zauzeto
+      return "#373B43";
+    }
+  }
+
   // Cini mi se da radi bez ovog, ne sjecam se zasto postoji
   // $: {
   //   // Zove getSeats() svaki put kad se promjeni performanceData
@@ -77,15 +98,7 @@
 
 <div class="backdrop">
   <div id="card">
-    <button
-      id="closeSeatsButton"
-      on:click={closeSeats}
-      on:keypress={(event) => {
-        if (event.key === "Enter") {
-          closeSeats();
-        }
-      }}
-    >
+    <button id="closeSeatsButton" on:click={closeSeats}>
       <img src="/images/xIcon.svg" alt="close seats icon" />
     </button>
 
@@ -97,7 +110,7 @@
         {#each seatsData.seats as seat}
           <div
             class="seat"
-            style:background-color={seat.stat === 4 ? "#80A6FF" : "#373B43"}
+            style:background-color={getSeatColor(seat)}
             style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
             style:top={48 + seat.y * seatLocationMultiplier + "px"}
             style:width={seatSize + "px"}
