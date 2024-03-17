@@ -30,6 +30,16 @@
     moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
   }
 
+  $: {
+    if (openedPerformance) {
+      // disable scrolling on body
+      document.body.style.overflow = "hidden";
+    } else {
+      // enable scrolling on body
+      document.body.style.overflow = "auto";
+    }
+  }
+
   async function getMovies(cinemaOids, selectedDate, sortBy) {
     if (cinemaOids.length === 0) return { noCinemasSelected: true };
 

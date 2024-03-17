@@ -9,21 +9,6 @@
   const dispatch = createEventDispatcher();
   const origin = window.location.origin; // Za radenje API requesta
 
-  function formatDate(dateString, time) {
-    const options = {
-      weekday: "short",
-      day: "2-digit",
-      month: "2-digit",
-    };
-
-    const date = new Date(dateString);
-    const localeString = date.toLocaleDateString("hr-HR", options);
-    const formattedDate = localeString.replace(/\s+/g, "").replace(/,/g, " ");
-
-    const relativeDate = getRelativeDate(date, time);
-
-    return time + ", " + formattedDate + " (" + relativeDate + ")";
-  }
   function closeSeats() {
     dispatch("selectedPerformance", null);
   }
@@ -44,7 +29,7 @@
 
     if (res.ok) {
       const data = await res.json();
-      // console.log(data);
+      console.log(data);
       setSeatingLayoutValues(data);
       return data;
     }
@@ -56,15 +41,20 @@
 
   function setSeatingLayoutValues(seats) {
     const seatsContainer = document.getElementById("seatsContainer");
+
     const containerWidth = seatsContainer.clientWidth - 10;
+
     const furthestSeat = seats.maxX;
-    seatLocationMultiplier = (containerWidth * 0.85) / furthestSeat;
-    seatOffsetX = containerWidth * 0.075;
+
+    seatLocationMultiplier = (containerWidth * 0.9) / furthestSeat;
+    seatOffsetX = containerWidth * 0.05;
+
     const seatDistance = getAverageSeatDistance(seats) * seatLocationMultiplier;
     seatSize = Math.max(6, Math.min(Math.floor(seatDistance * 0.85), 18));
 
-    const seatsHeight = seats.maxY * seatLocationMultiplier;
-    seatsContainer.style.setProperty("height", 48 + seatsHeight + seatSize + "px");
+    const seatsHeight = seats.maxY * seatLocationMultiplier + seatSize;
+
+    seatsContainer.style.setProperty("height", 64 + seatsHeight + "px");
   }
 
   function getSeatColor(seat) {
@@ -90,122 +80,122 @@
     }
   }
 
-  // Cini mi se da radi bez ovog, ne sjecam se zasto postoji
-  // $: {
-  //   // Zove getSeats() svaki put kad se promjeni performanceData
-  //   console.log(performanceData);
-  //   seatsPromise = getSeats();
-  // }
+  // Utils
+  function formatDate(dateString, time) {
+    const options = {
+      weekday: "short",
+      day: "2-digit",
+      month: "2-digit",
+    };
+
+    const date = new Date(dateString);
+    const localeString = date.toLocaleDateString("hr-HR", options);
+    const formattedDate = localeString.replace(/\s+/g, "").replace(/,/g, " ");
+
+    const relativeDate = getRelativeDate(date, time);
+
+    return time + ", " + formattedDate + " (" + relativeDate + ")";
+  }
 </script>
 
-<div class="backdrop">
-  <div id="card">
-    <button id="closeSeatsButton" on:click={closeSeats}>
-      <img src="/images/xIcon.svg" alt="close seats icon" />
-    </button>
+<div id="card">
+  <button id="closeSeatsButton" on:click={closeSeats}>
+    <img src="/images/xIcon.svg" alt="close seats icon" />
+  </button>
 
-    <div id="seatsContainer">
-      {#await seatsPromise}
-        <Loading />
-      {:then seatsData}
-        <img src="/images/cinemaScreen.svg" alt="screen" />
-        {#each seatsData.seats as seat}
-          <div
-            class="seat"
-            style:background-color={getSeatColor(seat)}
-            style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
-            style:top={48 + seat.y * seatLocationMultiplier + "px"}
-            style:width={seatSize + "px"}
-            style:height={seatSize + "px"}
-          />
-        {/each}
-      {/await}
-    </div>
-
-    <div id="seatsLegend">
-      <div>
-        <div class="seat" style:background-color="#80A6FF" />
-        <p>Slobodno</p>
-      </div>
-
-      <div>
-        <div class="seat" style:background-color="#373B43" />
-        <p>Zauzeto</p>
-      </div>
-    </div>
-
-    <div id="performanceInfo">
-      <p class="movieTitle">
-        {performanceData.movie.title}
-        {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== "0"}
-          ({performanceData.movie.ageRating}+)
-        {/if}
-      </p>
-      <div class="performanceInfoRow">
-        <img src="/images/clockIcon.svg" alt="clock icon" />
-        <p>
-          {formatDate(
-            performanceData.performance.cinemaDate,
-            performanceData.performance.performanceTime
-          )}
-        </p>
-      </div>
-      <div class="performanceInfoRow">
-        <img src="/images/locationIcon2.svg" alt="location icon" />
-        <p>
-          {cinemas.find(
-            (cinema) => cinema.cinemaOid === performanceData.performance.cinemaOid
-          ).cinemaName}
-        </p>
-      </div>
-      <div class="performanceInfoRow">
-        <img src="/images/clapperIcon.svg" alt="clapper icon" />
-        <p>{performanceData.performance.performanceFeatures.join(" · ")}</p>
-      </div>
-    </div>
-
-    <a
-      id="buyTicketButton"
-      target="_blank"
-      href={`https://shop.cinestarcinemas.hr/landingpage?center=${performanceData.performance.cinemaOid}&page=seatingplan&performance=${performanceData.performance.id}`}
-    >
-      <p>Kupi kartu na cinestar.hr</p>
-      <img src="images/linkArrow.svg" alt="arrow" />
-    </a>
+  <div id="seatsContainer">
+    {#await seatsPromise}
+      <Loading />
+    {:then seatsData}
+      <img src="/images/cinemaScreen.svg" alt="screen" id="screenImage" />
+      {#each seatsData.seats as seat}
+        <div
+          class="seat"
+          style:background-color={getSeatColor(seat)}
+          style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
+          style:top={64 + seat.y * seatLocationMultiplier + "px"}
+          style:width={seatSize + "px"}
+          style:height={seatSize + "px"}
+        />
+      {/each}
+    {/await}
   </div>
+
+  <div id="seatsLegend">
+    <div>
+      <div class="seat" style:background-color="#80A6FF" />
+      <p>Slobodno</p>
+    </div>
+
+    <div>
+      <div class="seat" style:background-color="#373B43" />
+      <p>Zauzeto</p>
+    </div>
+  </div>
+
+  <div id="performanceInfo">
+    <p class="movieTitle">
+      {performanceData.movie.title}
+      {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== "0"}
+        ({performanceData.movie.ageRating}+)
+      {/if}
+    </p>
+    <div class="performanceInfoRow">
+      <img src="/images/clockIcon.svg" alt="clock icon" />
+      <p>
+        {formatDate(
+          performanceData.performance.cinemaDate,
+          performanceData.performance.performanceTime
+        )}
+      </p>
+    </div>
+    <div class="performanceInfoRow">
+      <img src="/images/locationIcon2.svg" alt="location icon" />
+      <p>
+        {cinemas.find(
+          (cinema) => cinema.cinemaOid === performanceData.performance.cinemaOid
+        ).cinemaName}
+      </p>
+    </div>
+    <div class="performanceInfoRow">
+      <img src="/images/clapperIcon.svg" alt="clapper icon" />
+      <p>{performanceData.performance.performanceFeatures.join(" · ")}</p>
+    </div>
+  </div>
+
+  <a
+    id="buyTicketButton"
+    target="_blank"
+    href={`https://shop.cinestarcinemas.hr/landingpage?center=${performanceData.performance.cinemaOid}&page=seatingplan&performance=${performanceData.performance.id}`}
+  >
+    <p>Kupi kartu na cinestar.hr</p>
+    <img src="images/linkArrow.svg" alt="arrow" />
+  </a>
 </div>
 
 <style>
-  .backdrop {
-    z-index: 1;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(3px);
-  }
   #card {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    width: calc(100% - 2rem);
+    top: 0;
+    width: 100%;
     max-width: 30rem;
-    padding: 2rem;
-    border-radius: 0.5rem;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #131a2a;
+    z-index: 5;
+
+    padding: 2rem 1rem;
     background: #131a2a;
-    box-shadow: 0px 0px 24px 0px rgba(0, 0, 0, 0.75);
 
     display: flex;
     flex-direction: column;
   }
+  #card > * {
+    flex-shrink: 0;
+  }
 
   #closeSeatsButton {
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
     align-self: flex-end;
     cursor: pointer;
     background: none;
@@ -230,7 +220,7 @@
   }
 
   #seatsLegend {
-    margin-top: 1.25rem;
+    margin-top: 2.5rem;
     display: flex;
     justify-content: center;
     column-gap: 2rem;
@@ -252,41 +242,44 @@
   }
 
   #performanceInfo {
-    margin-top: 2.5rem;
-    margin-bottom: 4rem;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
     display: flex;
     flex-direction: column;
-    row-gap: 0.625rem;
+    row-gap: 1rem;
   }
   #performanceInfo > .movieTitle {
-    color: #bfbfbf;
+    color: #ffffff;
     font-weight: 400;
-    font-size: 0.875rem;
+    font-size: 1.125rem;
     margin-bottom: 0.25rem;
   }
 
   #performanceInfo > .performanceInfoRow {
     display: flex;
-    column-gap: 0.5rem;
+    column-gap: 0.75rem;
   }
   #performanceInfo > .performanceInfoRow > p {
     color: #e6e6e6;
     font-weight: 400;
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   #buyTicketButton {
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 0.5rem;
+    column-gap: 1rem;
 
-    padding: 0.625rem;
+    padding: 0.75rem;
     border-radius: 0.375rem;
-    background: rgba(232, 197, 71, 0.2);
+    background: rgba(232, 197, 71, 0.1);
     cursor: pointer;
   }
   #buyTicketButton > p {
     color: #e8c547;
+  }
+  #buyTicketButton:hover > p {
+    text-decoration: underline;
   }
 </style>
