@@ -12,7 +12,8 @@
 
   let showSeatTypes;
   let seatsPromise = getSeats();
-  let seatingAreas;
+  let seatingAreas = [];
+  let invalidskoPostoji = false;
 
   async function getSeats() {
     const { cinemaOid, id: performanceId } = performanceData.performance;
@@ -59,8 +60,8 @@
   }
 
   function getSeatColor(seat, useColors) {
-    // Ako je slobodno
-    if ([4, 256, 260].includes(seat.stat)) {
+    // Ako je slobodno (128 je u splitu slobodno??? nez)
+    if ([4, 256, 260, 128].includes(seat.stat)) {
       // Ako se ne koriste boje, sve su plave
       if (useColors === false || useColors === undefined) return "#80A6FF";
 
@@ -72,8 +73,10 @@
       else if (name === "Lovebox") return "#FF8080";
       else if (name === "Regular") {
         // Ako je invalidsko
-        if ([163, 193].includes(seat.sg)) return "#A1DF9F";
-        else return "#80A6FF";
+        if ([163, 193].includes(seat.sg)) {
+          if (invalidskoPostoji === false) invalidskoPostoji = true;
+          return "#A1DF9F";
+        } else return "#80A6FF";
       }
     } else {
       // Ako je zauzeto
@@ -127,7 +130,7 @@
     {/await}
   </div>
 
-  <div id="seatsLegend">
+  <div class="seatsLegend">
     <div>
       <div class="seat" style:background-color="#80A6FF" />
       <p>Slobodno</p>
@@ -138,6 +141,33 @@
       <p>Zauzeto</p>
     </div>
   </div>
+
+  {#if showSeatTypes}
+    <div class="seatsLegend typesLegend">
+      {#each seatingAreas as area}
+        <div>
+          <div
+            class="seat"
+            style:background-color={getSeatColor(
+              { sar: area.id, stat: 4 },
+              showSeatTypes
+            )}
+          />
+          <p>{area.name}</p>
+        </div>
+      {/each}
+
+      {#if invalidskoPostoji}
+        <div>
+          <div
+            class="seat"
+            style:background-color={showSeatTypes ? "#A1DF9F" : "#80A6FF"}
+          />
+          <p>Invalidsko</p>
+        </div>
+      {/if}
+    </div>
+  {/if}
 
   <div class="seatTypesSwitchContainer">
     <label for="seatTypesSwitch">Prikaži vrste sjedala</label>
@@ -232,23 +262,29 @@
     transition: background-color 0.2s;
   }
 
-  #seatsLegend {
+  .seatsLegend {
     margin-top: 2.5rem;
     display: flex;
     justify-content: center;
     column-gap: 2rem;
+    row-gap: 0.5rem;
+    flex-wrap: wrap;
   }
-  #seatsLegend > div {
+  .seatsLegend.typesLegend {
+    margin-top: 1.5rem;
+  }
+  .seatsLegend > div {
     display: flex;
     align-items: center;
     column-gap: 0.25rem;
   }
-  #seatsLegend > div > .seat {
+  .seatsLegend > div > .seat {
     width: 10px;
     height: 10px;
     border-radius: 1rem;
+    flex-shrink: 0;
   }
-  #seatsLegend > div > p {
+  .seatsLegend > div > p {
     color: #bfbfbf;
     font-weight: 400;
     font-size: 0.875rem;
