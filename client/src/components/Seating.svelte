@@ -10,6 +10,7 @@
   const dispatch = createEventDispatcher();
   const origin = window.location.origin; // Za radenje API requesta
 
+  let showSeatTypes;
   let seatsPromise = getSeats();
 
   async function getSeats() {
@@ -54,23 +55,26 @@
     seatsContainer.style.setProperty("height", 64 + seatsHeight + "px");
   }
 
-  function getSeatColor(seat) {
+  function getSeatColor(seat, useColors) {
     // Ako je slobodno
     if ([4, 256, 260].includes(seat.stat)) {
       // provjeravanje vrsta sjedala:
-
-      // if ([161, 162, 171, 172].includes(seat.sg)) {
-      //   // Ako je ljubavno
-      //   return "#EA80FF";
-      // } else if ([160, 180, 250].includes(seat.sg)) {
-      //   // Ako je VIP / BOUTIQUE
-      //   return "#EFEF8F";
-      // } else if ([163, 193].includes(seat.sg)) {
-      //   // Ako je invalidsko
-      //   return "#A1DF9F";
-      // } else {
-      // }
-      return "#80A6FF";
+      if (useColors) {
+        if ([161, 162, 171, 172].includes(seat.sg)) {
+          // Ako je ljubavno
+          return "#EA80FF";
+        } else if ([160, 180, 250].includes(seat.sg)) {
+          // Ako je VIP / BOUTIQUE
+          return "#EFEF8F";
+        } else if ([163, 193].includes(seat.sg)) {
+          // Ako je invalidsko
+          return "#A1DF9F";
+        } else {
+          return "#80A6FF";
+        }
+      } else {
+        return "#80A6FF";
+      }
     } else {
       // Ako je zauzeto
       return "#373B43";
@@ -113,7 +117,7 @@
       {#each seatsData.seats as seat}
         <div
           class="seat"
-          style:background-color={getSeatColor(seat)}
+          style:background-color={getSeatColor(seat, showSeatTypes)}
           style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
           style:top={64 + seat.y * seatLocationMultiplier + "px"}
           style:width={seatSize + "px"}
@@ -137,7 +141,7 @@
 
   <div class="seatTypesSwitchContainer">
     <label for="seatTypesSwitch">Prikaži vrste sjedala</label>
-    <input type="checkbox" id="seatTypesSwitch" />
+    <input type="checkbox" id="seatTypesSwitch" bind:checked={showSeatTypes} />
   </div>
 
   <div id="performanceInfo">
