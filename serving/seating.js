@@ -35,9 +35,11 @@ async function fetchSeating(cinemaOid, performanceId) {
 
 function formatSeating(data) {
   const seatGroups = data.seatGroups.map((group) => group.seats);
+
   return {
     height: data.height,
     width: data.width,
+    seatingAreas: data.seatingAreas,
     maxX: findLargestX(seatGroups),
     maxY: findLargestY(seatGroups),
     seats: seatGroups.flat().map(formatSeat),
@@ -50,6 +52,7 @@ function formatSeat(seat) {
     y: seat.y,
     sg: seat.sg,
     stat: seat.stat,
+    sar: seat.sar,
   };
 }
 function findLargestX(seatGroups) {

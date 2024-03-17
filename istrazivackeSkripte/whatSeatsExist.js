@@ -112,9 +112,13 @@ init2();
 async function init2() {
   //   console.log(performances.slice(0, 3));
 
-  let seating = await fetchSeating("87000000014FEPADHG", "99CC0000023EDZCTNJ");
+  let seating = await fetchSeating("87000000014FEPADHG", "96DC0000023EDZCTNJ");
+
+  console.log(seating);
 
   const seatingAreas = seating.seatingAreas;
+
+  console.log(seatingAreas);
 
   const seats = seating.seatGroups.flatMap((group) => {
     return group.seats.map((seat) => {
@@ -129,5 +133,5 @@ async function init2() {
     });
   });
 
-  console.log(seats);
+  // console.log(seats);
 }

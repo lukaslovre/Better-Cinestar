@@ -12,6 +12,7 @@
 
   let showSeatTypes;
   let seatsPromise = getSeats();
+  let seatingAreas;
 
   async function getSeats() {
     const { cinemaOid, id: performanceId } = performanceData.performance;
@@ -28,6 +29,8 @@
     if (res.ok) {
       const data = await res.json();
       console.log(data);
+      seatingAreas = data.seatingAreas;
+
       setSeatingLayoutValues(data);
       return data;
     }
@@ -58,22 +61,19 @@
   function getSeatColor(seat, useColors) {
     // Ako je slobodno
     if ([4, 256, 260].includes(seat.stat)) {
-      // provjeravanje vrsta sjedala:
-      if (useColors) {
-        if ([161, 162, 171, 172].includes(seat.sg)) {
-          // Ako je ljubavno
-          return "#EA80FF";
-        } else if ([160, 180, 250].includes(seat.sg)) {
-          // Ako je VIP / BOUTIQUE
-          return "#EFEF8F";
-        } else if ([163, 193].includes(seat.sg)) {
-          // Ako je invalidsko
-          return "#A1DF9F";
-        } else {
-          return "#80A6FF";
-        }
-      } else {
-        return "#80A6FF";
+      // Ako se ne koriste boje, sve su plave
+      if (useColors === false || useColors === undefined) return "#80A6FF";
+
+      // Ako se koriste boje, onda se gleda tip sjedala
+      const name = seatingAreas.find((area) => area.id === seat.sar).name;
+
+      if (["Boutique", "VIP Relax", "VIP"].includes(name)) return "#DFDF9F";
+      else if (name === "Royal bed") return "#EA80FF";
+      else if (name === "Lovebox") return "#FF8080";
+      else if (name === "Regular") {
+        // Ako je invalidsko
+        if ([163, 193].includes(seat.sg)) return "#A1DF9F";
+        else return "#80A6FF";
       }
     } else {
       // Ako je zauzeto
@@ -228,6 +228,8 @@
   #seatsContainer > .seat {
     position: absolute;
     border-radius: 1rem;
+
+    transition: background-color 0.2s;
   }
 
   #seatsLegend {
