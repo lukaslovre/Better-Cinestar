@@ -79,7 +79,7 @@
 </script>
 
 <div id="movieCardsContainer">
-  {#each movies as movie}
+  {#each movies.filter((m) => m.performances.length > 0) as movie}
     {#if movieCardDesign === "v1"}
       <MovieCardV1
         {movie}

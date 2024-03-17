@@ -21,7 +21,7 @@
   export let movie;
   export let isFullscreened;
 
-  let currentPerformanceDate = movie.performances[0].cinemaDate;
+  let currentPerformanceDate = movie.performances[0]?.cinemaDate;
 
   let filteredPerformances = movie.performances;
 
