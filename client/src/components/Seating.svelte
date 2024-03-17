@@ -6,12 +6,9 @@
   import { getRelativeDate } from "../utils/utils";
 
   export let performanceData;
+
   const dispatch = createEventDispatcher();
   const origin = window.location.origin; // Za radenje API requesta
-
-  function closeSeats() {
-    dispatch("selectedPerformance", null);
-  }
 
   let seatsPromise = getSeats();
 
@@ -99,7 +96,12 @@
 </script>
 
 <div id="card">
-  <button id="closeSeatsButton" on:click={closeSeats}>
+  <button
+    id="closeSeatsButton"
+    on:click={() => {
+      dispatch("selectedPerformance", null);
+    }}
+  >
     <img src="/images/xIcon.svg" alt="close seats icon" />
   </button>
 
@@ -131,6 +133,11 @@
       <div class="seat" style:background-color="#373B43" />
       <p>Zauzeto</p>
     </div>
+  </div>
+
+  <div class="seatTypesSwitchContainer">
+    <label for="seatTypesSwitch">Prikaži vrste sjedala</label>
+    <input type="checkbox" id="seatTypesSwitch" />
   </div>
 
   <div id="performanceInfo">
@@ -239,6 +246,55 @@
     color: #bfbfbf;
     font-weight: 400;
     font-size: 0.875rem;
+  }
+
+  .seatTypesSwitchContainer {
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .seatTypesSwitchContainer label {
+    color: #bfbfbf;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  .seatTypesSwitchContainer input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    width: 4rem;
+    height: 2rem;
+    background: #60729f;
+    border-radius: 2rem;
+    position: relative;
+
+    transition: background-color 0.2s;
+
+    outline: none;
+    cursor: pointer;
+  }
+  .seatTypesSwitchContainer input:checked {
+    background: #2057df;
+  }
+
+  .seatTypesSwitchContainer input::before {
+    content: "";
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: #e9eefc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    top: 50%;
+    left: 0.25rem; /* (2rem - 1.5rem) / 2 */
+    transform: translateY(-50%);
+
+    transition: left 0.2s ease-out;
+  }
+  .seatTypesSwitchContainer input:checked::before {
+    left: calc(100% - 1.75rem);
   }
 
   #performanceInfo {
