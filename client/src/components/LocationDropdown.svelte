@@ -112,7 +112,8 @@
   </div>
 
   <!-- Dropdown element -->
-  <div
+  <button
+    type="button"
     class="dropdown-element primary-color-scheme"
     class:fadeout-1-input={locationDropdownOpen.level === 1}
     class:fadeout-2-input={locationDropdownOpen.level === 2}
@@ -132,7 +133,7 @@
         fill="#8F95A3"
       />
     </svg>
-  </div>
+  </button>
 
   <!-- Dropdown options -->
   <div class="dropdown-options-container">
@@ -143,7 +144,8 @@
     >
       {#each cinemaCities as city}
         {#if city.cinemas.length > 1}
-          <div
+          <button
+            type="button"
             class="expandable-option"
             on:click={() => {
               toggleDropdownLevelTwo(city.city);
@@ -168,9 +170,10 @@
                 stroke-linecap="round"
               />
             </svg>
-          </div>
+          </button>
         {:else}
-          <div
+          <button
+            type="button"
             class="option"
             class:selected={$cinemaOids.includes(city.cinemas[0].cinemaOid)}
             on:click={() => {
@@ -186,7 +189,7 @@
               />
             </div>
             <p>{city.city}</p>
-          </div>
+          </button>
         {/if}
       {/each}
     </div>
@@ -202,7 +205,8 @@
             : "none"}
         >
           {#each city.cinemas as cinema}
-            <div
+            <button
+              type="button"
               class="option"
               class:selected={$cinemaOids.includes(cinema.cinemaOid)}
               on:click={() => {
@@ -213,7 +217,7 @@
                 <img src="images/check.svg" alt="check icon" />
               </div>
               <p>{cinema.cinemaName}</p>
-            </div>
+            </button>
           {/each}
         </div>
       {/if}

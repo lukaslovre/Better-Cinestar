@@ -28,7 +28,11 @@
   </div>
 
   <!-- Dropdown element -->
-  <div class="dropdown-element secondary-color-scheme" on:click={toggleDropdown}>
+  <button
+    type="button"
+    class="dropdown-element secondary-color-scheme"
+    on:click={toggleDropdown}
+  >
     <p class="selectedValue">{selectedSortText}</p>
     <svg
       class="fill"
@@ -43,7 +47,7 @@
         fill="#8F95A3"
       />
     </svg>
-  </div>
+  </button>
 
   <!-- Dropdown options -->
   <div
@@ -51,7 +55,8 @@
     style:display={sortDropdownOpen.value ? "flex" : "none"}
   >
     {#each dropdownOptionValues as sortOption}
-      <div
+      <button
+        type="button"
         class="option"
         class:selected={$sortBy === sortOption.value}
         on:click={() => {
@@ -60,7 +65,7 @@
         }}
       >
         <p>{sortOption.text}</p>
-      </div>
+      </button>
     {/each}
   </div>
 </div>

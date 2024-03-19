@@ -300,9 +300,6 @@
     row-gap: 0.5rem;
     flex-wrap: wrap;
   }
-  .seatsLegend.typesLegend {
-    margin-top: 1.5rem;
-  }
   .seatsLegend > div {
     display: flex;
     align-items: center;

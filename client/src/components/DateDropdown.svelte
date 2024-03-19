@@ -41,7 +41,8 @@
   </div>
 
   <!-- Dropdown element -->
-  <div
+  <button
+    type="button"
     id="dateDropdown"
     class="dropdown-element secondary-color-scheme"
     on:click={toggleDropdown}
@@ -60,7 +61,7 @@
         fill="#8F95A3"
       />
     </svg>
-  </div>
+  </button>
 
   <!-- Dropdown options -->
   <div
@@ -68,7 +69,8 @@
     style:display={dateDropdownOpen.value ? "flex" : "none"}
   >
     {#each dropdownOptionValues as dateOption}
-      <div
+      <button
+        type="button"
         class="option"
         class:selected={$selectedDate === dateOption.value}
         on:click={() => {
@@ -77,7 +79,7 @@
         }}
       >
         <p>{dateOption.text}</p>
-      </div>
+      </button>
     {/each}
   </div>
 </div>
