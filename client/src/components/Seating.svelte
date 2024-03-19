@@ -10,7 +10,7 @@
   const dispatch = createEventDispatcher();
   const origin = window.location.origin; // Za radenje API requesta
 
-  let showSeatTypes;
+  let showSeatTypes = true;
   let seatsPromise = getSeats();
   let seatingAreas = [];
   let invalidskoPostoji = false;
@@ -131,18 +131,48 @@
   </div>
 
   <div class="seatsLegend">
-    <div>
-      <div class="seat" style:background-color="#80A6FF" />
-      <p>Slobodno</p>
-    </div>
+    {#if showSeatTypes === false}
+      <div>
+        <div class="seat" style:background-color="#80A6FF" />
+        <p>Slobodno</p>
+      </div>
 
-    <div>
-      <div class="seat" style:background-color="#373B43" />
-      <p>Zauzeto</p>
-    </div>
+      <div>
+        <div class="seat" style:background-color="#373B43" />
+        <p>Zauzeto</p>
+      </div>
+    {:else}
+      {#each seatingAreas as area}
+        <div>
+          <div
+            class="seat"
+            style:background-color={getSeatColor(
+              { sar: area.id, stat: 4 },
+              showSeatTypes
+            )}
+          />
+          <p>{area.name}</p>
+        </div>
+      {/each}
+
+      {#if invalidskoPostoji}
+        <div>
+          <div
+            class="seat"
+            style:background-color={showSeatTypes ? "#A1DF9F" : "#80A6FF"}
+          />
+          <p>Invalidsko</p>
+        </div>
+      {/if}
+
+      <div>
+        <div class="seat" style:background-color="#373B43" />
+        <p>Zauzeto</p>
+      </div>
+    {/if}
   </div>
 
-  {#if showSeatTypes}
+  <!-- {#if showSeatTypes}
     <div class="seatsLegend typesLegend">
       {#each seatingAreas as area}
         <div>
@@ -167,7 +197,7 @@
         </div>
       {/if}
     </div>
-  {/if}
+  {/if} -->
 
   <div class="seatTypesSwitchContainer">
     <label for="seatTypesSwitch">Prikaži vrste sjedala</label>
