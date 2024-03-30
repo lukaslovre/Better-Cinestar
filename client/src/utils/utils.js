@@ -1,6 +1,7 @@
 function getFormattedPerformanceDateLabel(performanceDate) {
   const today = new Date();
-  const dateDiff = performanceDate.getDate() - today.getDate();
+  today.setHours(0, 0, 0, 0);
+  const dateDiff = Math.floor((performanceDate - today) / (1000 * 60 * 60 * 24));
 
   if (dateDiff < 0) {
     return "Prošlost";
@@ -22,8 +23,8 @@ function getFormattedPerformanceDateLabel(performanceDate) {
 export function getRelativeDate(date, time) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
-  const diff = date.getTime() - now.getTime();
-  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const diff = date.getTime() - now.getTime(); // Difference in milliseconds
+  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24)); // Difference in days
 
   if (diffInDays < -1) {
     return `prije ${Math.abs(diffInDays)} dana`;

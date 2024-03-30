@@ -24,10 +24,6 @@
       ? "Sve"
       : getFormattedPerformanceDateLabel(new Date($selectedDate));
 
-  // dropdownOptionValues.find(
-  //   (option) => option.value === $selectedDate
-  // )?.text;
-
   function toggleDropdown() {
     dateDropdownOpen.value = !dateDropdownOpen.value;
   }
