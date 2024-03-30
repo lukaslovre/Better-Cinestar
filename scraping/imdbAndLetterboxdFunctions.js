@@ -94,8 +94,14 @@ async function getLetterboxdDataFromUrl(url) {
     const $ = await fetchAndParseHtml(url);
 
     const scriptTag = $("[type='application/ld+json']").text();
+
+    if (!scriptTag) {
+      console.log(`No script tag found for ${url}. Skipping...`);
+      return defaultData;
+    }
+
     const startingIndex = scriptTag.indexOf("{");
-    const endingIndex = -10;
+    const endingIndex = -10; // ovo je broj dobiven rucnim gledanjem kako izgleda script tag
     const data = JSON.parse(scriptTag.slice(startingIndex, endingIndex));
 
     let { aggregateRating, genre, image, director, actors } = data;
@@ -123,10 +129,12 @@ async function getLetterboxdDataFromUrl(url) {
     const englishSynopsis = $(".truncate > *").prop("innerText");
     const imdbUrl = $('[data-track-action="IMDb"]').attr("href");
     const trailer = $('[data-track-category="Trailer"]').attr("href");
-    const trailerId = `https://www.youtube.com/watch?v=${trailer.slice(
-      trailer.indexOf("embed/") + 6,
-      trailer.indexOf("?")
-    )}`;
+    const trailerId = trailer
+      ? `https://www.youtube.com/watch?v=${trailer.slice(
+          trailer.indexOf("embed/") + 6,
+          trailer.indexOf("?")
+        )}`
+      : null;
     let durationMins = $(".text-footer").prop("innerText");
     const indexOfMins = durationMins.indexOf("mins");
     durationMins = parseInt(durationMins.slice(indexOfMins - 4, indexOfMins - 1));
