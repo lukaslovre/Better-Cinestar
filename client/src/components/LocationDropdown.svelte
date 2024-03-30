@@ -40,7 +40,7 @@
       cinemas: [{ cinemaOid: "40000000014FEPADHG", cinemaName: "Tower centar" }],
     },
     {
-      city: "Slavnoski Brod",
+      city: "Slavonski Brod",
       cinemas: [{ cinemaOid: "67000000014FEPADHG", cinemaName: "City colosseum" }],
     },
     {
