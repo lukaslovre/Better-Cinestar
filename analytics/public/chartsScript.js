@@ -4,6 +4,9 @@ const uniqueVisitorsCtx = document.getElementById("uniqueVisitorsChart");
 const cinemaOidsCtx = document.getElementById("cinemaOidsChart");
 const sortByCtx = document.getElementById("sortByChart");
 
+// get timespan value from url params
+let timespan = new URLSearchParams(window.location.search).get("timespan") || "hour";
+
 chartMain();
 
 async function chartMain() {
@@ -46,33 +49,50 @@ async function chartMain() {
     (data) => data.length
   );
 
-  // visitors per hour
-  const dateRangesEvery1h = {};
+  // visitors per 'timespan'
+  const dateRanges = {};
 
   tableRows.forEach((row) => {
     const dateInTimezone = new Date(row.createdAt);
+    let dateKey;
 
-    // Convert to specific timezone
-    // const dateInTimezone = new Date(
-    //   date.toLocaleString("hr-HR", { timeZone: "Europe/Zagreb" })
-    // );
-
-    const dateKey = `${dateInTimezone.getFullYear()}-${
-      dateInTimezone.getMonth() + 1
-    }-${dateInTimezone.getDate()} ${dateInTimezone.getHours()}:00:00`;
-
-    if (!dateRangesEvery1h[dateKey]) {
-      dateRangesEvery1h[dateKey] = [];
+    switch (timespan) {
+      case "hour":
+        dateKey = `${dateInTimezone.getFullYear()}-${
+          dateInTimezone.getMonth() + 1
+        }-${dateInTimezone.getDate()} ${dateInTimezone.getHours()}:00:00`;
+        break;
+      case "day":
+        dateKey = `${dateInTimezone.getFullYear()}-${
+          dateInTimezone.getMonth() + 1
+        }-${dateInTimezone.getDate()}`;
+        break;
+      case "week":
+        // getDay() returns the day of the week (from 0 to 6) for the specified date
+        // subtracting it from the date gives the first day of the week (Sunday)
+        const firstDayOfWeek = new Date(
+          dateInTimezone.setDate(dateInTimezone.getDate() - dateInTimezone.getDay())
+        );
+        dateKey = `${firstDayOfWeek.getFullYear()}-${
+          firstDayOfWeek.getMonth() + 1
+        }-${firstDayOfWeek.getDate()}`;
+        break;
+      default:
+        throw new Error(`Invalid timespan: ${timespan}`);
     }
 
-    dateRangesEvery1h[dateKey].push(row);
+    if (!dateRanges[dateKey]) {
+      dateRanges[dateKey] = [];
+    }
+
+    dateRanges[dateKey].push(row);
   });
 
   createChart(
-    dateRangesEvery1h,
+    dateRanges,
     uniqueVisitorsCtx,
     "line",
-    "Visitors per hour",
+    `Visitors per ${timespan}`,
     (data) => new Set(data.map((item) => item.uniqueVisitors)).size
   );
 

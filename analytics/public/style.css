@@ -20,7 +20,17 @@ h1 {
 .chartContainer {
   /* max-width: 33rem; */
 }
-.chartContainer > * {
+.chartContainer > canvas {
   margin-bottom: 10rem;
   max-height: 75vh;
+}
+
+.label {
+  margin-bottom: 1rem;
+}
+.radioContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
