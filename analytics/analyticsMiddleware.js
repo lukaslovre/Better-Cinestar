@@ -1,4 +1,4 @@
-const { saveAnalyticsToDatabase } = require("./db.js");
+const { saveAnalyticsToDatabase } = require("../db.js");
 
 // In-memory request counter
 let analyticsStorage = [];

@@ -8,9 +8,9 @@ const { dateToHHMM, dateToYYYYMMDD } = require("./serving/utils.js");
 const { getFormattedMovies } = require("./serving/index.js");
 const { fetchSeating } = require("./serving/seating.js");
 const { getPerformancesForDateAndMovie } = require("./serving/performances.js");
-
-const { analyticsMiddleware } = require("./analytics.js");
 const { getAnalytics } = require("./db.js");
+const { analyticsMiddleware } = require("./analytics/analyticsMiddleware.js");
+const { getCinemas } = require("./cinemasList.js");
 
 app.use(cors());
 
@@ -84,6 +84,15 @@ app.get("/api/performances", analyticsMiddleware, async (req, res) => {
 //   res.send(analytics);
 // });
 
+app.get("/api/getAnalyticsData", async (req, res) => {
+  const analytics = await getAnalytics();
+  res.send(analytics);
+});
+app.get("/api/getCinemasList", (req, res) => {
+  res.send(getCinemas());
+});
+
+app.use("/analytics", express.static(path.join(__dirname, "analytics", "public")));
 app.use(express.static(path.join(__dirname, "client", "public")));
 
 app.listen(port, () => {
