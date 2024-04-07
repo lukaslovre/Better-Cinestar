@@ -126,7 +126,9 @@
     border: 1px solid #d9d9d9;
     background-color: transparent;
     cursor: pointer;
+    transition: background-color 100ms;
   }
+
   /* first and last options have border-radius on outer sides */
   .segmentedButton .option:first-child {
     border-top-left-radius: 10rem;

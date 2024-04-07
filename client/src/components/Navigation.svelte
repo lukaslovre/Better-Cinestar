@@ -73,6 +73,7 @@
 <nav>
   <div>
     <img
+      id="logo"
       src="/images/logo.png"
       alt="Better CineStar logo"
       on:click={resetFiltersToDefault}
@@ -177,9 +178,15 @@
     margin: 0 auto;
   }
 
-  img {
+  #logo {
     width: 7rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
   }
+  #logo:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
   .hamburger {
     display: flex;
     flex-direction: column;
@@ -241,6 +248,7 @@
 
   .menu .segmentedButton {
     display: flex;
+    max-width: 45rem;
   }
   .menu .segmentedButton .option {
     display: flex;
