@@ -67,12 +67,12 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
+    row-gap: 1rem;
   }
   .movieCard .movieData {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     row-gap: 1rem;
   }
   .fullScreenMovieCard .rightSide {

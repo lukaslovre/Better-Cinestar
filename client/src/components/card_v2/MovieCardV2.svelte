@@ -42,13 +42,6 @@
 
 <style>
   .movieCard {
-    /* make the cards be between 15 rem and 30 rem, there should always be enoughg cards in the row so that
-    it takes up the whole width of the flex container, and the gap should always be as specified in the container
-    . So the only thing that should change is the card with to make it fit into the row. All the cards/columns should
-    be the same width */
-    /* flex: 1 0 15rem;
-    max-width: 30rem; */
-
     display: flex;
     flex-direction: column;
     background-color: #05060b;

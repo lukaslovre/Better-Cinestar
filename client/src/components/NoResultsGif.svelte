@@ -9,6 +9,9 @@
     flex-direction: column;
     align-items: center;
     row-gap: 0.75rem;
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
   }
   img {
     width: 100%;
