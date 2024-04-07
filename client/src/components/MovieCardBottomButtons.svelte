@@ -40,6 +40,8 @@
     display: flex;
     justify-content: flex-end;
     column-gap: 1.25rem;
+
+    margin-top: auto;
   }
 
   .imageButton {

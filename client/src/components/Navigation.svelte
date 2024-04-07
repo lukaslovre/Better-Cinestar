@@ -71,104 +71,112 @@
 </script>
 
 <nav>
-  <img
-    src="/images/logo.png"
-    alt="Better CineStar logo"
-    on:click={resetFiltersToDefault}
-  />
+  <div>
+    <img
+      src="/images/logo.png"
+      alt="Better CineStar logo"
+      on:click={resetFiltersToDefault}
+    />
 
-  <div class="hamburger" class:open={menuOpen} on:click={toggleMenu}>
-    <div class="line"></div>
-    <div class="line"></div>
-    <div class="line"></div>
-  </div>
-
-  {#if menuOpen}
-    <div class="menu">
-      <section
-        transition:fade={{ delay: transitionDelay * 1, duration: transitionDuration }}
-      >
-        <p class="title">Dizajn kartice filma</p>
-
-        <div class="segmentedButton">
-          <div
-            class="option"
-            class:selected={selectedCardDesign === "v1"}
-            on:click={() => {
-              changeCardDesign("v1");
-            }}
-          >
-            <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
-            <p>Stari</p>
-          </div>
-          <div
-            class="option"
-            class:selected={selectedCardDesign === "v2"}
-            on:click={() => {
-              changeCardDesign("v2");
-            }}
-          >
-            <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
-            <p>Novi</p>
-          </div>
-        </div>
-      </section>
-
-      <section
-        transition:fade={{ delay: transitionDelay * 2, duration: transitionDuration }}
-      >
-        <p class="title">FAQ</p>
-
-        {#each faqItems as faqItem}
-          <div class="faqItem" on:click={toggleFaqAnswer}>
-            <div class="question">
-              <p class="text">{faqItem.question}</p>
-              <button>
-                <img
-                  src="/images/downArrowFramedD9.svg"
-                  alt="Show answer"
-                  class:open={false}
-                />
-              </button>
-            </div>
-            <p class="text answer" class:open={false}>{faqItem.answer}</p>
-          </div>
-        {/each}
-      </section>
-
-      <section
-        transition:fade={{ delay: transitionDelay * 3, duration: transitionDuration }}
-      >
-        <p class="title">Kontakt</p>
-        <div class="emailAndCopyButton">
-          <p class="text">r0pzrgabp@mozmail.com</p>
-          <button on:click={copyEmailToClipboard}>
-            <img src="/images/copyToClipboard.svg" alt="" />
-          </button>
-        </div>
-      </section>
-
-      <section
-        transition:fade={{ delay: transitionDelay * 4, duration: transitionDuration }}
-      >
-        <p class="title">Privacy policy</p>
-        <p class="text">Korisnički podaci se ne sakupljaju.</p>
-      </section>
+    <div class="hamburger" class:open={menuOpen} on:click={toggleMenu}>
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
     </div>
-  {/if}
+
+    {#if menuOpen}
+      <div class="menu">
+        <section
+          transition:fade={{ delay: transitionDelay * 1, duration: transitionDuration }}
+        >
+          <p class="title">Dizajn kartice filma</p>
+
+          <div class="segmentedButton">
+            <div
+              class="option"
+              class:selected={selectedCardDesign === "v1"}
+              on:click={() => {
+                changeCardDesign("v1");
+              }}
+            >
+              <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
+              <p>Stari</p>
+            </div>
+            <div
+              class="option"
+              class:selected={selectedCardDesign === "v2"}
+              on:click={() => {
+                changeCardDesign("v2");
+              }}
+            >
+              <img src="/images/whiteCheckForMenu.svg" alt="checkmark" />
+              <p>Novi</p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          transition:fade={{ delay: transitionDelay * 2, duration: transitionDuration }}
+        >
+          <p class="title">FAQ</p>
+
+          {#each faqItems as faqItem}
+            <div class="faqItem" on:click={toggleFaqAnswer}>
+              <div class="question">
+                <p class="text">{faqItem.question}</p>
+                <button>
+                  <img
+                    src="/images/downArrowFramedD9.svg"
+                    alt="Show answer"
+                    class:open={false}
+                  />
+                </button>
+              </div>
+              <p class="text answer" class:open={false}>{faqItem.answer}</p>
+            </div>
+          {/each}
+        </section>
+
+        <section
+          transition:fade={{ delay: transitionDelay * 3, duration: transitionDuration }}
+        >
+          <p class="title">Kontakt</p>
+          <div class="emailAndCopyButton">
+            <p class="text">r0pzrgabp@mozmail.com</p>
+            <button on:click={copyEmailToClipboard}>
+              <img src="/images/copyToClipboard.svg" alt="" />
+            </button>
+          </div>
+        </section>
+
+        <section
+          transition:fade={{ delay: transitionDelay * 4, duration: transitionDuration }}
+        >
+          <p class="title">Privacy policy</p>
+          <p class="text">Korisnički podaci se ne sakupljaju.</p>
+        </section>
+      </div>
+    {/if}
+  </div>
 </nav>
 
 <style>
   nav {
-    position: relative;
     padding: 1.5rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: #273454;
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
     margin-bottom: 3rem;
   }
+  nav > div {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    max-width: 100rem;
+    margin: 0 auto;
+  }
+
   img {
     width: 7rem;
   }

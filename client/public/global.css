@@ -11,7 +11,8 @@ a {
 }
 body {
   background-color: #202b46;
-  max-width: 30rem;
+  /* max-width: 30rem; */
+  /* max-width: 100rem; */
   margin: auto;
 }
 .primary-color-scheme,

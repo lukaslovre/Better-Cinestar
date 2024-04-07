@@ -99,9 +99,25 @@
 </div>
 
 <style>
-  #movieCardsContainer {
+  /* #movieCardsContainer {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+
+    column-gap: 2rem;
+    row-gap: 4rem;
+  } */
+
+  #movieCardsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+
     row-gap: 2rem;
+    column-gap: 2rem;
+  }
+
+  @media (max-width: 22rem) {
+    #movieCardsContainer {
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    }
   }
 </style>
