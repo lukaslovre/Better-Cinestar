@@ -5,7 +5,8 @@
   const faqItems = [
     {
       question: "Jesu li prikazani filmovi i termini isti kao na cinestaru?",
-      answer: "Da, podaci se povlače sa Cinestar API-ja.",
+      answer:
+        "Da, informacije o filmovima i terminima prikazivanja preuzimaju se direktno iz Cinestar-ovog API-ja, osiguravajući točnost i usklađenost s ponudom u kinima.",
     },
     {
       question: "Koliko su točne informacije na ovoj web stranici?",
@@ -13,7 +14,7 @@
         "Osnovni podaci, uključujući popis filmova, raspored prikazivanja i informacije o sjedalima, preuzimaju se sa službene web stranice Cinestar-a. Dodatni detalji poput liste glumaca, redatelja i ocjena dolaze sa Letterboxd-a. Može se dogoditi da program pronađe krivu Letterboxd stranicu za film, ali to se lako primjeti jer naslov filma i slika neće odgovarati.",
     },
     {
-      question: "Koliko se često ažuriraju podaci na ovoj web stranici?",
+      question: "Koliko često se ažuriraju podaci na ovoj web stranici?",
       answer: "Svi podaci (Cinestar i Letterboxd) se ažuriraju jednom dnevno, u 00:30",
     },
     {
@@ -24,12 +25,17 @@
     {
       question: "Kako se određuje raspored i dostupnost sjedala?",
       answer:
-        "Rasporedi sjedala i informacije o dostupnosti preuzimaju se sa službene web stranice Cinestar-a. Informacije se preuzimaju tek kada stisnete na neko prikazivanje, tako da nisu zastarjele.",
+        "Raspored sjedala i informacije o njihovoj dostupnosti automatski se preuzimaju s Cinestarove službene web stranice u trenutku kada odaberete prikazivanje, osiguravajući da su informacije uvijek aktualne i precizne.",
     },
     {
       question: "Postoje li planovi za dodavanje novih značajki?",
       answer:
-        "Da, budući planovi uključuju dodavanje mogućnosti da korisnici recenziraju filmove i razlikovanje različitih vrsta sjedala, poput ljubavnih sjedala, VIP sjedala, itd. Ako vi imate neku ideju, pošaljite ju na email.",
+        "Nemam više ideja, ako imate prijedloge za poboljšanja ili nove funkcije, slobodno mi pošaljite e-mail.",
+    },
+    {
+      question: "Mogu li kontribuirati ovom projektu?",
+      answer:
+        "Da, s obzirom da nemam puno vremena za ovaj projekt, svaka pomoć je dobrodošla. GitHub link je dolje.",
     },
   ];
 
@@ -156,6 +162,15 @@
           <p class="title">Privacy policy</p>
           <p class="text">Korisnički podaci se ne sakupljaju.</p>
         </section>
+
+        <section
+          transition:fade={{ delay: transitionDelay * 5, duration: transitionDuration }}
+        >
+          <p class="title">GitHub repository</p>
+          <a href="https://github.com/lukaslovre/Better-Cinestar" class="text"
+            >github.com/lukaslovre/Better-Cinestar</a
+          >
+        </section>
       </div>
     {/if}
   </div>
@@ -244,6 +259,9 @@
     color: #d9d9d9;
     font-weight: 400;
     line-height: 150%;
+  }
+  .menu a.text {
+    text-decoration: underline;
   }
 
   .menu .segmentedButton {

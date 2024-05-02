@@ -3,19 +3,7 @@
   import DateDropdown from "./DateDropdown.svelte";
   import SortDropdown from "./SortDropdown.svelte";
 
-  import { cinemaOids, selectedDate, sortBy } from "../stores";
-
-  // when any of the store values change, add it to the URL as a query parameter
-  $: {
-    const parameters = new URLSearchParams();
-
-    $cinemaOids.forEach((oid) => parameters.append("cinemaOids", oid));
-    parameters.append("date", $selectedDate);
-    parameters.append("sortBy", $sortBy);
-
-    history.replaceState(null, "", `?${parameters.toString()}`);
-  }
-
+  // Setting initial dropdown states
   let locationDropdownOpen = {
     level: 0,
     selectedCity: null,
@@ -27,6 +15,7 @@
     value: false,
   };
 
+  // Event listener to close dropdowns when clicking outside of them
   document.addEventListener("click", (e) => {
     if (e.target.closest(".dropdown-options")) return;
     if (e.target.closest(".dropdown-element")) return;

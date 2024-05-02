@@ -8,76 +8,132 @@
   import PerformanceInfoPopup from "./components/PerformanceInfoPopup.svelte";
 
   import { cinemaOids, selectedDate, sortBy } from "./stores";
+  import { dateToYMDFormat } from "./utils/utils";
 
-  const origin = window.location.origin; // Za radenje API requesta
+  // Setting up initial variables
+  const origin = window.location.origin; // Za radenje API requesta (mislim da ni ne treba zapravo, ne znam zasto sam stavio ako moze samo /api/movies)
   let showTooltipPopup = false;
   let openedPerformance = null;
+  let moviesPromise = null;
 
-  setStoreValuesFromUrl();
+  // Setting store values from URL parameters and local storage on page load
+  setStoreValues();
 
-  // Event catcheri
-  function setOpenedPerformance(event) {
-    openedPerformance = event.detail;
-  }
-  function setShowTooltipPopup(event) {
-    showTooltipPopup = event.detail;
-  }
+  // Zove fetchMovies() svaki put kad se promjeni neka vrijednost u dropdownu
+  $: moviesPromise = fetchMovies($cinemaOids, $selectedDate, $sortBy);
 
-  let moviesPromise;
+  // Disabling/enabling scrolling on body depending on whether a performance is opened
+  $: toggleBodyOverflow(openedPerformance);
 
-  // Zove getMovies() svaki put kad se promjeni neka vrijednost u dropdownu
-  $: {
-    moviesPromise = getMovies($cinemaOids, $selectedDate, $sortBy);
-  }
+  // Event handlers
+  const setOpenedPerformance = ({ detail }) => (openedPerformance = detail);
+  const setShowTooltipPopup = ({ detail }) => (showTooltipPopup = detail);
 
-  $: {
-    if (openedPerformance) {
-      // disable scrolling on body
-      document.body.style.overflow = "hidden";
-    } else {
-      // enable scrolling on body
-      document.body.style.overflow = "auto";
-    }
-  }
-
-  async function getMovies(cinemaOids, selectedDate, sortBy) {
+  // Fetch movies from the API
+  async function fetchMovies(cinemaOids, selectedDate, sortBy) {
     if (cinemaOids.length === 0) return { noCinemasSelected: true };
 
-    // create a URL parameter from the arguments
-    const urlParams = new URLSearchParams();
-    cinemaOids.forEach((oid) => urlParams.append("cinemaOids", oid));
-    urlParams.append("date", selectedDate);
-    urlParams.append("sortBy", sortBy);
-
+    const urlParams = createUrlParams(cinemaOids, selectedDate, sortBy);
     const getMoviesUrl = `${origin}/api/movies`;
 
     const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
 
     if (res.ok) {
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       return data;
     }
   }
 
-  function setStoreValuesFromUrl() {
+  // Create URL parameters
+  function createUrlParams(cinemaOids, selectedDate, sortBy) {
+    const urlParams = new URLSearchParams();
+    cinemaOids.forEach((oid) => urlParams.append("cinemaOids", oid));
+    urlParams.append("date", selectedDate);
+    urlParams.append("sortBy", sortBy);
+
+    return urlParams;
+  }
+
+  // Toggle body overflow
+  function toggleBodyOverflow(openedPerformance) {
+    document.body.style.overflow = openedPerformance ? "hidden" : "auto";
+  }
+
+  // Function to set store values
+  function setStoreValues() {
+    const localStorageValues = getValuesFromLocalStorage();
+    const urlValues = getValuesFromUrl();
+
+    // Merge the two objects, giving priority to urlValues
+    const values = { ...localStorageValues, ...urlValues };
+    console.log(values);
+
+    // Set the store values (triggers URL update and local storage update)
+    if (values.cinemaOids) cinemaOids.set(values.cinemaOids);
+    if (values.selectedDate) selectedDate.set(values.selectedDate);
+    if (values.sortBy) sortBy.set(values.sortBy);
+  }
+
+  // Function to get values from local storage
+  function getValuesFromLocalStorage() {
+    let values = {};
+
+    if (localStorage.getItem("cinemaOids")) {
+      values.cinemaOids = JSON.parse(localStorage.getItem("cinemaOids"));
+    }
+
+    if (localStorage.getItem("selectedDate")) {
+      // If date is before today, set it to today
+      const today = dateToYMDFormat(new Date());
+      if (localStorage.getItem("selectedDate") < today) {
+        values.selectedDate = today;
+      } else {
+        values.selectedDate = localStorage.getItem("selectedDate");
+      }
+    }
+
+    if (localStorage.getItem("sortBy")) {
+      values.sortBy = localStorage.getItem("sortBy");
+    }
+
+    return values;
+  }
+
+  // Function to get values from URL parameters
+  function getValuesFromUrl() {
+    let values = {};
     const urlParams = new URLSearchParams(window.location.search);
 
     if (urlParams.has("cinemaOids")) {
-      cinemaOids.set(urlParams.getAll("cinemaOids"));
+      values.cinemaOids = urlParams.getAll("cinemaOids");
     }
 
     if (urlParams.has("date")) {
-      selectedDate.set(urlParams.get("date"));
+      values.selectedDate = urlParams.get("date");
     }
 
     if (urlParams.has("sortBy")) {
-      sortBy.set(urlParams.get("sortBy"));
+      values.sortBy = urlParams.get("sortBy");
     }
 
-    // if (urlParams.has("goToMovie")) {
-    //   scrollToMovieId.set(urlParams.get("goToMovie"));
-    // }
+    return values;
+  }
+
+  // Updating URL parameters whenever store values change
+  $: {
+    const parameters = createUrlParams($cinemaOids, $selectedDate, $sortBy);
+
+    history.replaceState(null, "", `?${parameters.toString()}`);
+
+    updateLocalStorage($cinemaOids, $selectedDate, $sortBy);
+  }
+
+  // Update local storage
+  function updateLocalStorage(cinemaOids, selectedDate, sortBy) {
+    localStorage.setItem("cinemaOids", JSON.stringify(cinemaOids));
+    localStorage.setItem("selectedDate", selectedDate);
+    localStorage.setItem("sortBy", sortBy);
   }
 </script>
 
