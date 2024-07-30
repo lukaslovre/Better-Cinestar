@@ -135,9 +135,13 @@ async function getLetterboxdDataFromUrl(url) {
           trailer.indexOf("?")
         )}`
       : null;
-    let durationMins = $(".text-footer").prop("innerText");
-    const indexOfMins = durationMins.indexOf("mins");
-    durationMins = parseInt(durationMins.slice(indexOfMins - 4, indexOfMins - 1));
+
+    const durationText = $(".text-footer").prop("innerText"); // ex. "... 90 mins ..."
+    const hasDuration = durationText.includes("mins");
+    let durationMins = hasDuration
+      ? parseInt(durationText.slice(0, durationText.indexOf("mins")))
+      : null;
+    durationMins = isNaN(durationMins) ? null : durationMins;
     const duration = `${Math.floor(durationMins / 60)}h ${durationMins % 60}m`;
 
     return {
