@@ -42,6 +42,9 @@ async function updateMoviesAndPerformances() {
   await savePerformanceDatesToDatabase(performanceDates);
 
   console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
+  sendToErrorCollector(
+    `Found ${movies.length} movies (${performances.length} performances).`
+  );
 }
 async function enrichMoviesWithExternalData() {
   movies = await fillMoviesWithLetterboxdData(movies);
@@ -49,4 +52,14 @@ async function enrichMoviesWithExternalData() {
 
   movies = await fillMoviesWithImdbData(movies);
   console.log("\nFinished enriching with IMDb data\n");
+}
+
+function sendToErrorCollector(message) {
+  fetch("localhost:12120/report_error", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ message }),
+  }).catch((err) => console.error(err));
 }
