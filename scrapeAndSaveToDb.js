@@ -55,7 +55,7 @@ async function enrichMoviesWithExternalData() {
 }
 
 function sendToErrorCollector(message) {
-  fetch("localhost:12120/report_error", {
+  fetch("http://localhost:12120/report_error", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
