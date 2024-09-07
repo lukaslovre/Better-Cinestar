@@ -3,7 +3,15 @@ const { drawProgressBar } = require("./consoleProgress.js");
 
 async function fetchAndParseHtml(url) {
   const response = await fetch(url);
+
+  if (!response.ok) {
+    console.log(response);
+  }
+
   const html = await response.text();
+
+  console.log(html);
+
   return cheerio.load(html);
 }
 
@@ -15,6 +23,8 @@ async function fillMoviesWithLetterboxdData(movies) {
 
     // Get the movie's Letterboxd URL if it's not already present
     if (!movie.letterboxdUrl) {
+      console.log("Getting Letterboxd URL for", movie.originalTitle);
+
       movie.letterboxdUrl = await getLetterboxdUrlFromName(
         movie.originalTitle,
         movie.nationwideStart.slice(0, 4),
@@ -54,6 +64,8 @@ async function getLetterboxdUrlFromName(targetName, targetYear) {
     const $ = await fetchAndParseHtml(filmSearchUrl);
     const filmSearchResults = $("ul.results .film-detail-content");
 
+    console.log(`Number of search results: ${filmSearchResults.length}`);
+
     let moviePageUrl = null;
 
     filmSearchResults.each((i, el) => {
@@ -63,8 +75,13 @@ async function getLetterboxdUrlFromName(targetName, targetYear) {
 
       if (targetYear - releaseYear < 3 && moviePageUrl == null) {
         moviePageUrl = `https://letterboxd.com${linkToMovie}`;
+        console.log(`Match found: ${moviePageUrl}`);
       }
     });
+
+    if (!moviePageUrl) {
+      console.log(`No match found for ${targetName} (${targetYear})`);
+    }
 
     return moviePageUrl;
   } catch (err) {
