@@ -1,4 +1,4 @@
-async function getPerformanceDatesFrom(performances) {
+function getPerformanceDatesFrom(performances) {
   const leanPerformances = performances.map((perf) => {
     return {
       date: perf.cinemaDate,

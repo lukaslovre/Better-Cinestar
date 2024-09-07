@@ -17,12 +17,17 @@ const cinemas = getCinemas();
 let movies = [];
 let performances = [];
 
-getDataOnAppStart();
+getDataOnAppStart(movies, performances);
 
-async function getDataOnAppStart() {
+async function getDataOnAppStart(movies = [], performances = []) {
   try {
-    await updateMoviesAndPerformances();
-    await enrichMoviesWithExternalData();
+    const { movies: moviesFormatted, performances: performancesFormatted } =
+      await updateMoviesAndPerformances(movies, performances);
+
+    movies = moviesFormatted;
+    performances = performancesFormatted;
+
+    movies = await enrichMoviesWithExternalData(movies);
 
     await saveMoviesToDatabase(movies);
     await savePerformancesToDatabase(performances);
@@ -42,7 +47,7 @@ async function getDataOnAppStart() {
   }
 }
 
-async function updateMoviesAndPerformances() {
+async function updateMoviesAndPerformances(movies, performances) {
   console.log("Fetching movies and performances from CineStar.");
 
   const { moviesFormatted, performancesFormatted } = await fetchMoviesAndPerformances(
@@ -52,18 +57,22 @@ async function updateMoviesAndPerformances() {
   movies = moviesFormatted;
   performances = performancesFormatted;
 
+  console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
+
   //  Get performance dates and save them to the database
-  const performanceDates = await getPerformanceDatesFrom(performances);
+  const performanceDates = getPerformanceDatesFrom(performances);
   await savePerformanceDatesToDatabase(performanceDates);
 
-  console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
+  return { movies, performances };
 }
-async function enrichMoviesWithExternalData() {
+async function enrichMoviesWithExternalData(movies) {
   movies = await fillMoviesWithLetterboxdData(movies);
   console.log("\nFinished enriching with Letterboxd data\n");
 
   movies = await fillMoviesWithImdbData(movies);
   console.log("\nFinished enriching with IMDb data\n");
+
+  return movies;
 }
 
 function sendToErrorCollector(message) {

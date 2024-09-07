@@ -149,7 +149,7 @@ async function savePerformanceDatesToDatabase(performancesByCinemaFilmAndDates) 
 
   await PerformanceDates.bulkCreate(performancesByCinemaFilmAndDates);
 
-  console.log("Performance dates saved to the database.");
+  return console.log("Performance dates saved to the database.");
 }
 
 async function saveAnalyticsToDatabase(analytics) {
