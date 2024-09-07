@@ -1,4 +1,5 @@
 const cheerio = require("cheerio");
+const puppeteer = require("puppeteer");
 const { drawProgressBar } = require("./consoleProgress.js");
 
 async function fetchAndParseHtml(url) {
@@ -10,25 +11,24 @@ async function fetchAndParseHtml(url) {
 
   const html = await response.text();
 
-  console.log(html);
-
   return cheerio.load(html);
 }
 
 async function fillMoviesWithLetterboxdData(movies) {
   if (!Array.isArray(movies)) movies = [movies];
 
+  const browser = await puppeteer.launch();
+
   for (const movie of movies) {
     drawProgressBar(movies.indexOf(movie) / movies.length);
 
     // Get the movie's Letterboxd URL if it's not already present
     if (!movie.letterboxdUrl) {
-      console.log("Getting Letterboxd URL for", movie.originalTitle);
-
       movie.letterboxdUrl = await getLetterboxdUrlFromName(
+        browser,
         movie.originalTitle,
-        movie.nationwideStart.slice(0, 4),
-        movie.director
+        movie.nationwideStart.slice(0, 4)
+        // movie.director
       );
     }
 
@@ -36,6 +36,9 @@ async function fillMoviesWithLetterboxdData(movies) {
     const letterboxdData = await getLetterboxdDataFromUrl(movie.letterboxdUrl);
     Object.assign(movie, letterboxdData);
   }
+
+  // Close the browser after all movies have been processed
+  await browser.close();
 
   return movies;
 }
@@ -54,36 +57,41 @@ async function fillMoviesWithImdbData(movies) {
   return movies;
 }
 
-async function getLetterboxdUrlFromName(targetName, targetYear) {
+async function getLetterboxdUrlFromName(browser, targetName, targetYear) {
+  const filmSearchUrl = `https://letterboxd.com/search/films/${targetName.replaceAll(
+    " ",
+    "+"
+  )}/`;
+
   try {
-    const filmSearchUrl = `https://letterboxd.com/search/films/${targetName.replaceAll(
-      " ",
-      "+"
-    )}/`;
+    // Update to use puppeteer
+    const page = await browser.newPage();
+    await page.goto(filmSearchUrl);
 
-    const $ = await fetchAndParseHtml(filmSearchUrl);
-    const filmSearchResults = $("ul.results .film-detail-content");
+    // Achieve the same functionality as the commented code below using puppeteer
+    const element = await page.waitForSelector("ul.results");
 
-    console.log(`Number of search results: ${filmSearchResults.length}`);
+    // Go thru every element `li` child of `ul.results` and check if the title matches the target
+    const elements = await element.$$("li");
 
-    let moviePageUrl = null;
+    for (const el of elements) {
+      const { title, url } = await el.$eval(".film-title-wrapper > a", (el) => {
+        return {
+          title: el.innerText || "",
+          url: el.href || "",
+        };
+      });
 
-    filmSearchResults.each((i, el) => {
-      const title = $(el).find(".film-title-wrapper > a").first().text();
-      const linkToMovie = $(el).find(".film-title-wrapper > a").first().attr("href");
-      const releaseYear = $(el).find(".film-title-wrapper > .metadata").first().text();
+      const year = await el.$eval(".film-title-wrapper > .metadata", (el) =>
+        el.innerText ? parseInt(el.innerText.slice(0, 4)) : null
+      );
 
-      if (targetYear - releaseYear < 3 && moviePageUrl == null) {
-        moviePageUrl = `https://letterboxd.com${linkToMovie}`;
-        console.log(`Match found: ${moviePageUrl}`);
+      if (targetYear - year < 3 && url) {
+        return url;
       }
-    });
-
-    if (!moviePageUrl) {
-      console.log(`No match found for ${targetName} (${targetYear})`);
     }
 
-    return moviePageUrl;
+    return null;
   } catch (err) {
     console.log(err);
     return null;
@@ -103,6 +111,7 @@ async function getLetterboxdDataFromUrl(url) {
     duration: null,
     durationMins: null,
   };
+
   if (!url) {
     return defaultData;
   }

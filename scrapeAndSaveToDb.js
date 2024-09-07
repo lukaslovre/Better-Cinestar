@@ -12,7 +12,7 @@ const {
   fillMoviesWithImdbData,
 } = require("./scraping/imdbAndLetterboxdFunctions.js");
 
-const cinemas = getCinemas(); //.slice(0, 2);
+const cinemas = getCinemas();
 
 let movies = [];
 let performances = [];
@@ -20,11 +20,26 @@ let performances = [];
 getDataOnAppStart();
 
 async function getDataOnAppStart() {
-  await updateMoviesAndPerformances();
-  await enrichMoviesWithExternalData();
+  try {
+    await updateMoviesAndPerformances();
+    await enrichMoviesWithExternalData();
 
-  await saveMoviesToDatabase(movies);
-  await savePerformancesToDatabase(performances);
+    await saveMoviesToDatabase(movies);
+    await savePerformancesToDatabase(performances);
+
+    const moviesWithLetterboxdUrl = movies.filter((movie) => movie.letterboxdUrl).length;
+
+    const successMessage = `Successfully saved ${movies.length} movies and ${
+      performances.length
+    } performances to the database. ${moviesWithLetterboxdUrl} (${(
+      (moviesWithLetterboxdUrl / movies.length) *
+      100
+    ).toFixed(2)}%) of the movies have a Letterboxd URL.`;
+
+    sendToErrorCollector(successMessage);
+  } catch (err) {
+    sendToErrorCollector(err);
+  }
 }
 
 async function updateMoviesAndPerformances() {
@@ -42,9 +57,6 @@ async function updateMoviesAndPerformances() {
   await savePerformanceDatesToDatabase(performanceDates);
 
   console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
-  sendToErrorCollector(
-    `Found ${movies.length} movies (${performances.length} performances).`
-  );
 }
 async function enrichMoviesWithExternalData() {
   movies = await fillMoviesWithLetterboxdData(movies);
