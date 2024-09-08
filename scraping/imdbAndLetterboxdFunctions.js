@@ -17,7 +17,9 @@ async function fetchAndParseHtml(url) {
 async function fillMoviesWithLetterboxdData(movies) {
   if (!Array.isArray(movies)) movies = [movies];
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
 
   for (const movie of movies) {
     drawProgressBar(movies.indexOf(movie) / movies.length);

@@ -31,7 +31,7 @@ async function fetchMoviesAndPerformances(cinemas) {
       performances.push(...performancesFormatted);
     } catch (error) {
       console.log(
-        `Error fetching movies and performances for cinema ${cinema.name}: ${error}`
+        `Error fetching movies and performances for cinema ${cinema.cinemaName}: ${error}`
       );
     }
   }
