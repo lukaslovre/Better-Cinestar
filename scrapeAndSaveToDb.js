@@ -17,17 +17,27 @@ const cinemas = getCinemas();
 let movies = [];
 let performances = [];
 
-getDataOnAppStart(movies, performances);
+(async () => {
+  await getDataOnAppStart(movies, performances);
+})();
 
 async function getDataOnAppStart(movies = [], performances = []) {
   try {
+    console.log("Starting data fetch on app start...");
+
     const { movies: moviesFormatted, performances: performancesFormatted } =
       await updateMoviesAndPerformances(movies, performances);
 
     movies = moviesFormatted;
     performances = performancesFormatted;
 
+    console.log(
+      "Movies and performances fetched. Enriching movies with external data..."
+    );
+
     movies = await enrichMoviesWithExternalData(movies);
+
+    console.log("Saving movies and performances to the database...");
 
     await saveMoviesToDatabase(movies);
     await savePerformancesToDatabase(performances);
@@ -41,14 +51,16 @@ async function getDataOnAppStart(movies = [], performances = []) {
       100
     ).toFixed(2)}%) of the movies have a Letterboxd URL.`;
 
+    console.log(successMessage);
     sendToErrorCollector(successMessage);
   } catch (err) {
-    sendToErrorCollector(err);
+    console.error("Error occurred during data fetch and save process:", err);
+    sendToErrorCollector(err.message);
   }
 }
 
 async function updateMoviesAndPerformances(movies, performances) {
-  console.log("Fetching movies and performances from CineStar.");
+  console.log("Fetching movies and performances from CineStar...");
 
   const { moviesFormatted, performancesFormatted } = await fetchMoviesAndPerformances(
     cinemas
@@ -57,20 +69,23 @@ async function updateMoviesAndPerformances(movies, performances) {
   movies = moviesFormatted;
   performances = performancesFormatted;
 
-  console.log(`Found ${movies.length} movies (${performances.length} performances).\n`);
+  console.log(`Found ${movies.length} movies and ${performances.length} performances.`);
 
-  //  Get performance dates and save them to the database
+  // Get performance dates and save them to the database
   const performanceDates = getPerformanceDatesFrom(performances);
   await savePerformanceDatesToDatabase(performanceDates);
 
   return { movies, performances };
 }
-async function enrichMoviesWithExternalData(movies) {
-  movies = await fillMoviesWithLetterboxdData(movies);
-  console.log("\nFinished enriching with Letterboxd data\n");
 
+async function enrichMoviesWithExternalData(movies) {
+  console.log("Enriching movies with Letterboxd data...");
+  movies = await fillMoviesWithLetterboxdData(movies);
+  console.log("Finished enriching with Letterboxd data.");
+
+  console.log("Enriching movies with IMDb data...");
   movies = await fillMoviesWithImdbData(movies);
-  console.log("\nFinished enriching with IMDb data\n");
+  console.log("Finished enriching with IMDb data.");
 
   return movies;
 }
@@ -82,5 +97,5 @@ function sendToErrorCollector(message) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ message }),
-  }).catch((err) => console.error(err));
+  }).catch((err) => console.error("Failed to send error report:", err));
 }
