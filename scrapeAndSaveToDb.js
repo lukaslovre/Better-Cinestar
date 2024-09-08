@@ -18,15 +18,15 @@ let movies = [];
 let performances = [];
 
 (async () => {
-  await getDataOnAppStart(movies, performances);
+  await getDataOnAppStart(movies, performances, cinemas);
 })();
 
-async function getDataOnAppStart(movies = [], performances = []) {
+async function getDataOnAppStart(movies = [], performances = [], cinemas) {
   try {
     console.log("Starting data fetch on app start...");
 
     const { movies: moviesFormatted, performances: performancesFormatted } =
-      await updateMoviesAndPerformances(movies, performances);
+      await updateMoviesAndPerformances(movies, performances, cinemas);
 
     movies = moviesFormatted;
     performances = performancesFormatted;
@@ -59,7 +59,7 @@ async function getDataOnAppStart(movies = [], performances = []) {
   }
 }
 
-async function updateMoviesAndPerformances(movies, performances) {
+async function updateMoviesAndPerformances(movies, performances, cinemas) {
   console.log("Fetching movies and performances from CineStar...");
 
   const { moviesFormatted, performancesFormatted } = await fetchMoviesAndPerformances(
