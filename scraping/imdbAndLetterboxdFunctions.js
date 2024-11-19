@@ -24,7 +24,7 @@ async function fillMoviesWithLetterboxdData(movies) {
 
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    headless: false,
+    // headless: false,
   });
 
   for (const movie of movies) {
