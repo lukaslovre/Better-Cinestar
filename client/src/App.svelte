@@ -12,6 +12,7 @@
 
   // Setting up initial variables
   const origin = window.location.origin; // Za radenje API requesta (mislim da ni ne treba zapravo, ne znam zasto sam stavio ako moze samo /api/movies)
+  // const origin = "http://localhost:3000"; // Za radenje API requesta
   let showTooltipPopup = false;
   let openedPerformance = null;
   let moviesPromise = null;

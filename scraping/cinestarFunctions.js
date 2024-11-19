@@ -10,14 +10,26 @@ async function cinestarApi(endpoint, cinemaOid) {
   const url = `${API_URL}${endpoint}`;
   const headers = { ...DEFAULT_HEADERS, "CENTER-OID": cinemaOid };
 
-  // Make the request and parse the response as JSON
-  const response = await fetch(url, { headers });
-  const data = await response.json();
+  try {
+    const response = await fetch(url, { headers });
 
-  return data;
+    if (!response.ok) {
+      throw new Error(
+        `API request failed with status ${response.status}: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(`Error fetching data from ${url}: ${error.message}`);
+
+    throw error;
+  }
 }
 
-// Function to fetch movies and performances for a list of cinemas
+// Fetch movies and performances for a list of cinemas
 async function fetchMoviesAndPerformances(cinemas) {
   const movies = [];
   const performances = [];
@@ -27,11 +39,12 @@ async function fetchMoviesAndPerformances(cinemas) {
     try {
       const { movies: moviesFormatted, formattedPerformances: performancesFormatted } =
         await getCinemaMoviesAndPerformances(cinema);
+
       movies.push(...moviesFormatted);
       performances.push(...performancesFormatted);
     } catch (error) {
       console.log(
-        `Error fetching movies and performances for cinema ${cinema.cinemaName}: ${error}`
+        `Error fetching movies and performances for cinema ${cinema.cinemaName}: ${error.message}`
       );
     }
   }
