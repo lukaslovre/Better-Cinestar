@@ -9,8 +9,10 @@
   <div class="movieStats" class:fullscreened={isFullscreened}>
     {#if movie.englishCategories}
       <p>{movie.englishCategories[0]}</p>
-    {:else}
+    {:else if movie.genres}
       <p>{movie.genres[0]}</p>
+    {:else}
+      <p>N/A</p>
     {/if}
 
     {#if movie.duration}

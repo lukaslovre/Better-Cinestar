@@ -16,7 +16,7 @@
   <div class="movieStats">
     <div class="row">
       <div>
-        <p>{movie.englishCategories ? movie.englishCategories[0] : movie.genres[0]}</p>
+        <p>{movie.englishCategories?.[0] || movie.genres?.[0] || "N/A"}</p>
       </div>
 
       <div>
