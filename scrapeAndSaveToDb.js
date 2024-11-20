@@ -22,32 +22,29 @@ async function getDataOnAppStart() {
   try {
     console.log("Starting data fetch on app start...");
 
-    const { movies, performances } = await updateMoviesAndPerformances(cinemas);
-
-    console.log(
-      "Movies and performances fetched. Enriching movies with external data..."
+    const { movies, performances, performanceDates } = await updateMoviesAndPerformances(
+      cinemas
     );
 
-    console.log("Saving movies and performances to the database...");
     await saveMoviesToDatabase(movies);
     await savePerformancesToDatabase(performances);
+    await savePerformanceDatesToDatabase(performanceDates);
 
     const enrichedMovies = await enrichMoviesWithExternalData(movies);
 
-    console.log("Saving enriched movies to the database...");
     await saveMoviesToDatabase(enrichedMovies);
 
-    const moviesWithLetterboxdUrl = movies.filter((movie) => movie.letterboxdUrl).length;
-    const percentageWithLetterboxdUrl = (
-      (moviesWithLetterboxdUrl / enrichedMovies.length) *
-      100
-    ).toFixed(2);
+    // const moviesWithLetterboxdUrl = movies.filter((movie) => movie.letterboxdUrl).length;
+    // const percentageWithLetterboxdUrl = (
+    //   (moviesWithLetterboxdUrl / enrichedMovies.length) *
+    //   100
+    // ).toFixed(2);
 
-    const successMessage = `Successfully saved ${enrichedMovies.length} movies and ${performances.length} performances to the database. ${moviesWithLetterboxdUrl} (${percentageWithLetterboxdUrl}%) of the movies have a Letterboxd URL.`;
-    console.log(successMessage);
+    // const successMessage = `Successfully saved ${enrichedMovies.length} movies and ${performances.length} performances to the database. ${moviesWithLetterboxdUrl} (${percentageWithLetterboxdUrl}%) of the movies have a Letterboxd URL.`;
+    // console.log(successMessage);
     // sendToErrorCollector(successMessage);
   } catch (err) {
-    console.error("Error occurred during data fetch and save process:", err);
+    console.error("Error occurred during data fetch and save process:", err.message);
     // sendToErrorCollector(err.message);
   }
 }
@@ -63,21 +60,28 @@ async function updateMoviesAndPerformances(cinemas) {
     `Found ${moviesFormatted.length} movies and ${performancesFormatted.length} performances.`
   );
 
-  // Get performance dates and save them to the database
   const performanceDates = getPerformanceDatesFrom(performancesFormatted);
-  await savePerformanceDatesToDatabase(performanceDates);
 
-  return { movies: moviesFormatted, performances: performancesFormatted };
+  return {
+    movies: moviesFormatted,
+    performances: performancesFormatted,
+    performanceDates,
+  };
 }
 
 async function enrichMoviesWithExternalData(movies) {
-  console.log("Enriching movies with Letterboxd data...");
   let enrichedMovies = await fillMoviesWithLetterboxdData(movies);
-  console.log("Finished enriching with Letterboxd data.");
 
-  console.log("Enriching movies with IMDb data...");
+  // validation
+  if (!enrichedMovies || !Array.isArray(enrichedMovies)) {
+    throw new Error(
+      "Error occurred during LetterBoxd data enrichment process: movies is not an array"
+    );
+  }
+
+  console.log("Finished enriching with Letterboxd data and starting IMDb data fetch...");
+
   enrichedMovies = await fillMoviesWithImdbData(movies);
-  console.log("Finished enriching with IMDb data.");
 
   return enrichedMovies;
 }

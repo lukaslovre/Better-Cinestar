@@ -129,27 +129,44 @@ async function init() {
 }
 
 // INSERTING
-async function saveMoviesToDatabase(movies) {
-  // clear the table before inserting new data
-  await Movie.destroy({ truncate: true });
+/**
+ * Generic database save function
+ * @param {Object} model - Sequelize model
+ * @param {Array} data - Array of items to save
+ * @param {string} type - Type name for error messages
+ */
+async function saveToDatabase(model, data, type) {
+  if (!data || !Array.isArray(data)) {
+    throw new Error(`No ${type} provided to save to the database.`);
+  }
 
-  await Movie.bulkCreate(movies);
+  try {
+    // clear the table before inserting new data
+    await model.destroy({ truncate: true });
+
+    await model.bulkCreate(data);
+
+    console.log(`${type} successfully saved to the database.`);
+  } catch (error) {
+    console.log(`Error saving ${type} to the database:`, error.message);
+    throw error;
+  }
+}
+
+async function saveMoviesToDatabase(movies) {
+  return saveToDatabase(Movie, movies, "movies");
 }
 
 async function savePerformancesToDatabase(performances) {
-  // clear the table before inserting new data
-  await Performance.destroy({ truncate: true });
-
-  await Performance.bulkCreate(performances);
+  return saveToDatabase(Performance, performances, "performances");
 }
 
 async function savePerformanceDatesToDatabase(performancesByCinemaFilmAndDates) {
-  // clear the table before inserting new data
-  await PerformanceDates.destroy({ truncate: true });
-
-  await PerformanceDates.bulkCreate(performancesByCinemaFilmAndDates);
-
-  return console.log("Performance dates saved to the database.");
+  return saveToDatabase(
+    PerformanceDates,
+    performancesByCinemaFilmAndDates,
+    "performance dates"
+  );
 }
 
 async function saveAnalyticsToDatabase(analytics) {
