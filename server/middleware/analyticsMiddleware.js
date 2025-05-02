@@ -1,7 +1,8 @@
 const { saveAnalyticsToDatabase } = require("../db/db");
+const { msFromMinutes } = require("../utils/utils");
 
 const storageSavingFrequency = {
-  timeInMs: 10 * 60 * 1000, // 10 minutes
+  timeInMs: msFromMinutes(10), // 10 minutes
   items: 200, // 200 items
 };
 
