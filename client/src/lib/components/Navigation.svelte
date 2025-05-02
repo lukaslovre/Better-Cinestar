@@ -1,6 +1,6 @@
 <script>
   import { fade } from "svelte/transition";
-  import { resetFiltersToDefault } from "../stores";
+  import { resetFiltersToDefault } from "$lib/stores/userSelection.svelte"
 
   const faqItems = [
     {

@@ -14,7 +14,7 @@
     getPreviousAndNextPerformanceDatesForMovie,
   } from "../utils/performances";
 
-  import { cinemaOids, selectedDate, sortBy } from "../stores";
+  import { cinemaOids, selectedDate, sortBy } from "$lib/stores/userSelection.svelte"
 
   const dispatch = createEventDispatcher();
 

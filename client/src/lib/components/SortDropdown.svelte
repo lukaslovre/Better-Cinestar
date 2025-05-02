@@ -1,5 +1,5 @@
 <script>
-  import { sortBy } from "../stores";
+  import { sortBy } from "$lib/stores/userSelection.svelte"
 
   export let sortDropdownOpen;
 

@@ -1,6 +1,6 @@
 <script>
-  import { selectedDate } from "../stores";
-  import { dateToYMDFormat, getFormattedPerformanceDateLabel } from "../utils/utils";
+  import { selectedDate } from "$lib/stores/userSelection.svelte"
+  import { dateToYMDFormat, getFormattedPerformanceDateLabel } from "$lib/utils/utils"
 
   export let dateDropdownOpen;
 

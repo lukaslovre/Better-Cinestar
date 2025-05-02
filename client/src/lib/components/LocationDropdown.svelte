@@ -1,7 +1,7 @@
 <script>
-  import { cinemaOids } from "../stores";
+  import { cinemaOids } from "$lib/stores/userSelection.svelte"
   import { createEventDispatcher } from "svelte";
-  import { cinemas as cinemasData } from "../utils/cinemas";
+  import { cinemas as cinemasData } from "$lib/utils/cinemas"
 
   const dispatch = createEventDispatcher();
 
