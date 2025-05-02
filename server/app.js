@@ -11,39 +11,64 @@ const { getPerformancesForDateAndMovie } = require("./api/performances.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const { getAnalytics } = require("./db/db.js");
+const { z } = require("zod");
 
 app.use(cors());
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
 
+// Zod Schemas
+const cinemaOidSchema = z.string().length(18, "Invalid cinema OID format");
+const cinemaOidsSchema = z.preprocess(
+  (val) => (Array.isArray(val) ? val : [val]),
+  z.array(cinemaOidSchema).nonempty("At least one cinema OID is required")
+);
+const dateSchema = z.union(
+  [z.string().length(10, "Invalid date format"), z.literal("any")],
+  {
+    errorMap: () => ({ message: "Date must be YYYY-MM-DD or 'any'" }),
+  }
+);
+
+const moviesQuerySchema = z.object({
+  cinemaOids: cinemaOidsSchema,
+  date: dateSchema,
+  sortBy: z.string().min(1, "SortBy is required"),
+});
+
+const seatingQuerySchema = z.object({
+  cinemaOid: cinemaOidSchema,
+  performanceId: z.string().min(1, "Performance ID is required"),
+});
+
+const performancesQuerySchema = z.object({
+  cinemaOids: cinemaOidsSchema,
+  date: dateSchema,
+  movieId: z.string().min(1, "Movie ID is required"),
+});
+
 app.get("/api/movies", analyticsMiddleware, async (req, res) => {
-  const { cinemaOids, date, sortBy } = req.query;
+  const result = moviesQuerySchema.safeParse(req.query);
 
-  const { valid, message, cinemaOidsArray } = validateMovieParameters(
-    cinemaOids,
-    date,
-    sortBy
-  );
-
-  if (!valid) {
-    res.status(400).send(message);
-    return;
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
   }
 
+  const { cinemaOids, date, sortBy } = result.data;
+
   // Movies matching the filters and with performances added to them
-  const formattedMovies = await getFormattedMovies(cinemaOidsArray, date, sortBy);
+  const formattedMovies = await getFormattedMovies(cinemaOids, date, sortBy);
 
   res.send(formattedMovies);
 });
 
 app.get("/api/seating", analyticsMiddleware, async (req, res) => {
-  const { cinemaOid, performanceId } = req.query;
+  const result = seatingQuerySchema.safeParse(req.query);
 
-  const { valid, message } = validateSeatingParameters(cinemaOid, performanceId);
-
-  if (!valid) {
-    res.status(400).send(message);
-    return;
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
   }
+
+  const { cinemaOid, performanceId } = result.data;
 
   const seating = await fetchSeating(cinemaOid, performanceId);
 
@@ -51,18 +76,13 @@ app.get("/api/seating", analyticsMiddleware, async (req, res) => {
 });
 
 app.get("/api/performances", analyticsMiddleware, async (req, res) => {
-  const { cinemaOids, date, movieId } = req.query;
+  const result = performancesQuerySchema.safeParse(req.query);
 
-  const { valid, message, cinemaOidsArray } = validatePerformanceParameters(
-    cinemaOids,
-    date,
-    movieId
-  );
-
-  if (!valid) {
-    res.status(400).send(message);
-    return;
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
   }
+
+  const { cinemaOids, date, movieId } = result.data;
 
   const present = new Date();
   const today = dateToYYYYMMDD(present);
@@ -70,7 +90,7 @@ app.get("/api/performances", analyticsMiddleware, async (req, res) => {
 
   // Get the performances
   const performances = await getPerformancesForDateAndMovie(
-    cinemaOidsArray,
+    cinemaOids,
     date,
     today,
     currentTime,
@@ -80,10 +100,9 @@ app.get("/api/performances", analyticsMiddleware, async (req, res) => {
   res.send(performances);
 });
 
-// app.get("/status", async (req, res) => {
-//   const analytics = await getAnalytics();
-//   res.send(analytics);
-// });
+app.get("/api/health", (req, res) => {
+  res.send("OK");
+});
 
 app.get("/api/getAnalyticsData", async (req, res) => {
   const analytics = await getAnalytics();
@@ -101,71 +120,3 @@ app.listen(port, () => {
 });
 
 console.log("Current time:", dateToHHMM(new Date()));
-
-function validateMovieParameters(cinemaOids, date, sortBy) {
-  // if any of the parameters is missing, return an error
-  if (!cinemaOids || !date || !sortBy) {
-    return { valid: false, message: "Missing parameters" };
-  }
-
-  // transform cinemaOids to array
-  const cinemaOidsArray = Array.isArray(cinemaOids) ? cinemaOids : [cinemaOids];
-
-  // check that parameters are of expected type
-  if (Array.isArray(date) || Array.isArray(sortBy)) {
-    return { valid: false, message: "Invalid parameters" };
-  }
-
-  if (
-    cinemaOidsArray.every((cinemaOid) => cinemaOid.length !== 18) ||
-    (date.length !== 10 && date !== "any")
-  ) {
-    return { valid: false, message: "Invalid parameters" };
-  }
-
-  // If we reach this point, the parameters are valid
-  return { valid: true, message: "", cinemaOidsArray };
-}
-function validateSeatingParameters(cinemaOid, performanceId) {
-  // if any of the parameters is missing, return an error
-  if (!cinemaOid || !performanceId) {
-    return { valid: false, message: "Missing parameters" };
-  }
-
-  // they mustnt be arrays
-  if (Array.isArray(cinemaOid) || Array.isArray(performanceId)) {
-    return { valid: false, message: "Invalid parameters" };
-  }
-
-  if (cinemaOid.length !== 18) {
-    return { valid: false, message: "Invalid parameters" };
-  }
-
-  // If we reach this point, the parameters are valid
-  return { valid: true, message: "" };
-}
-
-function validatePerformanceParameters(cinemaOids, date, movieId) {
-  // if any of the parameters is missing, return an error
-  if (!cinemaOids || !date || !movieId) {
-    return { valid: false, message: "Missing parameters" };
-  }
-
-  // transform cinemaOids to array
-  const cinemaOidsArray = Array.isArray(cinemaOids) ? cinemaOids : [cinemaOids];
-
-  // check that parameters are of expected type
-  if (Array.isArray(date) || Array.isArray(movieId)) {
-    return { valid: false, message: "Invalid parameters" };
-  }
-
-  if (
-    cinemaOidsArray.every((cinemaOid) => cinemaOid.length !== 18) ||
-    (date.length !== 10 && date !== "any")
-  ) {
-    return { valid: false, message: "Invalid parameters" };
-  }
-
-  // If we reach this point, the parameters are valid
-  return { valid: true, message: "", cinemaOidsArray };
-}
