@@ -1,11 +1,12 @@
-const { saveAnalyticsToDatabase } = require("../config/db.js");
+const { saveAnalyticsToDatabase } = require("../db/db");
 
-// In-memory request counter
-let analyticsStorage = [];
 const storageSavingFrequency = {
   timeInMs: 10 * 60 * 1000, // 10 minutes
   items: 200, // 200 items
 };
+
+// In-memory request counter
+let analyticsStorage = [];
 
 // Middleware function
 const analyticsMiddleware = (req, res, next) => {
