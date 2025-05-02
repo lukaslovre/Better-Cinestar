@@ -1,7 +1,7 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const app = express();
-const port = 3000;
 const cors = require("cors");
 
 const { dateToHHMM, dateToYYYYMMDD } = require("./utils/utils.js");
@@ -12,6 +12,7 @@ const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const { getAnalytics } = require("./db/db.js");
 const { z } = require("zod");
+const { configuration } = require("./config/environment.js");
 
 app.use(cors());
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
@@ -115,8 +116,8 @@ app.get("/api/getCinemasList", (req, res) => {
 app.use("/analytics", express.static(path.join(__dirname, "public", "analytics")));
 app.use(express.static(path.join(__dirname, "client", "public")));
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(configuration.PORT, () => {
+  console.log(`Example app listening on port ${configuration.PORT}`);
 });
 
 console.log("Current time:", dateToHHMM(new Date()));
