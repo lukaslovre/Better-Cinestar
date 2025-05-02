@@ -1,12 +1,13 @@
 {
   "name": "bettercinestar",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "A web scraping project to fetch movie data from Cinestar and display it on an improved UI.",
+  "main": "server/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js",
-    "fetch": "node scrapeAndSaveToDb.js"
+    "dev": "nodemon server/app.js",
+    "start": "node server/app.js",
+    "fetch": "node scripts/scrapeAndSaveToDb.js"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,12 @@
     "puppeteer": "^23.8.0",
     "sequelize": "^6.37.0",
     "sqlite3": "^5.1.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukaslovre/Better-Cinestar.git"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

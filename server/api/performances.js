@@ -1,4 +1,4 @@
-const { Performance, Op } = require("../db");
+const { Performance, Op } = require("../config/db");
 
 async function getPerformancesFiltered(cinemaOids, date, today, currentTime) {
   let performances;

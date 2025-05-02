@@ -1,4 +1,4 @@
-const { Movie, Op } = require("../db");
+const { Movie, Op } = require("../config/db");
 
 async function getMoviesByIds(movieIds) {
   const movies = [];

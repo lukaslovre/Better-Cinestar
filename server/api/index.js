@@ -3,11 +3,11 @@ const {
   groupPerformancesByFilmid,
   filterPerformancesByEarliestDate,
 } = require("./performances");
-const { dateToYYYYMMDD, dateToHHMM } = require("./utils");
+const { dateToYYYYMMDD, dateToHHMM } = require("../utils/utils.js");
 
 const { getMoviesByIds, sortMovies } = require("./movies");
 
-const { getPerformanceDatesFor } = require("../db.js");
+const { getPerformanceDatesFor } = require("../config/db.js");
 
 async function getFormattedMovies(cinemaOids, date, sortBy) {
   const present = new Date();

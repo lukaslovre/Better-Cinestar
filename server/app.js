@@ -4,13 +4,13 @@ const app = express();
 const port = 3000;
 const cors = require("cors");
 
-const { dateToHHMM, dateToYYYYMMDD } = require("./serving/utils.js");
-const { getFormattedMovies } = require("./serving/index.js");
-const { fetchSeating } = require("./serving/seating.js");
-const { getPerformancesForDateAndMovie } = require("./serving/performances.js");
-const { getAnalytics } = require("./db.js");
-const { analyticsMiddleware } = require("./analytics/analyticsMiddleware.js");
-const { getCinemas } = require("./cinemasList.js");
+const { dateToHHMM, dateToYYYYMMDD } = require("./utils/utils.js");
+const { getFormattedMovies } = require("./api/index.js");
+const { fetchSeating } = require("./api/seating.js");
+const { getPerformancesForDateAndMovie } = require("./api/performances.js");
+const { getAnalytics } = require("./config/db.js");
+const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
+const { getCinemas } = require("./utils/cinemasList.js");
 
 app.use(cors());
 
