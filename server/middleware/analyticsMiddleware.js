@@ -1,10 +1,11 @@
+const { configuration } = require("../config/environment");
 const { saveAnalyticsToDatabase } = require("../db/db");
 const { msFromMinutes } = require("../utils/utils");
 
 // save to database every `timeInMs` or when the array is `items` long
 const storageSavingFrequency = {
-  timeInMs: msFromMinutes(10),
-  items: 200,
+  timeInMs: msFromMinutes(configuration.ANALYTICS_STORAGE_TIME_MINUTES),
+  items: configuration.ANALYTICS_STORAGE_ITEMS,
 };
 
 // In-memory request counter
