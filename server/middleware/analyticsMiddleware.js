@@ -1,9 +1,10 @@
 const { saveAnalyticsToDatabase } = require("../db/db");
 const { msFromMinutes } = require("../utils/utils");
 
+// save to database every `timeInMs` or when the array is `items` long
 const storageSavingFrequency = {
-  timeInMs: msFromMinutes(10), // 10 minutes
-  items: 200, // 200 items
+  timeInMs: msFromMinutes(10),
+  items: 200,
 };
 
 // In-memory request counter
@@ -14,9 +15,9 @@ const analyticsMiddleware = (req, res, next) => {
   const startHrTime = process.hrtime();
 
   // Check request address to generate unique visitors field
-  const uniqueVisitors = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  const uniqueVisitors = req.ip;
 
-  // Your other essential fields for analytics
+  // Other essential fields for analytics
   const userAgent = req.get("User-Agent");
   const url = req.originalUrl;
 
@@ -33,10 +34,14 @@ const analyticsMiddleware = (req, res, next) => {
       responseTime: parseInt(elapsedTimeInMs),
     });
 
-    // if the array is 100 items long, save it to the database
     if (analyticsStorage.length >= storageSavingFrequency.items) {
-      saveAnalyticsToDatabase(analyticsStorage);
-      analyticsStorage = [];
+      saveAnalyticsToDatabase(analyticsStorage)
+        .then(() => {
+          analyticsStorage = [];
+        })
+        .catch((error) => {
+          console.error("Error saving analytics data:", error.message);
+        });
     }
   });
   // Pass control to the next middleware
@@ -45,8 +50,13 @@ const analyticsMiddleware = (req, res, next) => {
 
 // if the analyticsStorage gets to 100 items, or after 10 seconds, save it to database
 setInterval(() => {
-  saveAnalyticsToDatabase(analyticsStorage);
-  analyticsStorage = [];
+  saveAnalyticsToDatabase(analyticsStorage)
+    .then(() => {
+      analyticsStorage = [];
+    })
+    .catch((error) => {
+      console.error("Error saving analytics data:", error.message);
+    });
 }, storageSavingFrequency.timeInMs);
 
 module.exports = {

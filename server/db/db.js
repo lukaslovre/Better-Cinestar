@@ -72,12 +72,7 @@ async function saveAnalyticsToDatabase(analyticsData) {
     return;
   }
 
-  try {
-    await Analytics.bulkCreate(analyticsData);
-  } catch (error) {
-    console.error("Error saving analytics data:", error.message);
-    throw error;
-  }
+  await Analytics.bulkCreate(analyticsData);
 }
 
 // SELECTING

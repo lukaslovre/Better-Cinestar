@@ -13,6 +13,7 @@ const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 
 app.use(cors());
+app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
 
 app.get("/api/movies", analyticsMiddleware, async (req, res) => {
   const { cinemaOids, date, sortBy } = req.query;
