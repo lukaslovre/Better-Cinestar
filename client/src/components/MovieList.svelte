@@ -115,9 +115,15 @@
     column-gap: 2rem;
   }
 
-  @media (max-width: 22rem) {
+  @media (max-width: 456px) {
     #movieCardsContainer {
-      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  @media (min-width: 1120px) {
+    #movieCardsContainer {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>
