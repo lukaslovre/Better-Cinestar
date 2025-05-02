@@ -1,9 +1,9 @@
-const { getCinemas } = require("../server/utils/cinemasList.js");
 const {
   saveMoviesToDatabase,
   savePerformancesToDatabase,
   savePerformanceDatesToDatabase,
-} = require("../server/config/db.js");
+} = require("../server/db/db.js");
+const { getCinemas } = require("../server/utils/cinemasList.js");
 
 const { fetchMoviesAndPerformances } = require("./scraping/cinestarFunctions.js");
 const { getPerformanceDatesFrom } = require("./scraping/getPerformanceDates.js");
