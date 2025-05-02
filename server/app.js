@@ -8,9 +8,9 @@ const { dateToHHMM, dateToYYYYMMDD } = require("./utils/utils.js");
 const { getFormattedMovies } = require("./api/index.js");
 const { fetchSeating } = require("./api/seating.js");
 const { getPerformancesForDateAndMovie } = require("./api/performances.js");
-const { getAnalytics } = require("./config/db.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { getCinemas } = require("./utils/cinemasList.js");
+const { getAnalytics } = require("./db/db.js");
 
 app.use(cors());
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
@@ -93,7 +93,7 @@ app.get("/api/getCinemasList", (req, res) => {
   res.send(getCinemas());
 });
 
-app.use("/analytics", express.static(path.join(__dirname, "analytics", "public")));
+app.use("/analytics", express.static(path.join(__dirname, "public", "analytics")));
 app.use(express.static(path.join(__dirname, "client", "public")));
 
 app.listen(port, () => {

@@ -61,5 +61,4 @@ setInterval(() => {
 
 module.exports = {
   analyticsMiddleware,
-  analyticsStorage,
 };

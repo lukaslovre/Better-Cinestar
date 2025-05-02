@@ -1,4 +1,5 @@
-const { Performance, Op } = require("../config/db");
+const { Op } = require("sequelize");
+const { Performance } = require("../db/models");
 
 async function getPerformancesFiltered(cinemaOids, date, today, currentTime) {
   let performances;

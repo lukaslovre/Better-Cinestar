@@ -6,8 +6,7 @@ const {
 const { dateToYYYYMMDD, dateToHHMM } = require("../utils/utils.js");
 
 const { getMoviesByIds, sortMovies } = require("./movies");
-
-const { getPerformanceDatesFor } = require("../config/db.js");
+const { getPerformanceDatesFor } = require("../db/db.js");
 
 async function getFormattedMovies(cinemaOids, date, sortBy) {
   const present = new Date();

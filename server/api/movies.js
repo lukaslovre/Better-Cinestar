@@ -1,4 +1,5 @@
-const { Movie, Op } = require("../config/db");
+const { Op } = require("sequelize");
+const { Movie } = require("../db/models");
 
 async function getMoviesByIds(movieIds) {
   const movies = [];
