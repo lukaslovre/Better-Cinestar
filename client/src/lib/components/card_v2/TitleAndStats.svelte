@@ -55,9 +55,9 @@
   } */
   .movieTitle {
     color: #e6e6e6;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 500;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
   }
   .movieTitle .ageRating {
     color: #b3b3b3;
@@ -72,7 +72,8 @@
     justify-content: space-between;
   }
   .movieStats p {
-    color: #e6e6e6;
+    /* color: #e6e6e6; */
+    color: #c1c1c1;
     font-size: 0.875rem;
     font-weight: 400;
     text-transform: capitalize;
