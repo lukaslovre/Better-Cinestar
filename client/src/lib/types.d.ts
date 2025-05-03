@@ -2,21 +2,51 @@
 // Backend/API types
 ///////
 
+interface Person {
+  name?: string;
+  portraitUrl?: string;
+  lbUrl?: string;
+}
+
+interface AgeRatingInformation {
+  name?: string;
+  acceptanceMethod?: string;
+  displayName?: string;
+  imageUrl?: string;
+}
+
+interface Access {
+  reservationsOnly?: boolean;
+  salesOnly?: boolean;
+  viewOnly?: boolean;
+}
+
+interface AuditoriumDetails {
+  id?: string;
+  name?: string;
+  number?: number;
+  type?: string;
+}
+
+interface Limitations {
+  purchaseUntil?: string; // ISO 8601 date-time string
+}
+
 interface Movie {
-  actors?: any;
+  id: string;
+  actors?: Person[];
   ageRating?: string;
-  ageRatingInformation?: any;
-  countries?: any;
+  ageRatingInformation?: AgeRatingInformation;
+  countries?: string[];
   director?: string;
   duration?: string;
   durationMins?: number;
-  englishCategories?: any;
-  englishDirectors?: any;
+  englishCategories?: string[];
+  englishDirectors?: Person[];
   englishSynopsis?: string;
   filmEDI?: string;
   filmNumber?: number;
-  genres?: any;
-  id?: string;
+  genres?: string[];
   imageUrl?: string;
   imdbRating?: number;
   imdbUrl?: string;
@@ -24,7 +54,7 @@ interface Movie {
   letterboxdRating?: string;
   letterboxdUrl?: string;
   name?: string;
-  nationwideStart?: string;
+  nationwideStart?: string; // Date string YYYY-MM-DD
   originalTitle?: string;
   posterUrl?: string;
   productionYear?: string;
@@ -32,15 +62,17 @@ interface Movie {
   ticketTitle?: string;
   title?: string;
   trailerLink?: string;
+  performances?: Performance[]; // Added based on API response
+  availableDates?: string[]; // Added based on API response (Date strings YYYY-MM-DD)
 }
 
 interface Performance {
-  access?: any;
-  auditorium?: any;
+  access?: Access;
+  auditorium?: AuditoriumDetails;
   auditoriumId?: string;
   auditoriumName?: string;
   auditoriumNumber?: number;
-  cinemaDate?: string;
+  cinemaDate?: string; // Date string YYYY-MM-DD
   cinemaOid?: string;
   displayTitle?: string;
   filmId?: string;
@@ -49,11 +81,11 @@ interface Performance {
   filmTitle?: string;
   id?: string;
   is3D?: boolean;
-  limitations?: any;
+  limitations?: Limitations;
   name?: string;
-  performanceDateTime?: string;
-  performanceFeatures?: any;
-  performanceTime?: string;
+  performanceDateTime?: string; // ISO 8601 date-time string
+  performanceFeatures?: string[];
+  performanceTime?: string; // Time string HH:MM
   releaseTypeName?: string;
   releaseTypeNumber?: number;
   ticketTitle?: string;
@@ -65,7 +97,7 @@ interface Performance {
 interface PerformanceDates {
   cinemaOid?: string;
   filmId?: string;
-  date?: any; // Assuming JSON maps to any, adjust if needed
+  date?: any; // Assuming JSON maps to any, adjust if needed - Consider string[] if it's like availableDates
 }
 
 interface Analytics {

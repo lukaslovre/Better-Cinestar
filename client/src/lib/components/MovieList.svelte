@@ -1,37 +1,41 @@
-<script>
-  // import { onMount } from "svelte";
+<script lang="ts">
   import MovieCardV1 from './card_v1/MovieCardV1.svelte';
   import MovieCardV2 from './card_v2/MovieCardV2.svelte';
 
-  // import { scrollToMovieId } from "../stores";
-
-  export let movies;
-
-  // onMount(() => {
-  //   // wait for 200ms, then scroll to the movie
-  //   setTimeout(() => {
-  //     const movieCard = document.getElementById(`movieCard-${$scrollToMovieId}`);
-  //     if (movieCard) {
-  //       window.scrollBy({
-  //         top: movieCard.getBoundingClientRect().top - 32,
-  //         behavior: "smooth",
-  //       });
-  //     }
-  //   }, 250);
-  // });
-
-  const movieCardDesign = localStorage.getItem('movieCardDesign');
-  if (!movieCardDesign) {
-    localStorage.setItem('movieCardDesign', 'v2');
+  interface MovieListProps {
+    movies: Movie[];
   }
 
-  let fullscreenedMovieNumber = 0;
-  let selectedCardSize = {
+  let { movies }: MovieListProps = $props();
+
+  let movieCardDesign: CardDesign = $state('v2');
+
+  // TODO: card design bi trebao biti u store-u da bude reaktivno i na jednom mjestu da bude default vrijednost
+
+  $effect(() => {
+    const movieCardDesignFromLocalstorage = localStorage.getItem(
+      'movieCardDesign'
+    ) as CardDesign | null;
+
+    console.log(
+      'Getting movieCardDesign from localStorage:',
+      movieCardDesignFromLocalstorage
+    );
+
+    if (movieCardDesignFromLocalstorage) {
+      movieCardDesign = movieCardDesignFromLocalstorage;
+    } else {
+      localStorage.setItem('movieCardDesign', 'v2');
+    }
+  });
+
+  let fullscreenedMovieNumber: number = $state(0);
+  let selectedCardSize = $state({
     normal: 0,
     fullscreen: 0
-  };
+  });
 
-  function setFullscreen(event) {
+  function setFullscreen(event: CustomEvent) {
     const filmNumber = event.detail.filmNumber;
     const selectedMovieCard = event.detail.movieCard;
 
@@ -79,7 +83,7 @@
 </script>
 
 <div id="movieCardsContainer">
-  {#each movies.filter((m) => m.performances.length > 0) as movie}
+  {#each movies.filter((m) => m.performances && m.performances.length > 0) as movie (movie.id)}
     {#if movieCardDesign === 'v1'}
       <MovieCardV1
         {movie}
@@ -99,31 +103,21 @@
 </div>
 
 <style>
-  /* #movieCardsContainer {
-    display: flex;
-    flex-wrap: wrap;
-
-    column-gap: 2rem;
-    row-gap: 4rem;
-  } */
-
   #movieCardsContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    display: flex;
+    flex-direction: column;
 
     row-gap: 2rem;
     column-gap: 2rem;
   }
 
-  @media (max-width: 456px) {
+  @media (min-width: 456px) {
     #movieCardsContainer {
-      grid-template-columns: repeat(1, 1fr);
-    }
-  }
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
 
-  @media (min-width: 1120px) {
-    #movieCardsContainer {
-      grid-template-columns: repeat(3, 1fr);
+      row-gap: 2rem;
+      column-gap: 2rem;
     }
   }
 </style>
