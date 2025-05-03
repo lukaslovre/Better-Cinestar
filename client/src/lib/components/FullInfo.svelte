@@ -1,5 +1,5 @@
-<script>
-  export let movie;
+<script lang="ts">
+  let { movie }: { movie: Movie } = $props();
 </script>
 
 <div class="movieExtraInfo">
@@ -50,7 +50,13 @@
   </div>
 
   {#if movie.trailerLink}
-    <a href={movie.trailerLink} class="trailerButton">
+    <a
+      href={movie.trailerLink}
+      class="trailerButton"
+      target="_blank"
+      rel="noopener"
+      aria-label={`Watch trailer for ${movie.originalTitle}`}
+    >
       <img src="images/trailerPlayIcon.svg" alt="play trailer icon" />
       <span>Trailer</span>
       <span class="secondary">(youtube.com)</span>
