@@ -1,64 +1,64 @@
 <script>
-  import { cinemaOids } from "$lib/stores/userSelection.svelte"
-  import { createEventDispatcher } from "svelte";
-  import { cinemas as cinemasData } from "$lib/utils/cinemas"
+  import { cinemaOids } from '$lib/stores/userSelection.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import { cinemas as cinemasData } from '$lib/utils/cinemas';
 
   const dispatch = createEventDispatcher();
 
   const cinemaCities = [
     {
-      city: "Zagreb",
+      city: 'Zagreb',
       cinemas: [
-        { cinemaOid: "10000000014OCPXCOG", cinemaName: "Branimir mingle mall" },
-        { cinemaOid: "20000000014FEPADHG", cinemaName: "Avenue mall" },
-        { cinemaOid: "37000000014FEPADHG", cinemaName: "Arena centar" },
-        { cinemaOid: "B7000000014FEPADHG", cinemaName: "Z centar" },
-        { cinemaOid: "87000000014FEPADHG", cinemaName: "Kaptol boutique" },
-      ],
+        { cinemaOid: '10000000014OCPXCOG', cinemaName: 'Branimir mingle mall' },
+        { cinemaOid: '20000000014FEPADHG', cinemaName: 'Avenue mall' },
+        { cinemaOid: '37000000014FEPADHG', cinemaName: 'Arena centar' },
+        { cinemaOid: 'B7000000014FEPADHG', cinemaName: 'Z centar' },
+        { cinemaOid: '87000000014FEPADHG', cinemaName: 'Kaptol boutique' }
+      ]
     },
     {
-      city: "Split",
+      city: 'Split',
       cinemas: [
-        { cinemaOid: "17000000014FEPADHG", cinemaName: "Joker centar" },
-        { cinemaOid: "97000000014FEPADHG", cinemaName: "Mall of split" },
-      ],
+        { cinemaOid: '17000000014FEPADHG', cinemaName: 'Joker centar' },
+        { cinemaOid: '97000000014FEPADHG', cinemaName: 'Mall of split' }
+      ]
     },
     {
-      city: "Dubrovnik",
-      cinemas: [{ cinemaOid: "57000000014FEPADHG", cinemaName: "Dvori lapad" }],
+      city: 'Dubrovnik',
+      cinemas: [{ cinemaOid: '57000000014FEPADHG', cinemaName: 'Dvori lapad' }]
     },
     {
-      city: "Osijek",
-      cinemas: [{ cinemaOid: "27000000014FEPADHG", cinemaName: "Portanova centar" }],
+      city: 'Osijek',
+      cinemas: [{ cinemaOid: '27000000014FEPADHG', cinemaName: 'Portanova centar' }]
     },
     {
-      city: "Pula",
-      cinemas: [{ cinemaOid: "A7000000014FEPADHG", cinemaName: "Max city" }],
+      city: 'Pula',
+      cinemas: [{ cinemaOid: 'A7000000014FEPADHG', cinemaName: 'Max city' }]
     },
     {
-      city: "Rijeka",
-      cinemas: [{ cinemaOid: "40000000014FEPADHG", cinemaName: "Tower centar" }],
+      city: 'Rijeka',
+      cinemas: [{ cinemaOid: '40000000014FEPADHG', cinemaName: 'Tower centar' }]
     },
     {
-      city: "Slavonski Brod",
-      cinemas: [{ cinemaOid: "67000000014FEPADHG", cinemaName: "City colosseum" }],
+      city: 'Slavonski Brod',
+      cinemas: [{ cinemaOid: '67000000014FEPADHG', cinemaName: 'City colosseum' }]
     },
     {
-      city: "Varaždin",
-      cinemas: [{ cinemaOid: "47000000014FEPADHG", cinemaName: "Lumini centar" }],
+      city: 'Varaždin',
+      cinemas: [{ cinemaOid: '47000000014FEPADHG', cinemaName: 'Lumini centar' }]
     },
     {
-      city: "Vukovar",
-      cinemas: [{ cinemaOid: "77000000014FEPADHG", cinemaName: "K centar golubica" }],
+      city: 'Vukovar',
+      cinemas: [{ cinemaOid: '77000000014FEPADHG', cinemaName: 'K centar golubica' }]
     },
     {
-      city: "Zadar",
-      cinemas: [{ cinemaOid: "D4000000014FEPADHG", cinemaName: "City galleria" }],
+      city: 'Zadar',
+      cinemas: [{ cinemaOid: 'D4000000014FEPADHG', cinemaName: 'City galleria' }]
     },
     {
-      city: "Šibenik",
-      cinemas: [{ cinemaOid: "07000000014FEPADHG", cinemaName: "Dalmare centar" }],
-    },
+      city: 'Šibenik',
+      cinemas: [{ cinemaOid: '07000000014FEPADHG', cinemaName: 'Dalmare centar' }]
+    }
   ];
 
   export let locationDropdownOpen;
@@ -67,14 +67,14 @@
     (cinemaOid) =>
       cinemasData
         .find((cinema) => cinema.cinemaOid === cinemaOid)
-        .cinemaName.split(" ")[0]
+        .cinemaName.split(' ')[0]
   );
 
   // Kad se zatvori dropdown, ako je odabrano vise kina i prvi put su na stranici, pokazati help popup
   $: {
     if (locationDropdownOpen.level === 0) {
-      if ($cinemaOids.length > 1 && !localStorage.getItem("visitedWebsiteBefore")) {
-        dispatch("showPerformanceInfoPopup", true);
+      if ($cinemaOids.length > 1 && !localStorage.getItem('visitedWebsiteBefore')) {
+        dispatch('showPerformanceInfoPopup', true);
       }
     }
   }
@@ -119,7 +119,7 @@
     class:fadeout-2-input={locationDropdownOpen.level === 2}
     on:click={toggleDropdownLevelOne}
   >
-    <p class="selectedValue">{selectedCinemasForDisplay.join(", ") || "Odaberi kino"}</p>
+    <p class="selectedValue">{selectedCinemasForDisplay.join(', ') || 'Odaberi kino'}</p>
     <svg
       class="fill"
       width="10"
@@ -140,7 +140,7 @@
     <div
       class="dropdown-options primary-color-scheme"
       class:fadeout-1-input={locationDropdownOpen.level === 2}
-      style:display={locationDropdownOpen.level >= 1 ? "flex" : "none"}
+      style:display={locationDropdownOpen.level >= 1 ? 'flex' : 'none'}
     >
       {#each cinemaCities as city}
         {#if city.cinemas.length > 1}
@@ -164,8 +164,8 @@
                 d="M1 1L5.38848 5.82733C5.73523 6.20875 5.73523 6.79125 5.38848 7.17267L1 12"
                 stroke="#454954"
                 style:stroke={checkIfSuboptionSelected(city, $cinemaOids)
-                  ? "#FFCC00"
-                  : ""}
+                  ? '#FFCC00'
+                  : ''}
                 stroke-width="2"
                 stroke-linecap="round"
               />
@@ -183,8 +183,8 @@
             <div class="checkbox">
               <img
                 src={locationDropdownOpen.level === 2
-                  ? "images/check-fadeout1.svg"
-                  : "images/check.svg"}
+                  ? 'images/check-fadeout1.svg'
+                  : 'images/check.svg'}
                 alt="check icon"
               />
             </div>
@@ -201,8 +201,8 @@
           class="dropdown-options primary-color-scheme dropdown-suboptions"
           style:display={locationDropdownOpen.level == 2 &&
           locationDropdownOpen.selectedCity === city.city
-            ? "flex"
-            : "none"}
+            ? 'flex'
+            : 'none'}
         >
           {#each city.cinemas as cinema}
             <button

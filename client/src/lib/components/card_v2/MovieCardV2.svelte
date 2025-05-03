@@ -1,8 +1,8 @@
 <script>
-  import TitleAndStats from "./TitleAndStats.svelte";
-  import FullInfo from "../FullInfo.svelte";
-  import Performances from "../Performances.svelte";
-  import MovieCardBottomButtons from "../MovieCardBottomButtons.svelte";
+  import TitleAndStats from './TitleAndStats.svelte';
+  import FullInfo from '../FullInfo.svelte';
+  import Performances from '../Performances.svelte';
+  import MovieCardBottomButtons from '../MovieCardBottomButtons.svelte';
 
   export let movie;
   export let fullscreenedMovieNumber;

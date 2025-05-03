@@ -1,8 +1,8 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 
-  localStorage.setItem("visitedWebsiteBefore", true);
+  localStorage.setItem('visitedWebsiteBefore', true);
 </script>
 
 <div class="backdrop">
@@ -10,7 +10,7 @@
     <img src="/images/performancesHelp.svg" alt="performances help" />
     <button
       on:click={() => {
-        dispatch("showPerformanceInfoPopup", false);
+        dispatch('showPerformanceInfoPopup', false);
       }}
     >
       Kužim

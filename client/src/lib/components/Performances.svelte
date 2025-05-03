@@ -1,20 +1,20 @@
 <script>
-  import PerformanceFilterCard from "./performanceFilterCard.svelte";
+  import PerformanceFilterCard from './performanceFilterCard.svelte';
 
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher, onMount } from 'svelte';
   import {
     getFormattedPerformanceDateLabel,
     filterPerformances,
     countSelectedFilters,
-    dateToYMDFormat,
-  } from "../utils/utils.js";
-  import { cinemas as cinemasData } from "../utils/cinemas";
+    dateToYMDFormat
+  } from '../utils/utils.js';
+  import { cinemas as cinemasData } from '../utils/cinemas';
   import {
     getPerformances,
-    getPreviousAndNextPerformanceDatesForMovie,
-  } from "../utils/performances";
+    getPreviousAndNextPerformanceDatesForMovie
+  } from '../utils/performances';
 
-  import { cinemaOids, selectedDate, sortBy } from "$lib/stores/userSelection.svelte"
+  import { cinemaOids, selectedDate, sortBy } from '$lib/stores/userSelection.svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -48,10 +48,10 @@
   }
 
   onMount(() => {
-    document.addEventListener("click", (e) => {
+    document.addEventListener('click', (e) => {
       if (filterCardVisible === false) return;
-      if (e.target.closest(".column") !== null) return;
-      if (e.target.closest(".performanceFilter") !== null) return;
+      if (e.target.closest('.column') !== null) return;
+      if (e.target.closest('.performanceFilter') !== null) return;
 
       filterCardVisible = false;
     });
@@ -68,7 +68,7 @@
 
   // dispactheri
   function openPerformance(movie, performance) {
-    dispatch("selectedPerformance", { movie, performance });
+    dispatch('selectedPerformance', { movie, performance });
   }
 
   // funkcije
@@ -77,7 +77,7 @@
 
     for (const e of performances) {
       const cinema = cinemasData.find((cinema) => cinema.cinemaOid === e.cinemaOid);
-      const cinemaName = cinema.cinemaName + " (" + cinema.cinemaCity + ")";
+      const cinemaName = cinema.cinemaName + ' (' + cinema.cinemaCity + ')';
       if (!groupedPerformances.has(cinemaName)) {
         groupedPerformances.set(cinemaName, []);
       }
@@ -98,7 +98,7 @@
     ).previousDate;
 
     if (prevDate === null) {
-      console.log("No previous date available");
+      console.log('No previous date available');
       return;
     }
 
@@ -112,7 +112,7 @@
     ).nextDate;
 
     if (nextDate === null) {
-      console.log("No next date available");
+      console.log('No next date available');
       return;
     }
 
@@ -122,7 +122,7 @@
   function resetPerformanceDatePickerToDefault() {
     if (currentPerformanceDate === $selectedDate) return;
 
-    if ($selectedDate === "any") {
+    if ($selectedDate === 'any') {
       currentPerformanceDate = movie.availableDates[0];
     } else {
       currentPerformanceDate = $selectedDate;
@@ -132,7 +132,7 @@
 
 <div class="performancesContainer">
   <!-- Performances minimizirano -->
-  <div class="performanceContainer" style:display={isFullscreened ? "none" : "flex"}>
+  <div class="performanceContainer" style:display={isFullscreened ? 'none' : 'flex'}>
     <div class="performanceslabel">
       {performanceDateText}
     </div>
@@ -157,7 +157,7 @@
 
   <div
     class="performanceManipulationContainer"
-    style:display={isFullscreened ? "flex" : "none"}
+    style:display={isFullscreened ? 'flex' : 'none'}
   >
     <button
       class="performanceFilter button"
@@ -188,11 +188,11 @@
         type="button"
         class="dateText"
         on:click={resetPerformanceDatePickerToDefault}
-        class:italic={$selectedDate === "any"
+        class:italic={$selectedDate === 'any'
           ? currentPerformanceDate !== movie.availableDates[0]
           : currentPerformanceDate !== $selectedDate}
       >
-        {loadingPerformances ? "Loading..." : performanceDateText}
+        {loadingPerformances ? 'Loading...' : performanceDateText}
       </button>
 
       <button
@@ -212,11 +212,11 @@
     on:performanceFilterChange={handlePerformanceFilterChange}
     performances={movie.performances}
     {filteredPerformances}
-    displayComponent={isFullscreened && filterCardVisible ? "flex" : "none"}
+    displayComponent={isFullscreened && filterCardVisible ? 'flex' : 'none'}
   />
 
   <!-- Performances fullscreen (odvojena kina) -->
-  <div class="performanceContainer" style:display={isFullscreened ? "flex" : "none"}>
+  <div class="performanceContainer" style:display={isFullscreened ? 'flex' : 'none'}>
     {#each [...groupPerformancesByCinema(filteredPerformances)] as [key, value]}
       <div class="performanceslabel">
         {key}

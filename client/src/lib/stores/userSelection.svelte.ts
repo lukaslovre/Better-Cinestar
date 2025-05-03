@@ -9,9 +9,7 @@ export const selectedDate = writable<string>(danas);
 export const sortBy = writable<string>('nationwideStart');
 
 export function resetFiltersToDefault() {
-	cinemaOids.set([]);
-	selectedDate.set(danas);
-	sortBy.set('nationwideStart');
+  cinemaOids.set([]);
+  selectedDate.set(danas);
+  sortBy.set('nationwideStart');
 }
-
-// export const scrollToMovieId = writable(null);

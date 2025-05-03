@@ -6,20 +6,20 @@
   <div class="infoContainer">
     <p class="infoLabel">
       {movie.englishDirectors && movie.englishDirectors.length > 1
-        ? "Redatelji"
-        : "Redatelj"}
+        ? 'Redatelji'
+        : 'Redatelj'}
     </p>
     <div class="peopleContainer">
       {#if movie.englishDirectors}
         {#each movie.englishDirectors as director}
           <a href={director.lbUrl} class="person">
-            <img src={director.portraitUrl} alt={director.name + "portrait"} />
+            <img src={director.portraitUrl} alt={director.name + 'portrait'} />
             <p class="personName">{director.name}</p>
           </a>
         {/each}
       {:else}
         <div class="person">
-          <img src="/images/defaultPersonImage.jpg" alt={movie.director + "portrait"} />
+          <img src="/images/defaultPersonImage.jpg" alt={movie.director + 'portrait'} />
           <p class="personName">{movie.director}</p>
         </div>
       {/if}
@@ -32,7 +32,7 @@
       <div class="peopleContainer">
         {#each movie.actors as actor}
           <a href={actor.lbUrl} class="person">
-            <img src={actor.portraitUrl} alt={actor.name + " portrait"} />
+            <img src={actor.portraitUrl} alt={actor.name + ' portrait'} />
             <p class="personName">{actor.name}</p>
           </a>
         {/each}

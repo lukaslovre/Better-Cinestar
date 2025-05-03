@@ -1,6 +1,6 @@
 <script>
-  import { selectedDate } from "$lib/stores/userSelection.svelte"
-  import { dateToYMDFormat, getFormattedPerformanceDateLabel } from "$lib/utils/utils"
+  import { selectedDate } from '$lib/stores/userSelection.svelte';
+  import { dateToYMDFormat, getFormattedPerformanceDateLabel } from '$lib/utils/utils';
 
   export let dateDropdownOpen;
 
@@ -10,18 +10,18 @@
   for (let i = 0; i < 7; i++) {
     dropdownOptionValues.push({
       text: getFormattedPerformanceDateLabel(date),
-      value: dateToYMDFormat(date),
+      value: dateToYMDFormat(date)
     });
 
     date.setDate(date.getDate() + 1);
   }
 
-  dropdownOptionValues.push({ text: "Sve", value: "any" });
+  dropdownOptionValues.push({ text: 'Sve', value: 'any' });
 
   // set the selected date to the value in the store
   $: selectedDateText =
-    $selectedDate === "any"
-      ? "Sve"
+    $selectedDate === 'any'
+      ? 'Sve'
       : getFormattedPerformanceDateLabel(new Date($selectedDate));
 
   function toggleDropdown() {
@@ -30,12 +30,12 @@
 
   // add a resize event listener
   let windowIsWide = window.innerWidth > 1200;
-  window.addEventListener("resize", () => {
+  window.addEventListener('resize', () => {
     windowIsWide = window.innerWidth > 1200;
   });
 </script>
 
-<div class="input-container" style:max-width={windowIsWide ? "" : "calc(45% - 0.5rem)"}>
+<div class="input-container" style:max-width={windowIsWide ? '' : 'calc(45% - 0.5rem)'}>
   <!-- Label -->
   <div class="label">
     <img class="label-icon" src="/images/dateIcon.svg" alt="sort icon" />
@@ -68,7 +68,7 @@
   <!-- Dropdown options -->
   <div
     class="dropdown-options secondary-color-scheme"
-    style:display={dateDropdownOpen.value ? "flex" : "none"}
+    style:display={dateDropdownOpen.value ? 'flex' : 'none'}
   >
     {#each dropdownOptionValues as dateOption}
       <button

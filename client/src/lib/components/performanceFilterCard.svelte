@@ -1,12 +1,12 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
   import {
     filterPerformances,
     getGroupedPerformanceFeaturesFrom,
     getPossibleFeaturesWithAppliedFilters,
-    countFeatureOccurences,
-  } from "../utils/utils.js";
+    countFeatureOccurences
+  } from '../utils/utils.js';
 
   const dispatch = createEventDispatcher();
 
@@ -19,38 +19,38 @@
     videoFeatures: [],
     audioFeatures: [],
     roomFeatures: [],
-    timeFrom: "00:00",
-    timeTo: "24:00",
+    timeFrom: '00:00',
+    timeTo: '24:00'
   };
 
   let columns = [
     {
-      id: "videoFeatures",
-      label: "Slika",
-      data: [],
+      id: 'videoFeatures',
+      label: 'Slika',
+      data: []
     },
     {
-      id: "roomFeatures",
-      label: "Dvorana",
-      data: [],
+      id: 'roomFeatures',
+      label: 'Dvorana',
+      data: []
     },
     {
-      id: "audioFeatures",
-      label: "Zvuk",
-      data: [],
+      id: 'audioFeatures',
+      label: 'Zvuk',
+      data: []
     },
     {
-      id: "time",
-      label: "Vrijeme",
-      data: [],
-    },
+      id: 'time',
+      label: 'Vrijeme',
+      data: []
+    }
   ];
 
   $: whenPerformancesUpdate(performances);
 
   $: whenFilteredPerformancesUpdate(filteredPerformances);
 
-  $: dispatch("performanceFilterChange", selectedPerformanceFilters);
+  $: dispatch('performanceFilterChange', selectedPerformanceFilters);
 
   function whenPerformancesUpdate(perf) {
     setInitialColumnDataValues(perf);
@@ -64,7 +64,7 @@
 
   function setInitialColumnDataValues(perf) {
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].id === "time") continue;
+      if (columns[i].id === 'time') continue;
 
       const possibleFeatures = getGroupedPerformanceFeaturesFrom(perf)[columns[i].id];
 
@@ -72,8 +72,8 @@
         return {
           name: feature,
           state: selectedPerformanceFilters[columns[i].id].includes(feature)
-            ? "selected"
-            : "possible",
+            ? 'selected'
+            : 'possible'
         };
       });
     }
@@ -81,7 +81,7 @@
 
   function setColumnDataValuesOnFilterChange(filteredPerf) {
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].id === "time") continue;
+      if (columns[i].id === 'time') continue;
 
       const possibleFeatures = getPossibleFeaturesWithAppliedFilters(
         performances,
@@ -90,10 +90,10 @@
 
       columns[i].data = columns[i].data.map((feature) => {
         if (!possibleFeatures.includes(feature.name)) {
-          feature.state = "notPossible";
+          feature.state = 'notPossible';
         } else {
-          if (feature.state !== "selected") {
-            feature.state = "possible";
+          if (feature.state !== 'selected') {
+            feature.state = 'possible';
           }
         }
 
@@ -105,7 +105,7 @@
   function updateSelectedFilters() {
     for (let i = 0; i < columns.length; i++) {
       const selectedFeatures = columns[i].data
-        .filter((feature) => feature.state === "selected")
+        .filter((feature) => feature.state === 'selected')
         .map((feature) => feature.name);
 
       selectedPerformanceFilters[columns[i].id] = selectedFeatures;
@@ -118,14 +118,14 @@
       (feature) => feature.name === featureName
     );
 
-    const featureState = columns[categoryIndex]["data"][featureIndex].state;
+    const featureState = columns[categoryIndex]['data'][featureIndex].state;
 
-    if (featureState === "notPossible") return;
+    if (featureState === 'notPossible') return;
 
-    if (featureState === "selected") {
-      columns[categoryIndex]["data"][featureIndex].state = "possible";
+    if (featureState === 'selected') {
+      columns[categoryIndex]['data'][featureIndex].state = 'possible';
     } else {
-      columns[categoryIndex]["data"][featureIndex].state = "selected";
+      columns[categoryIndex]['data'][featureIndex].state = 'selected';
     }
 
     updateSelectedFilters();
@@ -141,12 +141,12 @@
     const inputValue = input.value;
 
     // check if the user is using the backspace key
-    if (event.inputType === "deleteContentBackward") {
+    if (event.inputType === 'deleteContentBackward') {
       return;
     }
 
     // remove all non-numeric characters from the input value, except for the colon
-    const cleanedInputValue = inputValue.replace(/[^\d:]/g, "");
+    const cleanedInputValue = inputValue.replace(/[^\d:]/g, '');
     if (cleanedInputValue !== inputValue) {
       input.value = cleanedInputValue;
       return;
@@ -163,30 +163,30 @@
 
     // allow only 2 digits before/after the colon
     if (
-      inputValue.includes(":") &&
-      (inputValue.split(":")[1].length > 2 || inputValue.split(":")[0].length > 2)
+      inputValue.includes(':') &&
+      (inputValue.split(':')[1].length > 2 || inputValue.split(':')[0].length > 2)
     ) {
-      const hoursMaxTwoDigits = inputValue.split(":")[0].slice(0, 2);
-      const minutesMaxTwoDigits = inputValue.split(":")[1].slice(0, 2);
+      const hoursMaxTwoDigits = inputValue.split(':')[0].slice(0, 2);
+      const minutesMaxTwoDigits = inputValue.split(':')[1].slice(0, 2);
 
       input.value = `${hoursMaxTwoDigits}:${minutesMaxTwoDigits}`;
     }
   }
   function checkIfValidTime(event) {
     const input = event.target;
-    const defaultValue = input.id === "performanceTimeFromInput" ? "00:00" : "24:00";
+    const defaultValue = input.id === 'performanceTimeFromInput' ? '00:00' : '24:00';
 
     const previousValue =
       selectedPerformanceFilters[
-        input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
+        input.id === 'performanceTimeFromInput' ? 'timeFrom' : 'timeTo'
       ];
 
     // if the input value is empty, set it to default
-    if (input.value === "") {
+    if (input.value === '') {
       input.value = defaultValue;
 
       selectedPerformanceFilters[
-        input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
+        input.id === 'performanceTimeFromInput' ? 'timeFrom' : 'timeTo'
       ] = input.value;
 
       // dispatchPerformanceFilterChange();
@@ -198,29 +198,29 @@
     if (input.value.length === 1) {
       input.value = `0${input.value}:00`;
     } else if (input.value.length >= 3) {
-      const hours = input.value.split(":")[0];
-      const minutes = input.value.split(":")[1];
-      input.value = `${hours.padStart(2, "0")}:${minutes.padEnd(2, "0")}`;
+      const hours = input.value.split(':')[0];
+      const minutes = input.value.split(':')[1];
+      input.value = `${hours.padStart(2, '0')}:${minutes.padEnd(2, '0')}`;
     }
 
     // if the first two digits are larger than 23 or the last two digits are larger than 59,
     // set the input value to previous
-    const [hours, minutes] = input.value.split(":");
+    const [hours, minutes] = input.value.split(':');
 
-    if (hours > 24 || (hours == 24 && minutes != "00") || minutes > 59) {
-      console.log("greška", input.value);
+    if (hours > 24 || (hours == 24 && minutes != '00') || minutes > 59) {
+      console.log('greška', input.value);
       input.value = previousValue;
       return;
     }
 
     selectedPerformanceFilters[
-      input.id === "performanceTimeFromInput" ? "timeFrom" : "timeTo"
+      input.id === 'performanceTimeFromInput' ? 'timeFrom' : 'timeTo'
     ] = input.value;
 
     // dispatchPerformanceFilterChange();
   }
   function unfocusInput(event) {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       const input = event.target;
       input.blur();
     }
@@ -229,25 +229,25 @@
 
 <div id="performanceFilterCard" style:display={displayComponent}>
   {#each columns as column}
-    {#if column.id !== "time"}
+    {#if column.id !== 'time'}
       <div class="column" id={column.id}>
         <div class="label">{column.label}</div>
         <div class="checkboxesColumn">
           {#each column.data as feature}
             <button
               class="option"
-              class:selected={feature.state === "selected"}
-              class:disabled={feature.state === "notPossible"}
+              class:selected={feature.state === 'selected'}
+              class:disabled={feature.state === 'notPossible'}
               type="button"
               on:click={() => {
                 toggleOption(feature.name, column.id);
               }}
             >
-              {feature.name} ({column.data.some((f) => f.state === "selected")
+              {feature.name} ({column.data.some((f) => f.state === 'selected')
                 ? countFeatureOccurences(
                     filterPerformances(performances, {
                       ...selectedPerformanceFilters,
-                      [column.id]: [],
+                      [column.id]: []
                     }),
                     feature.name
                   )
@@ -256,7 +256,7 @@
           {/each}
         </div>
       </div>
-    {:else if column.id === "time"}
+    {:else if column.id === 'time'}
       <div class="column">
         <div class="label">Vrijeme</div>
         <div class="inputsColumn">
@@ -346,7 +346,7 @@
   }
 
   #performanceFilterCard .column .checkboxesColumn .option::before {
-    content: "";
+    content: '';
     display: inline-block;
     width: 1rem;
     height: 1rem;

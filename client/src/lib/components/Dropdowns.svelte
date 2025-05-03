@@ -1,24 +1,24 @@
 <script>
-  import LocationDropdown from "./LocationDropdown.svelte";
-  import DateDropdown from "./DateDropdown.svelte";
-  import SortDropdown from "./SortDropdown.svelte";
+  import LocationDropdown from './LocationDropdown.svelte';
+  import DateDropdown from './DateDropdown.svelte';
+  import SortDropdown from './SortDropdown.svelte';
 
   // Setting initial dropdown states
   let locationDropdownOpen = {
     level: 0,
-    selectedCity: null,
+    selectedCity: null
   };
   let dateDropdownOpen = {
-    value: false,
+    value: false
   };
   let sortDropdownOpen = {
-    value: false,
+    value: false
   };
 
   // Event listener to close dropdowns when clicking outside of them
-  document.addEventListener("click", (e) => {
-    if (e.target.closest(".dropdown-options")) return;
-    if (e.target.closest(".dropdown-element")) return;
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.dropdown-options')) return;
+    if (e.target.closest('.dropdown-element')) return;
 
     locationDropdownOpen.level = 0;
     dateDropdownOpen.value = false;

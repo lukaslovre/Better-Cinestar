@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
   export let movie;
   export let isFullscreened;
@@ -7,9 +7,9 @@
   const dispatch = createEventDispatcher();
 
   function fullscreenCurrentMovie(e) {
-    dispatch("setFullscreen", {
+    dispatch('setFullscreen', {
       filmNumber: movie.filmNumber,
-      movieCard: e.target.closest(".movieCard"),
+      movieCard: e.target.closest('.movieCard')
     });
   }
 
@@ -28,10 +28,10 @@
   <button class="imageButton button" on:click={fullscreenCurrentMovie}>
     <img
       class=""
-      src={isFullscreened ? "/images/fullscreen-exit.svg" : "/images/fullscreen.svg"}
+      src={isFullscreened ? '/images/fullscreen-exit.svg' : '/images/fullscreen.svg'}
       alt="Toggle fullscreen mode"
     />
-    <span class="label">{isFullscreened ? "Manje informacija" : "Više informacija"}</span>
+    <span class="label">{isFullscreened ? 'Manje informacija' : 'Više informacija'}</span>
   </button>
 </div>
 

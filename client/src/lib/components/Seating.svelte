@@ -1,14 +1,14 @@
 <script>
-  import Loading from "./Loading.svelte";
-  import { createEventDispatcher } from "svelte";
-  import { cinemas } from "../utils/cinemas";
-  import { getAverageSeatDistance } from "../utils/performanceSeats";
-  import { getRelativeDate } from "../utils/utils";
+  import Loading from './Loading.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import { cinemas } from '../utils/cinemas';
+  import { getAverageSeatDistance } from '../utils/performanceSeats';
+  import { getRelativeDate } from '../utils/utils';
+  import { PUBLIC_API_URL } from '$env/static/public';
 
   export let performanceData;
 
   const dispatch = createEventDispatcher();
-  const origin = window.location.origin; // Za radenje API requesta
 
   let showSeatTypes = true;
   let seatsPromise = getSeats();
@@ -20,10 +20,10 @@
 
     // create a URL parameter from the arguments
     const urlParams = new URLSearchParams();
-    urlParams.append("cinemaOid", cinemaOid);
-    urlParams.append("performanceId", performanceId);
+    urlParams.append('cinemaOid', cinemaOid);
+    urlParams.append('performanceId', performanceId);
 
-    const getSeatingUrl = `${origin}/api/seating`;
+    const getSeatingUrl = `${PUBLIC_API_URL}/api/seating`;
 
     const res = await fetch(`${getSeatingUrl}?${urlParams.toString()}`);
 
@@ -42,7 +42,7 @@
   let seatSize = 9;
 
   function setSeatingLayoutValues(seats) {
-    const seatsContainer = document.getElementById("seatsContainer");
+    const seatsContainer = document.getElementById('seatsContainer');
 
     const containerWidth = seatsContainer.clientWidth - 10;
 
@@ -56,49 +56,49 @@
 
     const seatsHeight = seats.maxY * seatLocationMultiplier + seatSize;
 
-    seatsContainer.style.setProperty("height", 64 + seatsHeight + "px");
+    seatsContainer.style.setProperty('height', 64 + seatsHeight + 'px');
   }
 
   function getSeatColor(seat, useColors) {
     // Ako je slobodno (128 je u splitu slobodno??? nez)
     if ([4, 256, 260, 128].includes(seat.stat)) {
       // Ako se ne koriste boje, sve su plave
-      if (useColors === false || useColors === undefined) return "#80A6FF";
+      if (useColors === false || useColors === undefined) return '#80A6FF';
 
       // Ako se koriste boje, onda se gleda tip sjedala
       const name = seatingAreas.find((area) => area.id === seat.sar).name;
 
-      if (["Boutique", "VIP Relax", "VIP"].includes(name)) return "#DFDF9F";
-      else if (name === "Royal bed") return "#EA80FF";
-      else if (name === "Lovebox") return "#FF8080";
-      else if (name === "Regular") {
+      if (['Boutique', 'VIP Relax', 'VIP'].includes(name)) return '#DFDF9F';
+      else if (name === 'Royal bed') return '#EA80FF';
+      else if (name === 'Lovebox') return '#FF8080';
+      else if (name === 'Regular') {
         // Ako je invalidsko
         if ([163, 193].includes(seat.sg)) {
           if (invalidskoPostoji === false) invalidskoPostoji = true;
-          return "#A1DF9F";
-        } else return "#80A6FF";
+          return '#A1DF9F';
+        } else return '#80A6FF';
       }
     } else {
       // Ako je zauzeto
-      return "#373B43";
+      return '#373B43';
     }
   }
 
   // Utils
   function formatDate(dateString, time) {
     const options = {
-      weekday: "short",
-      day: "2-digit",
-      month: "2-digit",
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit'
     };
 
     const date = new Date(dateString);
-    const localeString = date.toLocaleDateString("hr-HR", options);
-    const formattedDate = localeString.replace(/\s+/g, "").replace(/,/g, " ");
+    const localeString = date.toLocaleDateString('hr-HR', options);
+    const formattedDate = localeString.replace(/\s+/g, '').replace(/,/g, ' ');
 
     const relativeDate = getRelativeDate(date, time);
 
-    return time + ", " + formattedDate + " (" + relativeDate + ")";
+    return time + ', ' + formattedDate + ' (' + relativeDate + ')';
   }
 </script>
 
@@ -106,7 +106,7 @@
   <button
     id="closeSeatsButton"
     on:click={() => {
-      dispatch("selectedPerformance", null);
+      dispatch('selectedPerformance', null);
     }}
   >
     <img src="/images/xIcon.svg" alt="close seats icon" />
@@ -121,10 +121,10 @@
         <div
           class="seat"
           style:background-color={getSeatColor(seat, showSeatTypes)}
-          style:left={seatOffsetX + seat.x * seatLocationMultiplier + "px"}
-          style:top={64 + seat.y * seatLocationMultiplier + "px"}
-          style:width={seatSize + "px"}
-          style:height={seatSize + "px"}
+          style:left={seatOffsetX + seat.x * seatLocationMultiplier + 'px'}
+          style:top={64 + seat.y * seatLocationMultiplier + 'px'}
+          style:width={seatSize + 'px'}
+          style:height={seatSize + 'px'}
         />
       {/each}
     {/await}
@@ -159,7 +159,7 @@
         <div>
           <div
             class="seat"
-            style:background-color={showSeatTypes ? "#A1DF9F" : "#80A6FF"}
+            style:background-color={showSeatTypes ? '#A1DF9F' : '#80A6FF'}
           />
           <p>Invalidsko</p>
         </div>
@@ -207,7 +207,7 @@
   <div id="performanceInfo">
     <p class="movieTitle">
       {performanceData.movie.title}
-      {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== "0"}
+      {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== '0'}
         ({performanceData.movie.ageRating}+)
       {/if}
     </p>
@@ -230,7 +230,7 @@
     </div>
     <div class="performanceInfoRow">
       <img src="/images/clapperIcon.svg" alt="clapper icon" />
-      <p>{performanceData.performance.performanceFeatures.join(" · ")}</p>
+      <p>{performanceData.performance.performanceFeatures.join(' · ')}</p>
     </div>
   </div>
 
@@ -349,7 +349,7 @@
   }
 
   .seatTypesSwitchContainer input::before {
-    content: "";
+    content: '';
     position: absolute;
     width: 1.5rem;
     height: 1.5rem;

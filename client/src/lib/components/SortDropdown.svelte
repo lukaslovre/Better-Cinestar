@@ -1,14 +1,14 @@
 <script>
-  import { sortBy } from "$lib/stores/userSelection.svelte"
+  import { sortBy } from '$lib/stores/userSelection.svelte';
 
   export let sortDropdownOpen;
 
   const dropdownOptionValues = [
-    { text: "po Datumu izlaska", value: "nationwideStart" },
-    { text: "po IMDB ocjeni", value: "imdbRating" },
-    { text: "po Letterboxd ocjeni", value: "letterboxdRating" },
-    { text: "po Žanru", value: "genre" },
-    { text: "po Trajanju", value: "durationMins" },
+    { text: 'po Datumu izlaska', value: 'nationwideStart' },
+    { text: 'po IMDB ocjeni', value: 'imdbRating' },
+    { text: 'po Letterboxd ocjeni', value: 'letterboxdRating' },
+    { text: 'po Žanru', value: 'genre' },
+    { text: 'po Trajanju', value: 'durationMins' }
   ];
 
   $: selectedSortText = dropdownOptionValues.find(
@@ -52,7 +52,7 @@
   <!-- Dropdown options -->
   <div
     class="dropdown-options secondary-color-scheme"
-    style:display={sortDropdownOpen.value ? "flex" : "none"}
+    style:display={sortDropdownOpen.value ? 'flex' : 'none'}
   >
     {#each dropdownOptionValues as sortOption}
       <button

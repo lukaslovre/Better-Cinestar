@@ -1,10 +1,10 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from 'svelte';
 
-  import TitleAndStats from "./TitleAndStats.svelte";
-  import FullInfo from "../FullInfo.svelte";
-  import Performances from "../Performances.svelte";
-  import MovieCardBottomButtons from "../MovieCardBottomButtons.svelte";
+  import TitleAndStats from './TitleAndStats.svelte';
+  import FullInfo from '../FullInfo.svelte';
+  import Performances from '../Performances.svelte';
+  import MovieCardBottomButtons from '../MovieCardBottomButtons.svelte';
 
   export let movie;
   export let fullscreenedMovieNumber;

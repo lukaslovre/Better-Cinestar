@@ -1,7 +1,7 @@
 <script>
   // import { onMount } from "svelte";
-  import MovieCardV1 from "./card_v1/MovieCardV1.svelte";
-  import MovieCardV2 from "./card_v2/MovieCardV2.svelte";
+  import MovieCardV1 from './card_v1/MovieCardV1.svelte';
+  import MovieCardV2 from './card_v2/MovieCardV2.svelte';
 
   // import { scrollToMovieId } from "../stores";
 
@@ -20,15 +20,15 @@
   //   }, 250);
   // });
 
-  const movieCardDesign = localStorage.getItem("movieCardDesign");
+  const movieCardDesign = localStorage.getItem('movieCardDesign');
   if (!movieCardDesign) {
-    localStorage.setItem("movieCardDesign", "v2");
+    localStorage.setItem('movieCardDesign', 'v2');
   }
 
   let fullscreenedMovieNumber = 0;
   let selectedCardSize = {
     normal: 0,
-    fullscreen: 0,
+    fullscreen: 0
   };
 
   function setFullscreen(event) {
@@ -80,7 +80,7 @@
 
 <div id="movieCardsContainer">
   {#each movies.filter((m) => m.performances.length > 0) as movie}
-    {#if movieCardDesign === "v1"}
+    {#if movieCardDesign === 'v1'}
       <MovieCardV1
         {movie}
         {fullscreenedMovieNumber}

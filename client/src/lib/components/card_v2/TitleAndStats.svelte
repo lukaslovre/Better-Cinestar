@@ -6,7 +6,7 @@
 <div class="titleAndStats" class:sticky={isFullscreened}>
   <p class="movieTitle">
     {movie.title}
-    {#if movie.ageRating && movie.ageRating !== "0"}
+    {#if movie.ageRating && movie.ageRating !== '0'}
       <span class="ageRating">
         ({movie.ageRating}+)
       </span>
@@ -16,7 +16,7 @@
   <div class="movieStats">
     <div class="row">
       <div>
-        <p>{movie.englishCategories?.[0] || movie.genres?.[0] || "N/A"}</p>
+        <p>{movie.englishCategories?.[0] || movie.genres?.[0] || 'N/A'}</p>
       </div>
 
       <div>
