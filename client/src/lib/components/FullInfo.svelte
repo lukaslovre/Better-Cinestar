@@ -82,11 +82,16 @@
     padding-bottom: 0.25rem;
   }
   .movieExtraInfo .peopleContainer .person {
+    flex-shrink: 0;
     width: 4rem;
     display: flex;
     flex-direction: column;
     row-gap: 0.25rem;
     align-items: center;
+
+    &:hover p {
+      text-decoration: underline;
+    }
   }
   .movieExtraInfo .peopleContainer .person img {
     width: 4rem;

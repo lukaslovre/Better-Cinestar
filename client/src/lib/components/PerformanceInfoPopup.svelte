@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 
-  localStorage.setItem('visitedWebsiteBefore', true);
+  localStorage.setItem('visitedWebsiteBefore', "true");
 </script>
 
 <div class="backdrop">
