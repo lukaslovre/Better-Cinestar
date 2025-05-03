@@ -1,33 +1,36 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  export let movie;
-  export let isFullscreened;
+  interface MovieCardBottomButtonsProps {
+    movie: Movie;
+    isFullscreened: boolean;
+  }
+
+  let { movie, isFullscreened }: MovieCardBottomButtonsProps = $props();
 
   const dispatch = createEventDispatcher();
 
-  function fullscreenCurrentMovie(e) {
+  function fullscreenCurrentMovie(e: MouseEvent) {
+    const movieCard = (e.target as HTMLElement)?.closest('.movieCard');
+    if (!movieCard) {
+      console.error("Didn't find movie card (.movieCard) when trying to fullscreen");
+    }
+
     dispatch('setFullscreen', {
       filmNumber: movie.filmNumber,
-      movieCard: e.target.closest('.movieCard')
+      movieCard: movieCard
     });
   }
-
-  //   function addMovieToUrl() {
-  //     const params = new URLSearchParams(window.location.search);
-  //     params.set("goToMovie", movie.filmNumber);
-  //     window.history.replaceState({}, "", `${window.location.pathname}?${params}`);
-  //   }
 </script>
 
 <div class="buttonsContainer">
-  <!-- <button class="imageButton secondaryButton" on:click={addMovieToUrl}>
-    <img class="" src="/images/share.svg" alt="Share link to movie" />
-  </button> -->
-
-  <button class="imageButton button" on:click={fullscreenCurrentMovie}>
+  <button
+    type="button"
+    class="imageButton button"
+    onclick={fullscreenCurrentMovie}
+    aria-label="Toggle movie details display"
+  >
     <img
-      class=""
       src={isFullscreened ? '/images/fullscreen-exit.svg' : '/images/fullscreen.svg'}
       alt="Toggle fullscreen mode"
     />
@@ -57,9 +60,5 @@
     font-weight: 500;
     color: white;
     font-size: 1rem;
-  }
-
-  .secondaryButton {
-    background-color: #0c1a40;
   }
 </style>
