@@ -188,7 +188,7 @@
     {#if !Array.isArray(movies) && movies.noCinemasSelected}
       <NoResultsGif />
     {:else if Array.isArray(movies) && movies.length === 0}
-      <p style:color="red">Nema filmova na odabrani datum</p>
+      <p class="text-red-500">Nema filmova na odabrani datum</p>
     {:else}
       <MovieList {movies} on:selectedPerformance={setOpenedPerformance} />
     {/if}

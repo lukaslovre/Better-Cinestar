@@ -42,9 +42,9 @@
     }
   }
 
-  function copyEmailToClipboard(email: string) {
-    navigator.clipboard.writeText(email).catch((err) => {
-      console.error('Failed to copy email: ', err);
+  function copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error(`Failed to copy "${text}": `, err);
     });
   }
 </script>
@@ -94,7 +94,7 @@
           <div class="emailAndCopyButton">
             <p class="text">{contactEmail}</p>
             <button
-              onclick={() => copyEmailToClipboard(contactEmail)}
+              onclick={() => copyToClipboard(contactEmail)}
               aria-label="Copy email to clipboard"
             >
               <img src="/images/copyToClipboard.svg" alt="copy icon" />
