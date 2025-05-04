@@ -1,18 +1,31 @@
-function getFormattedPerformanceDateLabel(performanceDate) {
+/**
+ * Formats a performance date into a user-friendly string.
+ * Returns relative terms like 'Danas' (Today) or 'Sutra' (Tomorrow) for dates close to the current date,
+ * 'Prošlost' (Past) for past dates, or a formatted date string (e.g., "Uto, 6. Svi") for future dates.
+ *
+ * @param {Date} performanceDate - The date of the performance.
+ * @returns {string} A formatted string representing the performance date.
+ */
+function getFormattedPerformanceDateLabel(performanceDate: Date): string {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const dateDiff = Math.floor((performanceDate - today) / (1000 * 60 * 60 * 24));
 
-  if (dateDiff < 0) {
+  // Calculate the difference between the performance date and today
+  const dateDiffMilliseconds = performanceDate.getTime() - today.getTime();
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+  const dateDiffDays = Math.floor(dateDiffMilliseconds / millisecondsInADay);
+
+  if (dateDiffDays < 0) {
     return 'Prošlost';
   }
-  if (dateDiff === 0) {
+  if (dateDiffDays === 0) {
     return 'Danas';
   }
-  if (dateDiff === 1) {
+  if (dateDiffDays === 1) {
     return 'Sutra';
   }
 
+  // For dates further in the future, format them
   return performanceDate.toLocaleDateString('hr-HR', {
     weekday: 'short',
     month: 'short',
@@ -20,44 +33,68 @@ function getFormattedPerformanceDateLabel(performanceDate) {
   });
 }
 
-export function getRelativeDate(date, time) {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const diff = date.getTime() - now.getTime(); // Difference in milliseconds
-  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24)); // Difference in days
+/**
+ * Calculates a relative date/time string compared to the current moment.
+ * Examples: "prije 2 dana", "jučer", "za 1h 30m", "sutra", "za 5 dana".
+ * For today's date, it shows the remaining hours and minutes until the given time.
+ *
+ * @param {Date} date - The date of the event.
+ * @param {string} time - The time of the event in "HH:MM" format.
+ * @returns {string} A relative date/time string.
+ */
+export function getRelativeDate(date: Date, time: string): string {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set today to the beginning of the day for day comparison
 
-  if (diffInDays < -1) {
-    return `prije ${Math.abs(diffInDays)} dana`;
-  } else if (diffInDays === -1) {
+  const performanceDay = new Date(date); // Create a new date object to avoid modifying the original
+  performanceDay.setHours(0, 0, 0, 0);
+
+  const dayDiffMilliseconds = performanceDay.getTime() - today.getTime();
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+  const dayDiffDays = Math.floor(dayDiffMilliseconds / millisecondsInADay);
+
+  if (dayDiffDays < -1) {
+    return `prije ${Math.abs(dayDiffDays)} dana`;
+  }
+  if (dayDiffDays === -1) {
     return 'jučer';
-  } else if (diffInDays === 0) {
-    // if today, show how much hours and minutes is left from now
-    const correctNow = new Date();
-    const currentHours = correctNow.getHours();
-    const currentMinutes = correctNow.getMinutes();
-
-    console.log('Current time: ', currentHours, ':', currentMinutes);
-
+  }
+  if (dayDiffDays === 0) {
+    // It's today, calculate the time difference from now
+    const now = new Date();
     const [hours, minutes] = time.split(':').map((x) => parseInt(x));
 
-    console.log('Performance time: ', hours, ':', minutes);
+    const performanceDateTime = new Date(date);
+    performanceDateTime.setHours(hours, minutes, 0, 0);
 
-    const diffInHours = (hours * 60 + minutes - currentHours * 60 - currentMinutes) / 60;
-    const diffInMinutes =
-      (hours * 60 + minutes - currentHours * 60 - currentMinutes) % 60;
+    const timeDiffMilliseconds = performanceDateTime.getTime() - now.getTime();
 
-    const diffInHoursString = Math.floor(diffInHours);
-    const diffInMinutesString = diffInMinutes.toString().padStart(2, '0');
+    if (timeDiffMilliseconds < 0) {
+      return 'Prošlo';
+    }
 
-    return `za ${diffInHoursString}h ${diffInMinutesString}m`;
-  } else if (diffInDays === 1) {
-    return 'sutra';
-  } else {
-    return `za ${diffInDays} dana`;
+    const timeDiffMinutes = Math.floor(timeDiffMilliseconds / (1000 * 60));
+    const timeDiffHours = Math.floor(timeDiffMinutes / 60);
+    const timeDiffMinutesRemaining = timeDiffMinutes % 60;
+
+    const hoursString = timeDiffHours.toString().padStart(2, '0');
+    const monitesString = timeDiffMinutesRemaining.toString().padStart(2, '0');
+
+    if (timeDiffHours > 0) {
+      return `za ${hoursString}h ${monitesString}m`;
+    }
+    if (timeDiffMinutesRemaining > 0) {
+      return `za ${monitesString}m`;
+    }
+    return 'Upravo počinje'; // Less than a minute away
   }
+  if (dayDiffDays === 1) {
+    return 'sutra';
+  }
+  return `za ${dayDiffDays} dana`;
 }
 
-function dateToYMDFormat(date) {
+function dateToYMDFormat(date: Date): string {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
@@ -209,11 +246,26 @@ function getPossibleFeaturesWithAppliedFilters(performances, filters) {
   return possibleFeatures;
 }
 
-// function that for each feature counts the number of performances that contain it
-function countFeatureOccurences(performances, feature) {
+/**
+ * Counts the occurrences of a specified feature within an array of movie performances.
+ *
+ * For the special case when the feature is "BASIC", it counts performances that do not include any of the
+ * non-basic features: '4DX', 'IMAX', 'GOLD', etc.
+ *
+ * @param performances - The array of movie performances to evaluate.
+ * @param feature - The feature to count.
+ * @returns The number of performances that include the specified feature.
+ */
+function countFeatureOccurences(
+  performances: MoviePerformance[],
+  feature: string
+): number {
   let count = 0;
 
   for (const performance of performances) {
+    // performances don't explicitly contain "BASIC" in their features,
+    // it's basic if they don't contain any other features
+    // TODO: Maybe all possible features should be in a config somewhere
     if (feature === 'BASIC') {
       if (
         !performance.performanceFeatures?.includes('4DX') &&

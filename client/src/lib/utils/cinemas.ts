@@ -1,4 +1,10 @@
-export const cinemas = [
+export interface CinemaLocation {
+  cinemaOid: string;
+  cinemaName: string;
+  cinemaCity: string;
+}
+
+export const cinemas: CinemaLocation[] = [
   {
     cinemaOid: '10000000014OCPXCOG',
     cinemaName: 'Branimir mingle mall',

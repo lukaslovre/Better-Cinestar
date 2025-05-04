@@ -62,11 +62,11 @@ interface Movie {
   ticketTitle?: string;
   title?: string;
   trailerLink?: string;
-  performances?: Performance[]; // Added based on API response
+  performances?: MoviePerformance[]; // Added based on API response
   availableDates?: string[]; // Added based on API response (Date strings YYYY-MM-DD)
 }
 
-interface Performance {
+interface MoviePerformance {
   access?: Access;
   auditorium?: AuditoriumDetails;
   auditoriumId?: string;
@@ -107,6 +107,30 @@ interface Analytics {
   statusCode?: number;
   responseTime?: number;
   createdAt?: Date; // Added because timestamps: true
+}
+
+interface SeatingArea {
+  id: number;
+  name: string;
+  useAssignedSeating: boolean;
+  acceptanceMethod: string;
+}
+
+interface Seat {
+  x: number;
+  y: number;
+  sg: number; 
+  stat: number; 
+  sar: number; // Seating Area Reference? (Matches id in seatingAreas)
+}
+
+interface SeatingLayout {
+  height: number;
+  width: number;
+  seatingAreas: SeatingArea[];
+  maxX: number;
+  maxY: number;
+  seats: Seat[];
 }
 
 ///////

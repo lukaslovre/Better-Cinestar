@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import Loading from './Loading.svelte';
   import { createEventDispatcher } from 'svelte';
   import { cinemas } from '../utils/cinemas';
-  import { getAverageSeatDistance } from '../utils/performanceSeats';
+  import { getAverageHorizontalSeatDistance } from '../utils/performanceSeats';
   import { getRelativeDate } from '../utils/utils';
   import { PUBLIC_API_URL } from '$env/static/public';
 
@@ -41,8 +41,12 @@
   let seatOffsetX = 0;
   let seatSize = 9;
 
-  function setSeatingLayoutValues(seats) {
+  function setSeatingLayoutValues(seats: SeatingLayout) {
     const seatsContainer = document.getElementById('seatsContainer');
+    if (!seatsContainer) {
+      console.error('Seats container not found (#seatsContainer) in Seating.svelte');
+      return;
+    }
 
     const containerWidth = seatsContainer.clientWidth - 10;
 
@@ -51,7 +55,8 @@
     seatLocationMultiplier = (containerWidth * 0.9) / furthestSeat;
     seatOffsetX = containerWidth * 0.05;
 
-    const seatDistance = getAverageSeatDistance(seats) * seatLocationMultiplier;
+    const seatDistance =
+      getAverageHorizontalSeatDistance(seats.seats) * seatLocationMultiplier;
     seatSize = Math.max(6, Math.min(Math.floor(seatDistance * 0.85), 18));
 
     const seatsHeight = seats.maxY * seatLocationMultiplier + seatSize;
@@ -225,7 +230,7 @@
       <p>
         {cinemas.find(
           (cinema) => cinema.cinemaOid === performanceData.performance.cinemaOid
-        ).cinemaName}
+        )?.cinemaName || 'N/A'}
       </p>
     </div>
     <div class="performanceInfoRow">
