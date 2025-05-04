@@ -6,7 +6,7 @@
     getGroupedPerformanceFeaturesFrom,
     getPossibleFeaturesWithAppliedFilters,
     countFeatureOccurences
-  } from '../utils/utils.js';
+  } from '../../utils/utils.js';
 
   const dispatch = createEventDispatcher();
 

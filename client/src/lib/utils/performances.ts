@@ -44,8 +44,12 @@ function generatePerformancesQueryParams(
 
 export function getPreviousAndNextPerformanceDatesForMovie(
   availableDates: string[],
-  targetDate: string
+  targetDate: string | undefined
 ): { previousDate: string | null; nextDate: string | null } {
+  if (!targetDate) {
+    return { previousDate: null, nextDate: null };
+  }
+
   const dateIndex = availableDates.indexOf(targetDate);
 
   if (dateIndex === -1) {
