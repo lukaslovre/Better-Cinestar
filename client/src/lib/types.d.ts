@@ -79,13 +79,13 @@ interface MoviePerformance {
   filmReleaseCode?: string;
   filmReleaseId?: string;
   filmTitle?: string;
-  id?: string;
+  id: string;
   is3D?: boolean;
   limitations?: Limitations;
   name?: string;
-  performanceDateTime?: string; // ISO 8601 date-time string
+  performanceDateTime: string; // ISO 8601 date-time string
   performanceFeatures?: string[];
-  performanceTime?: string; // Time string HH:MM
+  performanceTime: string; // Time string HH:MM
   releaseTypeName?: string;
   releaseTypeNumber?: number;
   ticketTitle?: string;
@@ -119,8 +119,8 @@ interface SeatingArea {
 interface Seat {
   x: number;
   y: number;
-  sg: number; 
-  stat: number; 
+  sg: number;
+  stat: number;
   sar: number; // Seating Area Reference? (Matches id in seatingAreas)
 }
 
@@ -142,3 +142,17 @@ type LabelValue<T> = {
   label: string;
   value: T;
 };
+
+interface MovieFilters {
+  cinemaOids: string[];
+  selectedDate: string;
+  sortBy: string;
+}
+
+interface PerformanceFilters {
+  videoFeatures: string[];
+  audioFeatures: string[];
+  roomFeatures: string[];
+  timeFrom: string; // HH:mm
+  timeTo: string; // HH:mm
+}

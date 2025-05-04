@@ -101,13 +101,18 @@ function dateToYMDFormat(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function countSelectedFilters(filters) {
-  return Object.values(filters)
-    .flat()
-    .filter((item) => item !== '00:00' && item !== '24:00').length;
+function countSelectedPerformanceFilters(filters: PerformanceFilters): number {
+  const nonDefaultFilters = Object.values(filters)
+    .flat() // eg. ["BASIC", "00:00", "24:00"]
+    .filter((item) => item !== '00:00' && item !== '24:00'); // Filter out default time values
+
+  return nonDefaultFilters.length;
 }
 
-function filterPerformances(performances, filters) {
+function filterPerformances(
+  performances: MoviePerformance[],
+  filters: PerformanceFilters
+): MoviePerformance[] {
   return performances.filter((performance) => {
     const isInTimeRange =
       filters.timeFrom === undefined ||
@@ -118,9 +123,11 @@ function filterPerformances(performances, filters) {
     const isVideoFeatureSelected =
       filters.videoFeatures === undefined ||
       filters.videoFeatures.length === 0 ||
-      filters.videoFeatures.some((selectedFeature) =>
-        performance.performanceFeatures.includes(selectedFeature)
-      );
+      filters.videoFeatures.some((selectedFeature) => {
+        return performance.performanceFeatures
+          ? performance.performanceFeatures.includes(selectedFeature)
+          : false;
+      });
 
     // if roomFeatures equals "BASIC", then check that the performanceFeatures doesn't contain "4DX" or "IMAX" or "GOLD",
     // if roomFeatures equals something else, then the performanceFeatures must contain that value
@@ -128,6 +135,8 @@ function filterPerformances(performances, filters) {
       filters.roomFeatures === undefined ||
       filters.roomFeatures.length === 0 ||
       filters.roomFeatures.some((selectedFeature) => {
+        if (!performance.performanceFeatures) return false;
+
         if (selectedFeature === 'BASIC') {
           return (
             !performance.performanceFeatures.includes('4DX') &&
@@ -145,7 +154,9 @@ function filterPerformances(performances, filters) {
       filters.audioFeatures === undefined ||
       filters.audioFeatures.length === 0 ||
       filters.audioFeatures.some((selectedFeature) =>
-        performance.performanceFeatures.includes(selectedFeature)
+        performance.performanceFeatures
+          ? performance.performanceFeatures.includes(selectedFeature)
+          : false
       );
 
     return (
@@ -165,17 +176,18 @@ function filterPerformances(performances, filters) {
  * which is an array of strings. If a performance does not include "IMAX", "4DX",
  * "GOLD", "KIDS" or "SCREENX" in its features, "BASIC" is added to its features.
  *
- * @param {Object[]} performances - The performances to extract features from.
- * @param {string[]} performances[].performanceFeatures - The features of each performance.
+ * @param {MoviePerformance[]} performances - The performances to extract features from.
  *
  * @returns {string[]} An array of unique performance features.
  */
-function getUniquePerformanceFeaturesFrom(performances) {
+function getUniquePerformanceFeaturesFrom(performances: MoviePerformance[]): string[] {
   return (
     performances
       .map((performance) => performance.performanceFeatures)
       // check for every performanceFeatures array if it contains IMAX, 4DX or GOLD or KIDS or SCREENX, if not push BASIC to the array
       .map((performanceFeatures) => {
+        if (!performanceFeatures) return [];
+
         if (
           !performanceFeatures.includes('IMAX') &&
           !performanceFeatures.includes('4DX') &&
@@ -189,11 +201,11 @@ function getUniquePerformanceFeaturesFrom(performances) {
         }
       })
       .flat()
-      .filter((value, index, self) => self.indexOf(value) === index)
+      .filter((value, index, self) => self.indexOf(value) === index) // remove duplicates
   );
 }
 
-function getGroupedPerformanceFeaturesFrom(performances) {
+function getGroupedPerformanceFeaturesFrom(performances: MoviePerformance[]) {
   const uniquePerformanceFeatures = getUniquePerformanceFeaturesFrom(performances);
 
   const groupedPerformanceFeatures = {
@@ -215,14 +227,19 @@ function getGroupedPerformanceFeaturesFrom(performances) {
   };
 
   // sort the features alphabetically
+  // TODO: check if I can do 'Object.values()'
   Object.keys(groupedPerformanceFeatures).forEach((featureType) => {
-    groupedPerformanceFeatures[featureType].sort((a, b) => a.localeCompare(b));
+    const key = featureType as keyof typeof groupedPerformanceFeatures; // Typescript fix
+    groupedPerformanceFeatures[key].sort((a, b) => a.localeCompare(b));
   });
 
   return groupedPerformanceFeatures;
 }
 
-function getPossibleFeaturesWithAppliedFilters(performances, filters) {
+function getPossibleFeaturesWithAppliedFilters(
+  performances: MoviePerformance[],
+  filters: PerformanceFilters
+) {
   const possibleFeatures = {
     videoFeatures: [],
     roomFeatures: [],
@@ -239,7 +256,9 @@ function getPossibleFeaturesWithAppliedFilters(performances, filters) {
       filtersWithoutOneColumn
     );
 
+    // @ts-ignore
     possibleFeatures[columnName] =
+      // @ts-ignore
       getGroupedPerformanceFeaturesFrom(filteredPerformances)[columnName];
   }
 
@@ -288,7 +307,7 @@ function countFeatureOccurences(
 export {
   getFormattedPerformanceDateLabel,
   filterPerformances,
-  countSelectedFilters,
+  countSelectedPerformanceFilters,
   getGroupedPerformanceFeaturesFrom,
   getPossibleFeaturesWithAppliedFilters,
   countFeatureOccurences,
