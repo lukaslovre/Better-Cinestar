@@ -1,6 +1,7 @@
 <script>
   import { selectedDate } from '$lib/stores/userSelection.svelte';
   import { dateToYMDFormat, getFormattedPerformanceDateLabel } from '$lib/utils/utils';
+  import { onMount } from 'svelte';
 
   export let dateDropdownOpen;
 
@@ -30,8 +31,18 @@
 
   // add a resize event listener
   let windowIsWide = window.innerWidth > 1200;
-  window.addEventListener('resize', () => {
+  onMount(() => {
     windowIsWide = window.innerWidth > 1200;
+
+    const handleResize = () => {
+      windowIsWide = window.innerWidth > 1200;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   });
 </script>
 
@@ -70,7 +81,7 @@
     class="dropdown-options secondary-color-scheme"
     style:display={dateDropdownOpen.value ? 'flex' : 'none'}
   >
-    {#each dropdownOptionValues as dateOption}
+    {#each dropdownOptionValues  as dateOption}
       <button
         type="button"
         class="option"
@@ -89,54 +100,5 @@
 <style>
   .input-container {
     /* max-width: calc(45% - 0.5rem); */
-  }
-
-  /* Segmented button */
-  .segmentedButton {
-    display: flex;
-  }
-  .segmentedButton .option {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    min-width: 5rem;
-    column-gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0;
-    border: 1px solid #d9d9d9;
-    background-color: transparent;
-    cursor: pointer;
-    transition: background-color 100ms;
-  }
-
-  /* first and last options have border-radius on outer sides */
-  .segmentedButton .option:first-child {
-    border-top-left-radius: 10rem;
-    border-bottom-left-radius: 10rem;
-  }
-  .segmentedButton .option:last-child {
-    border-top-right-radius: 10rem;
-    border-bottom-right-radius: 10rem;
-  }
-  .segmentedButton .option:hover {
-    background-color: rgba(255, 255, 255, 0.125);
-  }
-
-  .segmentedButton .option.selected {
-    background-color: rgba(255, 255, 255, 0.125);
-  }
-  .segmentedButton .option img {
-    width: 1.5rem;
-    height: 1.5rem;
-    display: none;
-  }
-  .segmentedButton .option.selected img {
-    display: block;
-  }
-  .segmentedButton .option p {
-    font-size: 1rem;
-    color: #ffffff;
-    font-weight: 400;
   }
 </style>
