@@ -1,13 +1,17 @@
-<script>
+<script lang="ts">
   import TitleAndStats from './TitleAndStats.svelte';
   import FullInfo from '../FullInfo.svelte';
   import Performances from '../Performances.svelte';
   import MovieCardBottomButtons from '../MovieCardBottomButtons.svelte';
 
-  export let movie;
-  export let fullscreenedMovieNumber;
+  interface MovieCardProps {
+    movie: Movie;
+    fullscreenedMovieNumber: number;
+  }
 
-  $: isFullscreened = movie.filmNumber === fullscreenedMovieNumber;
+  let { movie, fullscreenedMovieNumber }: MovieCardProps = $props();
+
+  const isFullscreened = $derived(movie.filmNumber === fullscreenedMovieNumber);
 </script>
 
 <div
@@ -78,7 +82,6 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    /* justify-content: space-between; */
     row-gap: 2.5rem;
   }
 </style>
