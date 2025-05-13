@@ -1,5 +1,6 @@
-// Define the base API URL and default headers
-const API_URL = "https://shop.cinestarcinemas.hr/api";
+const { configuration } = require("../config/environment");
+
+// Define the default headers
 const DEFAULT_HEADERS = {
   "Accept-Encoding": "gzip, deflate, br",
 };
@@ -7,7 +8,7 @@ const DEFAULT_HEADERS = {
 // Helper function to make a request to the Cinestar API
 async function cinestarApi(endpoint, cinemaOid) {
   // Construct the full URL and headers
-  const url = `${API_URL}${endpoint}`;
+  const url = `${configuration.CINESTAR_API_URL}${endpoint}`;
   const headers = { ...DEFAULT_HEADERS, "CENTER-OID": cinemaOid };
 
   try {
@@ -146,40 +147,3 @@ function filterUniqueMovies(movies) {
 
 // Export the main function
 module.exports = { fetchMoviesAndPerformances };
-
-// // ovo ce se izvrsavat na klijentu?
-// async function getSeating(cinemaOid, performanceId) {
-//   const data = await cinestarApi(`/performances/${performanceId}/seatingplan`, cinemaOid);
-//   if (data.errorMessage) return;
-
-//   const formattedSeating = formatSeating(data);
-
-//   return formattedSeating;
-// }
-
-// function formatSeating(data) {
-//   const seatGroups = data.seatGroups.map((group) => group.seats);
-//   return {
-//     height: data.height,
-//     width: data.width,
-//     maxX: findLargestX(seatGroups),
-//     maxY: findLargestY(seatGroups),
-//     seats: seatGroups.flat().map(formatSeat),
-//   };
-// }
-
-// function formatSeat(seat) {
-//   return {
-//     x: seat.x,
-//     y: seat.y,
-//     sg: seat.sg,
-//     stat: seat.stat,
-//   };
-// }
-// function findLargestX(seatGroups) {
-//   return seatGroups.reduce((max, group) => Math.max(max, group[group.length - 1].x), 0);
-// }
-
-// function findLargestY(seatGroups) {
-//   return seatGroups.reduce((max, group) => Math.max(max, group[0].y), 0);
-// }

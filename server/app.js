@@ -10,12 +10,18 @@ const { fetchSeating } = require("./api/seating.js");
 const { getPerformancesForDateAndMovie } = require("./api/performances.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { getCinemas } = require("./utils/cinemasList.js");
-const { getAnalytics } = require("./db/db.js");
+const {
+  getAnalytics,
+  saveMoviesToDatabase,
+  savePerformancesToDatabase,
+  savePerformanceDatesToDatabase,
+} = require("./db/db.js");
 const { z } = require("zod");
 const { configuration } = require("./config/environment.js");
 
 app.use(cors());
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
+app.use(express.json({ limit: "20mb" })); // Increase the limit for JSON payloads, as of writing this a SQLite database is 3mb after scraping
 
 // Zod Schemas
 const cinemaOidSchema = z.string().length(18, "Invalid cinema OID format");
@@ -111,6 +117,42 @@ app.get("/api/getAnalyticsData", async (req, res) => {
 });
 app.get("/api/getCinemasList", (req, res) => {
   res.send(getCinemas());
+});
+
+const authenticateScraper = (req, res, next) => {
+  const secret = req.headers["x-scraper-secret"];
+  if (secret && secret === process.env.SCRAPER_SECRET) {
+    next();
+  } else {
+    console.warn("Unauthorized attempt to access scrape endpoint");
+    res.status(401).send("Unauthorized");
+  }
+};
+
+app.post("/api/v1/scrape-results", authenticateScraper, async (req, res) => {
+  try {
+    const { movies, performances, performanceDates } = req.body;
+    if (!movies || !performances || !performanceDates) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "Missing data: movies, performances, and performanceDates are required.",
+        });
+    }
+    console.log(
+      `Received ${movies.length} movies, ${performances.length} performances, ${performanceDates.length} performance dates.`
+    );
+    await saveMoviesToDatabase(movies);
+    await savePerformancesToDatabase(performances);
+    await savePerformanceDatesToDatabase(performanceDates);
+    res.status(200).json({ message: "Data saved successfully." });
+  } catch (error) {
+    console.error("Error processing scraped data:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to save scraped data.", error: error.message });
+  }
 });
 
 app.use("/analytics", express.static(path.join(__dirname, "public", "analytics")));
