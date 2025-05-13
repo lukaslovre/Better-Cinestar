@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    # Persist the SQLite database between container restarts
+    volumes:
+      - ./server/Database.sqlite:/app/Database.sqlite
+    ports:
+      - "3000:3000" # Expose API on host port 3000
+    environment:
+      - PORT=3000
+      - SCRAPER_SECRET=your_very_secret_string_here
+      - SEQUELIZE_LOGGING=false
+      - ANALYTICS_STORAGE_ITEMS=200
+      - ANALYTICS_STORAGE_TIME_MINUTES=10
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    # The client is built as static files; you may need to serve them with an external static file server if not using Coolify
+    environment:
+      - PUBLIC_API_URL=http://localhost:3000
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  # Scraper service (runs once and exits)
+  scraper:
+    profiles:
+      - scraper
+    build:
+      context: ./scraper
+      dockerfile: Dockerfile
+    environment:
+      # Use the internal Docker network to reach the server
+      - SERVER_API_URL=http://server:3000/api/v1/scrape-results
+      - SCRAPER_SECRET=your_very_secret_string_here
+      - CINESTAR_API_URL=https://shop.cinestarcinemas.hr/api
+    depends_on:
+      - server
+    restart: "no" # Do not restart after completion

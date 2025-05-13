@@ -5,7 +5,6 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Set NODE_ENV to production
-ENV NODE_ENV=production
 ENV PORT=3000
 ENV SCRAPER_SECRET="your_very_secret_string_here"
 ENV SEQUELIZE_LOGGING=false
