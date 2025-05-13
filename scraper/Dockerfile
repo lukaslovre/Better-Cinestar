@@ -1,6 +1,6 @@
 # Use an official Puppeteer image which includes Chromium and all necessary dependencies.
 # Pick a specific version tag for reproducibility. Check for latest tags on ghcr.io/puppeteer/puppeteer
-FROM ghcr.io/puppeteer/puppeteer:latest
+FROM ghcr.io/puppeteer/puppeteer:24
 
 # Set the working directory inside the container
 WORKDIR /app
