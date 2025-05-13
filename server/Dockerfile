@@ -6,6 +6,11 @@ WORKDIR /usr/src/app
 
 # Set NODE_ENV to production
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV SCRAPER_SECRET="your_very_secret_string_here"
+ENV SEQUELIZE_LOGGING=false
+ENV ANALYTICS_STORAGE_ITEMS=200
+ENV ANALYTICS_STORAGE_TIME_MINUTES=10
 
 # Copy root package.json and package-lock.json
 COPY package.json package-lock.json ./
