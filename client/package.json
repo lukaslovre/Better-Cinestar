@@ -1,7 +1,7 @@
 {
-  "name": "client",
-  "private": true,
-  "version": "0.0.1",
+  "name": "bettercinestar-client",
+  "version": "1.0.0",
+  "description": "Frontend for BetterCinestar. Built with SvelteKit",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
