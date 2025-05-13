@@ -17,7 +17,7 @@
   - Run scraper: `npm run scrape --prefix scraper`
 
 - `/client`
-  - Frontend built with **Svelte 4** (half-transfered to **Svelte 5**).
+  - Frontend built with **Svelte 4** (half-transfered to **Svelte 5 w/ SvelteKit**).
 
 - `/scripts/research`
   - Contains scripts and notes for analyzing and understanding what different seat codes mean.
