@@ -21,4 +21,5 @@ COPY . .
 
 # The command to run your scraper script.
 # This container is intended to be run on a schedule (e.g., via Coolify cron), execute, and then exit.
-CMD [ "npm", "run", "scrape" ] 
+# CMD [ "npm", "run", "scrape" ] 
+CMD ["tail", "-f", "/dev/null"] # Keep the container running so I can periodically run the scraper manually (testing for Coolify)

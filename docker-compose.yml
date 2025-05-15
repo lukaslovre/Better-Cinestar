@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     # The client is built as static files; you may need to serve them with an external static file server if not using Coolify
     environment:
-      - PUBLIC_API_URL=http://localhost:3000
+      - PUBLIC_API_URL=https://server.bettercinestar.lukaslovretic.from.hr
     depends_on:
       - server
     expose:
@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile
     environment:
       # Use the internal Docker network to reach the server
-      - SERVER_API_URL=http://server:3000/api/v1/scrape-results
+      - SERVER_API_URL=https://server.bettercinestar.lukaslovretic.from.hr/api/v1/scrape-results
       - SCRAPER_SECRET=your_very_secret_string_here
       - CINESTAR_API_URL=https://shop.cinestarcinemas.hr/api
     depends_on:
