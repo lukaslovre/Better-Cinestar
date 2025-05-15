@@ -27,6 +27,8 @@ services:
       - PUBLIC_API_URL=http://localhost:3000
     depends_on:
       - server
+    ports:
+      - "8080:80" # Expose Caddy's port 80 on host port 8080
     restart: unless-stopped
 
   # Scraper service (runs once and exits)

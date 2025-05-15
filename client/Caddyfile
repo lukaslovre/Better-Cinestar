@@ -1,0 +1,5 @@
+# Serve static files from /srv at the root path
+:80
+
+root * /srv
+file_server

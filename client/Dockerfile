@@ -21,12 +21,18 @@ COPY . .
 # This should output to the 'build' directory by default with adapter-static
 RUN npm run build
 
-# ---- Final Stage ----
-# This stage simply holds the built assets.
-# Coolify will need to be configured to serve files from /app/build from this image.
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /app/build ./build
+# ---- Caddy Web Server Stage ----
+# Use the official Caddy image to serve the static files
+FROM caddy:2-alpine
 
-# You could add a label to indicate where the static files are, if helpful for Coolify
-LABEL static_files_path="/app/build"
+# Set the working directory inside the Caddy container
+WORKDIR /srv
+
+# Copy built static files from the builder stage
+COPY --from=builder /app/build /srv
+
+# Copy Caddyfile for configuration
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Expose port 80 for the Caddy server
+EXPOSE 80
