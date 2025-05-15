@@ -1,1 +1,1 @@
-export const env={"PUBLIC_API_URL":"http://localhost:3000"}
+export const env={"PUBLIC_API_URL":"https://server.bettercinestar.lukaslovretic.from.hr"}
