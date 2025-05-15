@@ -11,6 +11,7 @@ const { getPerformancesForDateAndMovie } = require("./api/performances.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const {
+  init,
   getAnalytics,
   saveMoviesToDatabase,
   savePerformancesToDatabase,
@@ -18,6 +19,9 @@ const {
 } = require("./db/db.js");
 const { z } = require("zod");
 const { configuration } = require("./config/environment.js");
+
+// Initialize the database
+init();
 
 app.use(cors());
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
