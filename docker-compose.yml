@@ -30,8 +30,6 @@ services:
 
   # Scraper service (runs once and exits)
   scraper:
-    profiles:
-    - scraper # To not run the scraper by default, use `docker-compose --profile scraper up`
     build:
       context: ./scraper
       dockerfile: Dockerfile
