@@ -11,6 +11,9 @@ ENV SEQUELIZE_LOGGING=false
 ENV ANALYTICS_STORAGE_ITEMS=200
 ENV ANALYTICS_STORAGE_TIME_MINUTES=10
 
+# Install curl for healthchecks
+RUN apk add --no-cache curl
+
 # Copy root package.json and package-lock.json
 COPY package.json package-lock.json ./
 
