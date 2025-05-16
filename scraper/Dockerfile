@@ -16,11 +16,18 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm ci 
 
+# switch to root so we can install cron
+USER root
+
+# Install cron, define job, set permissions, register and prepare log
+RUN apt-get update && apt-get install -y cron \
+  && echo "0 2 * * * root cd /app && /usr/local/bin/npm run scrape >> /var/log/cron.log 2>&1" > /etc/cron.d/scraper-cron \
+  && chmod 0644 /etc/cron.d/scraper-cron \
+  && crontab /etc/cron.d/scraper-cron \
+  && touch /var/log/cron.log
+
 # Copy the scripts directory into the container
 COPY . .
 
-# The command to run your scraper script.
-# This container is intended to be run on a schedule (e.g., via Coolify cron), execute, and then exit.
-# CMD [ "npm", "run", "scrape" ] 
-# Keep the container running so I can periodically run the scraper manually (testing for Coolify)
-CMD ["tail", "-f", "/dev/null"] 
+# Start cron in foreground so container stays alive and jobs run on schedule
+CMD ["cron", "-f"]
