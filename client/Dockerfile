@@ -6,7 +6,8 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Set ENV variables 
-ENV PUBLIC_API_URL="http://localhost:3000"
+# using service name as hostname for Docker networking
+ENV PUBLIC_API_URL="http://server:3000" 
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package.json package-lock.json ./

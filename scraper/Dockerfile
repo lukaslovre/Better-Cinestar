@@ -6,7 +6,7 @@ FROM ghcr.io/puppeteer/puppeteer:24
 WORKDIR /app
 
 # Set environment variables for the scraper
-ENV SERVER_API_URL="http://localhost:3000/api/v1/scrape-results"
+ENV SERVER_API_URL="http://server:3000/api/v1/scrape-results"
 ENV SCRAPER_SECRET="your_very_secret_string_here"
 ENV CINESTAR_API_URL="https://shop.cinestarcinemas.hr/api"
 
@@ -22,4 +22,5 @@ COPY . .
 # The command to run your scraper script.
 # This container is intended to be run on a schedule (e.g., via Coolify cron), execute, and then exit.
 # CMD [ "npm", "run", "scrape" ] 
-CMD ["tail", "-f", "/dev/null"] # Keep the container running so I can periodically run the scraper manually (testing for Coolify)
+# Keep the container running so I can periodically run the scraper manually (testing for Coolify)
+CMD ["tail", "-f", "/dev/null"] 
