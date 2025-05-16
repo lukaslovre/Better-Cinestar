@@ -16,18 +16,28 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm ci 
 
+# Define the default user name - commonly 'pptruser' for this base image
+ARG DEFAULT_USER=pptruser
+
 # switch to root so we can install cron
 USER root
 
-# Install cron, define job, set permissions, register and prepare log
+# Install cron, define job for the DEFAULT_USER, set permissions, register and prepare log
 RUN apt-get update && apt-get install -y cron \
-  && echo "0 2 * * * root cd /app && /usr/local/bin/npm run scrape >> /var/log/cron.log 2>&1" > /etc/cron.d/scraper-cron \
+  && echo "0 2 * * * ${DEFAULT_USER} cd /app && /usr/local/bin/npm run scrape >> /var/log/cron.log 2>&1" > /etc/cron.d/scraper-cron \
   && chmod 0644 /etc/cron.d/scraper-cron \
   && crontab /etc/cron.d/scraper-cron \
-  && touch /var/log/cron.log
+  && touch /var/log/cron.log \
+  # Ensure the log file is owned and writable by the default user
+  && chown ${DEFAULT_USER}:${DEFAULT_USER} /var/log/cron.log
 
-# Copy the scripts directory into the container
+
+# Copy the scripts directory into the container (this happens as root)
 COPY . .
 
+# Ensure the default user can read and execute the application code and write to the log
+RUN chown -R ${DEFAULT_USER}:${DEFAULT_USER} /app
+
 # Start cron in foreground so container stays alive and jobs run on schedule
+# The cron daemon runs as root, but the scheduled JOB will run as ${DEFAULT_USER}
 CMD ["cron", "-f"]
