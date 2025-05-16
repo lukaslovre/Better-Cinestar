@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Set ENV variables 
 # using service name as hostname for Docker networking
-ENV PUBLIC_API_URL="http://server:3000" 
+ENV PUBLIC_API_URL="https://api.bettercinestar.lukaslovretic.from.hr"
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package.json package-lock.json ./
