@@ -22,9 +22,13 @@ ARG DEFAULT_USER=pptruser
 # switch to root so we can install cron
 USER root
 
+# hourly cron job schedule
+ARG CRON_SCHEDULE="0 * * * *" 
+
 # Install cron, define job for the DEFAULT_USER, set permissions, register and prepare log
-RUN apt-get update && apt-get install -y cron \
-  && echo "0 2 * * * ${DEFAULT_USER} cd /app && /usr/local/bin/npm run scrape >> /var/log/cron.log 2>&1" > /etc/cron.d/scraper-cron \
+RUN apt-get update && apt-get install -y cron --no-install-recommends \
+  && rm -rf /var/lib/apt/lists/* \
+  && printf "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n${CRON_SCHEDULE} ${DEFAULT_USER} cd /app && /usr/local/bin/npm run scrape >> /var/log/cron.log 2>&1\n" > /etc/cron.d/scraper-cron \
   && chmod 0644 /etc/cron.d/scraper-cron \
   && crontab /etc/cron.d/scraper-cron \
   && touch /var/log/cron.log \
