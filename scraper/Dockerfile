@@ -50,8 +50,7 @@ RUN chown -R ${DEFAULT_USER}:${DEFAULT_USER} /app \
 
 # Update the crontab to use the wrapper script
 RUN printf "${CRON_SCHEDULE} ${DEFAULT_USER} /app/cron_wrapper.sh >> /var/log/cron.log 2>&1\n" > /etc/cron.d/scraper-cron \
-  && chmod 0644 /etc/cron.d/scraper-cron \
-  && crontab /etc/cron.d/scraper-cron
+  && chmod 0644 /etc/cron.d/scraper-cron
 
 # Start cron in foreground so container stays alive and jobs run on schedule
 # The cron daemon runs as root, but the scheduled JOB will run as ${DEFAULT_USER}
