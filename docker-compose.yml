@@ -40,7 +40,7 @@ services:
       context: ./scraper
       dockerfile: Dockerfile
       args:
-        - CRON_SCHEDULE=0 * * * *
+        - CRON_SCHEDULE="0 * * * *"
     environment:
       - SERVER_API_URL=http://server:3000/api/v1/scrape-results
       - SCRAPER_SECRET=your_very_secret_string_here
