@@ -23,24 +23,28 @@ ARG DEFAULT_USER=pptruser
 USER root
 
 # hourly cron job schedule
-ARG CRON_SCHEDULE="0 * * * *" 
+ARG CRON_SCHEDULE="*/30 * * * *" 
 
 # Install cron, define job for the DEFAULT_USER, set permissions, register and prepare log
 RUN apt-get update && apt-get install -y cron --no-install-recommends \
   && rm -rf /var/lib/apt/lists/* \
-  && printf "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n${CRON_SCHEDULE} ${DEFAULT_USER} cd /app && /usr/local/bin/npm run scrape >> /var/log/cron.log 2>&1\n" > /etc/cron.d/scraper-cron \
-  && chmod 0644 /etc/cron.d/scraper-cron \
-  && crontab /etc/cron.d/scraper-cron \
   && touch /var/log/cron.log \
-  # Ensure the log file is owned and writable by the default user
   && chown ${DEFAULT_USER}:${DEFAULT_USER} /var/log/cron.log
-
 
 # Copy the scripts directory into the container (this happens as root)
 COPY . .
 
+# Add the wrapper script and make it executable
+COPY cron_wrapper.sh /app/cron_wrapper.sh
+RUN chmod +x /app/cron_wrapper.sh
+
 # Ensure the default user can read and execute the application code and write to the log
 RUN chown -R ${DEFAULT_USER}:${DEFAULT_USER} /app
+
+# Update the crontab to use the wrapper script
+RUN printf "${CRON_SCHEDULE} ${DEFAULT_USER} /app/cron_wrapper.sh >> /var/log/cron.log 2>&1\n" > /etc/cron.d/scraper-cron \
+  && chmod 0644 /etc/cron.d/scraper-cron \
+  && crontab /etc/cron.d/scraper-cron
 
 # Start cron in foreground so container stays alive and jobs run on schedule
 # The cron daemon runs as root, but the scheduled JOB will run as ${DEFAULT_USER}
