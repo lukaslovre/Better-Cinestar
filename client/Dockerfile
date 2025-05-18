@@ -5,9 +5,12 @@ FROM node:22-alpine AS builder
 # Set the working directory inside the container
 WORKDIR /app
 
-# Set ENV variables 
-# using service name as hostname for Docker networking
-ENV PUBLIC_API_URL="https://api.bettercinestar.lukaslovretic.from.hr"
+# Set build-time argument for API URL
+ARG PUBLIC_API_URL="https://api.bettercinestar.lukaslovretic.from.hr"
+
+# Pass build arg to environment for build step
+# ARG PUBLIC_API_URL
+# ENV PUBLIC_API_URL=${PUBLIC_API_URL}
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package.json package-lock.json ./
@@ -22,7 +25,10 @@ COPY . .
 # This should output to the 'build' directory by default with adapter-static
 RUN npm run build
 
+
+
 # ---- Caddy Web Server Stage ----
+    
 # Use the official Caddy image to serve the static files
 FROM caddy:2-alpine
 

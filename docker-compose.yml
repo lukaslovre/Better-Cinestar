@@ -5,9 +5,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    # Persist the SQLite database between container restarts
     volumes:
-      - ./server/Database.sqlite:/app/Database.sqlite
+      - ./server/Database.sqlite:/app/Database.sqlite # Persist the SQLite database between container restarts
     expose:
       - "3000" # Expose port 3000 to other containers in the same network
     environment:
@@ -27,6 +26,8 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        PUBLIC_API_URL: "https://api.bettercinestar.lukaslovretic.from.hr"
     # ports:
     #   - "8080:80" # Map port 8080 on the host to port 80 in the container
     # environment: ENV variables need to be in the image during build time
