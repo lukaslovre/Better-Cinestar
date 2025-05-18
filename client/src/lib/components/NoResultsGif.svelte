@@ -1,5 +1,5 @@
 <div id="noResults">
-  <img src="/images/seinfeld-speechless.gif" alt="gif of seinfeld being speechless" />
+  <img src="/images/seinfeld-speechless.webp" alt="gif of seinfeld being speechless" />
   <p>(server upravo sada jer niste odabrali lokaciju kina)</p>
 </div>
 
