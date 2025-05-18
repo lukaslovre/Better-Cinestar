@@ -21,5 +21,5 @@ RUN npm ci
 # Copy the rest of the application code
 COPY . .
 
-# Start the Node.js scraper (ensure package.json has a start script, or use node scrapeAndSaveToDb.js)
-CMD ["npm", "start"]
+# Start the Node.js scraper
+CMD ["npm", "run", "scrape"]
