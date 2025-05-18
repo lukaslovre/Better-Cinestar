@@ -10,7 +10,7 @@ services:
     expose:
       - "3000" # Expose port 3000 to other containers in the same network
     environment:
-      - SCRAPER_SECRET=your_very_secret_string_here
+      - SCRAPER_SECRET=${SCRAPER_SECRET:-your_very_secret_string_here}
       - SEQUELIZE_LOGGING=false
       - ANALYTICS_STORAGE_ITEMS=200
       - ANALYTICS_STORAGE_TIME_MINUTES=10
@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - SERVER_API_URL=http://server:3000/api/v1/scrape-results
-      - SCRAPER_SECRET=your_very_secret_string_here
+      - SCRAPER_SECRET=${SCRAPER_SECRET:-your_very_secret_string_here}
       # Set RUN_MODE to 'once' to run the scraper once and exit, or 'scheduled' to run on a schedule
       - RUN_MODE=scheduled
       # Set the cron schedule for periodic runs (only used if RUN_MODE=scheduled)
