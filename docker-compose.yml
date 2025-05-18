@@ -30,7 +30,6 @@ services:
         PUBLIC_API_URL: "https://api.bettercinestar.lukaslovretic.from.hr"
     # ports:
     #   - "8080:80" # Map port 8080 on the host to port 80 in the container
-    # environment: ENV variables need to be in the image during build time
     depends_on:
       - server
     restart: unless-stopped
@@ -46,7 +45,7 @@ services:
       # Set RUN_MODE to 'once' to run the scraper once and exit, or 'scheduled' to run on a schedule
       - RUN_MODE=scheduled
       # Set the cron schedule for periodic runs (only used if RUN_MODE=scheduled)
-      - CRON_SCHEDULE=*/10 * * * * # Every 10 minutes
+      - CRON_SCHEDULE=0 2 * * * # Every day at 2 AM
     depends_on:
       - server
     restart: unless-stopped
