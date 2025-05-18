@@ -39,11 +39,13 @@ services:
     build:
       context: ./scraper
       dockerfile: Dockerfile
-      args:
-        - CRON_SCHEDULE=*/10 * * * * # Run every 10 minutes
     environment:
       - SERVER_API_URL=http://server:3000/api/v1/scrape-results
       - SCRAPER_SECRET=your_very_secret_string_here
+      # Set RUN_MODE to 'once' to run the scraper once and exit, or 'scheduled' to run on a schedule
+      - RUN_MODE=scheduled
+      # Set the cron schedule for periodic runs (only used if RUN_MODE=scheduled)
+      - CRON_SCHEDULE=*/10 * * * * # Every 10 minutes
     depends_on:
       - server
     restart: unless-stopped
