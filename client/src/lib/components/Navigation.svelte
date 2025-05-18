@@ -4,9 +4,9 @@
   import Hamburger from './navigation/Hamburger.svelte';
   import Faq from './navigation/Faq.svelte';
   import SegmentedButton from './navigation/SegmentedButton.svelte';
+  import { PUBLIC_API_URL } from '$env/static/public';
 
   const contactEmail = 'lovretic2002@gmail.com';
-  const privacyPolicyContent = 'Korisnički podaci se ne sakupljaju.';
 
   const transitionDuration: number = 150;
   const transitionDelay: number = 75;
@@ -106,7 +106,14 @@
           transition:fade={{ delay: transitionDelay * 4, duration: transitionDuration }}
         >
           <p class="title">Privacy policy</p>
-          <p class="text">{privacyPolicyContent}</p>
+          <p class="text">
+            Radi brojanja jedinstvenih posjetitelja pohranjuju se kriptografski hashirane
+            IP adrese. Ne pohranjujem stvarne IP adrese i ne mogu identificirati
+            korisnike. Agregirani statistički podaci (bez osobnih informacija) dostupni su
+            javno na stranici <a href={`${PUBLIC_API_URL}/analytics`} class="text">
+              /analytics
+            </a>.
+          </p>
         </section>
 
         <section

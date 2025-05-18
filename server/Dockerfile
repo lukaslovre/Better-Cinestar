@@ -10,6 +10,7 @@ ENV SCRAPER_SECRET="your_very_secret_string_here"
 ENV SEQUELIZE_LOGGING=false
 ENV ANALYTICS_STORAGE_ITEMS=200
 ENV ANALYTICS_STORAGE_TIME_MINUTES=10
+ENV ANALYTICS_HASH_SALT="your_very_secret_salt_here"
 
 # Install curl for healthchecks
 RUN apk add --no-cache curl

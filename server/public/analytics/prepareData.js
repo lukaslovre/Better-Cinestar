@@ -7,7 +7,7 @@ let cinemas = [];
 //     id: 1,
 //     responseTime: 100,
 //     statusCode: 200,
-//     uniqueVisitors: "192.168.25.199",
+//     uniqueVisitors: "192.168.25.199", note: this is now a hash
 //     url: "/api/movies?search=star+wars",
 //     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
 // }
@@ -18,8 +18,10 @@ fetch("/api/getAnalyticsData")
     return response.json();
   })
   .then((data) => {
-    console.log(data);
-    tableRows = data;
+    if (data && Array.isArray(data)) {
+      console.log(data.slice(0, 10));
+      tableRows = data;
+    }
   })
   .catch((error) => {
     console.error("Error:", error);
@@ -30,8 +32,10 @@ fetch("/api/getCinemasList")
     return response.json();
   })
   .then((data) => {
-    console.log(data);
-    cinemas = data;
+    if (data && Array.isArray(data)) {
+      console.log(data.slice(0, 10));
+      cinemas = data;
+    }
   })
   .catch((error) => {
     console.error("Error:", error);

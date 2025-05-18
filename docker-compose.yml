@@ -14,6 +14,7 @@ services:
       - SEQUELIZE_LOGGING=false
       - ANALYTICS_STORAGE_ITEMS=200
       - ANALYTICS_STORAGE_TIME_MINUTES=10
+      - ANALYTICS_HASH_SALT=${ANALYTICS_HASH_SALT:-your_very_secret_string_here}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]

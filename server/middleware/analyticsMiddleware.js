@@ -1,6 +1,7 @@
 const { configuration } = require("../config/environment");
 const { saveAnalyticsToDatabase } = require("../db/db");
 const { msFromMinutes } = require("../utils/utils");
+const crypto = require("node:crypto");
 
 // save to database every `timeInMs` or when the array is `items` long
 const storageSavingFrequency = {
@@ -16,7 +17,7 @@ const analyticsMiddleware = (req, res, next) => {
   const startHrTime = process.hrtime();
 
   // Check request address to generate unique visitors field
-  const uniqueVisitors = req.ip;
+  const uniqueVisitors = hashIp(req.ip);
 
   // Other essential fields for analytics
   const userAgent = req.get("User-Agent");
@@ -59,6 +60,13 @@ setInterval(() => {
       console.error("Error saving analytics data:", error.message);
     });
 }, storageSavingFrequency.timeInMs);
+
+function hashIp(ip) {
+  return crypto
+    .createHmac("sha256", configuration.ANALYTICS_HASH_SALT)
+    .update(ip)
+    .digest("hex");
+}
 
 module.exports = {
   analyticsMiddleware,
