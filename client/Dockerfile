@@ -6,7 +6,7 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Set build-time argument for API URL
-ARG PUBLIC_API_URL="https://api.bettercinestar.lukaslovretic.from.hr"
+ARG PUBLIC_API_URL="https://api.bettercinestar.com"
 
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package.json package-lock.json ./

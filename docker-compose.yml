@@ -28,7 +28,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
       args:
-        PUBLIC_API_URL: "https://api.bettercinestar.lukaslovretic.from.hr"
+        PUBLIC_API_URL: "https://api.bettercinestar.com"
     # ports:
     #   - "8080:80" # Map port 8080 on the host to port 80 in the container
     depends_on:
