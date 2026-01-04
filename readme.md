@@ -12,7 +12,7 @@ The project is a monolith composed of three main services:
 - **Responsibility**:
   - Stores movie, performance, and analytics data.
   - Provides a REST API for the frontend.
-  - Exposes a secure POST endpoint (`/api/v1/scrape-results`) for the scraper to update data.
+  - Exposes a secure POST endpoint (`/api/v1/scrape-results`) for the scraper to upload data.
 - **Setup**:
   - Requires a `.env` file (see `server/.env.example`).
   - `npm install --prefix server`
@@ -20,7 +20,7 @@ The project is a monolith composed of three main services:
 
 ### 2. Scraper (`/scraper`)
 
-- **Tech Stack**: Node.js, Puppeteer, Axios, Cheerio.
+- **Tech Stack**: Node.js, Puppeteer, Cheerio.
 - **Responsibility**:
   - Scrapes movie and performance data from CineStar.
   - Enriches data by fetching ratings and URLs from Letterboxd and IMDb.
@@ -33,7 +33,7 @@ The project is a monolith composed of three main services:
 
 ### 3. Client (`/client`)
 
-- **Tech Stack**: SvelteKit (Svelte 5), Tailwind CSS 4, Vite.
+- **Tech Stack**: SvelteKit (Svelte 5), Tailwind, Vite.
 - **Responsibility**:
   - Modern UI for browsing movies, filtering by cinema and date, and viewing seating plans.
   - Built as a Static Site (SPA) using `@sveltejs/adapter-static`.
