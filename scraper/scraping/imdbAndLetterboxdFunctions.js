@@ -1,5 +1,4 @@
 const cheerio = require("cheerio");
-const puppeteer = require("puppeteer");
 const { drawProgressBar } = require("./consoleProgress.js");
 
 async function fetchAndParseHtml(url) {

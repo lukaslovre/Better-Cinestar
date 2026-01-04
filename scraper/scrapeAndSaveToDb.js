@@ -10,6 +10,7 @@ const {
 const { configuration } = require("./config/environment.js");
 const { CronJob } = require("cron");
 const { launchBrowser } = require("./scraping/browser.js");
+const { withRetry } = require("./utils/retry.js");
 
 const cinemas = getCinemas();
 
@@ -30,12 +31,31 @@ async function performScrape() {
       performances: performances,
       performanceDates: performanceDates,
     };
-    const response = await axios.post(configuration.SERVER_API_URL, payload, {
-      headers: {
-        "Content-Type": "application/json",
-        "X-Scraper-Secret": configuration.SCRAPER_SECRET,
-      },
-    });
+
+    const response = await withRetry(
+      () =>
+        axios.post(configuration.SERVER_API_URL, payload, {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Scraper-Secret": configuration.SCRAPER_SECRET,
+          },
+        }),
+      {
+        retries: 5,
+        delay: 2000,
+        shouldRetry: (error) => {
+          // Don't retry if the server explicitly rejected the request (4xx)
+          if (
+            error.response &&
+            error.response.status >= 400 &&
+            error.response.status < 500
+          ) {
+            return false;
+          }
+          return true;
+        },
+      }
+    );
     console.log("[performScrape] Data successfully sent to server:", response.data);
     const moviesWithLetterboxdUrl = enrichedMovies.filter(
       (movie) => movie.letterboxdUrl

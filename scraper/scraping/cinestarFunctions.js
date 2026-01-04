@@ -1,30 +1,48 @@
 const { configuration } = require("../config/environment");
+const { withRetry } = require("../utils/retry");
 
 // Helper function to make a request to the Cinestar API using Puppeteer
 async function cinestarApi(page, endpoint, cinemaOid) {
   // Construct the full URL and headers
   const url = `${configuration.CINESTAR_API_URL}${endpoint}`;
 
-  try {
-    await page.setExtraHTTPHeaders({
-      "CENTER-OID": cinemaOid,
-    });
+  return withRetry(
+    async () => {
+      try {
+        await page.setExtraHTTPHeaders({
+          "CENTER-OID": cinemaOid,
+        });
 
-    const response = await page.goto(url, { waitUntil: "networkidle2" });
+        const response = await page.goto(url, { waitUntil: "networkidle2" });
 
-    if (!response.ok()) {
-      throw new Error(`API request failed with status ${response.status()}`);
+        if (!response.ok()) {
+          const error = new Error(`API request failed with status ${response.status()}`);
+          error.status = response.status();
+          throw error;
+        }
+
+        const content = await page.evaluate(() => document.body.innerText);
+        const data = JSON.parse(content);
+
+        return data;
+      } catch (error) {
+        // Log error but let withRetry handle the retry logic
+        console.error(`Error fetching data from ${url}: ${error.message}`);
+        throw error;
+      }
+    },
+    {
+      retries: 3,
+      delay: 2000,
+      shouldRetry: (error) => {
+        // Don't retry on 4xx errors that indicate client/resource issues
+        if (error.status && [401, 403, 404].includes(error.status)) {
+          return false;
+        }
+        return true;
+      },
     }
-
-    const content = await page.evaluate(() => document.body.innerText);
-    const data = JSON.parse(content);
-
-    return data;
-  } catch (error) {
-    console.error(`Error fetching data from ${url}: ${error.message}`);
-
-    throw error;
-  }
+  );
 }
 
 // Fetch movies and performances for a list of cinemas
