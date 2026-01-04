@@ -17,8 +17,12 @@ const {
   savePerformancesToDatabase,
   savePerformanceDatesToDatabase,
 } = require("./db/db.js");
-const { z } = require("zod");
 const { configuration } = require("./config/environment.js");
+const {
+  moviesQuerySchema,
+  seatingQuerySchema,
+  performancesQuerySchema,
+} = require("./schemas/index.js");
 
 // Initialize the database
 init();
@@ -26,36 +30,6 @@ init();
 app.use(cors());
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
 app.use(express.json({ limit: "20mb" })); // Increase the limit for JSON payloads, as of writing this a SQLite database is 3mb after scraping
-
-// Zod Schemas
-const cinemaOidSchema = z.string().length(18, "Invalid cinema OID format");
-const cinemaOidsSchema = z.preprocess(
-  (val) => (Array.isArray(val) ? val : [val]),
-  z.array(cinemaOidSchema).nonempty("At least one cinema OID is required")
-);
-const dateSchema = z.union(
-  [z.string().length(10, "Invalid date format"), z.literal("any")],
-  {
-    errorMap: () => ({ message: "Date must be YYYY-MM-DD or 'any'" }),
-  }
-);
-
-const moviesQuerySchema = z.object({
-  cinemaOids: cinemaOidsSchema,
-  date: dateSchema,
-  sortBy: z.string().min(1, "SortBy is required"),
-});
-
-const seatingQuerySchema = z.object({
-  cinemaOid: cinemaOidSchema,
-  performanceId: z.string().min(1, "Performance ID is required"),
-});
-
-const performancesQuerySchema = z.object({
-  cinemaOids: cinemaOidsSchema,
-  date: dateSchema,
-  movieId: z.string().min(1, "Movie ID is required"),
-});
 
 app.get("/api/movies", analyticsMiddleware, async (req, res) => {
   const result = moviesQuerySchema.safeParse(req.query);
@@ -137,12 +111,9 @@ app.post("/api/v1/scrape-results", authenticateScraper, async (req, res) => {
   try {
     const { movies, performances, performanceDates } = req.body;
     if (!movies || !performances || !performanceDates) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Missing data: movies, performances, and performanceDates are required.",
-        });
+      return res.status(400).json({
+        message: "Missing data: movies, performances, and performanceDates are required.",
+      });
     }
     console.log(
       `Received ${movies.length} movies, ${performances.length} performances, ${performanceDates.length} performance dates.`
