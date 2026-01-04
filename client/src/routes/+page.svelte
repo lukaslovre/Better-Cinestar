@@ -14,24 +14,41 @@
   import { dateToYMDFormat } from '$lib/utils/utils';
 
   // Define types for your data - adjust these to match your actual data structures
+  type MoviesEmptyReason = 'db_empty' | 'no_performances_for_date';
+
   interface FetchMoviesResult {
     noCinemasSelected?: boolean;
-    length?: number;
+    // Why this exists: previously we returned [] on HTTP errors, which made server faults
+    // indistinguishable from a valid "no movies" result.
+    fetchError?: boolean;
+    fetchErrorStatus?: number;
   }
 
   // Setting up initial variables
-  let showTooltipPopup: boolean = false;
-  let openedPerformance: any | null = null;
-  let moviesPromise: Promise<FetchMoviesResult | Movie[]> | null = null;
+  let showTooltipPopup: boolean = $state(false);
+  let openedPerformance: any | null = $state(null);
+  // Why not nullable: a null/undefined value would immediately resolve the await block
+  // to null, which complicates the template logic.
+  let moviesPromise: Promise<FetchMoviesResult | Movie[]> = $state(
+    Promise.resolve({ noCinemasSelected: true })
+  );
+
+  // Populated from the response header when the server returns an empty list.
+  // We keep it outside the movies array to avoid changing the response shape.
+  let moviesEmptyReason: MoviesEmptyReason | null = $state(null);
 
   // Setting store values from URL parameters and local storage on page load
   setStoreValues();
 
   // Zove fetchMovies() svaki put kad se promjeni neka vrijednost u dropdownu
-  $: moviesPromise = fetchMovies($cinemaOids, $selectedDate, $sortBy);
+  $effect(() => {
+    moviesPromise = fetchMovies($cinemaOids, $selectedDate, $sortBy);
+  });
 
   // Disabling/enabling scrolling on body depending on whether a performance is opened
-  $: toggleBodyOverflow(openedPerformance);
+  $effect(() => {
+    toggleBodyOverflow(openedPerformance);
+  });
 
   // Event handlers
   const setOpenedPerformance = ({ detail }: { detail: any }) =>
@@ -45,20 +62,35 @@
     selectedDate: string,
     sortBy: string
   ): Promise<FetchMoviesResult | Movie[]> {
-    if (cinemaOids.length === 0) return { noCinemasSelected: true };
+    if (cinemaOids.length === 0) {
+      moviesEmptyReason = null;
+      return { noCinemasSelected: true };
+    }
 
     const urlParams = createUrlParams(cinemaOids, selectedDate, sortBy);
     const getMoviesUrl = `${PUBLIC_API_URL}/api/movies`;
 
-    const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
+    try {
+      const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
 
-    if (res.ok) {
+      if (!res.ok) {
+        moviesEmptyReason = null;
+        console.error('Error fetching movies:', res.statusText);
+        return { fetchError: true, fetchErrorStatus: res.status };
+      }
+
       const data: Movie[] = await res.json();
-      // console.log(data);
+
+      // Why we use a header: we want a richer empty state without changing the JSON body.
+      // This stays non-breaking for any existing consumers expecting an array.
+      const reason = res.headers.get('X-Movies-Empty-Reason') as MoviesEmptyReason | null;
+      moviesEmptyReason = data.length === 0 ? reason : null;
+
       return data;
-    } else {
-      console.error('Error fetching movies:', res.statusText);
-      return []; // Or throw an error
+    } catch (e) {
+      moviesEmptyReason = null;
+      console.error('Error fetching movies:', e);
+      return { fetchError: true };
     }
   }
 
@@ -157,13 +189,13 @@
   }
 
   // Updating URL parameters whenever store values change
-  $: {
+  $effect(() => {
     const parameters = createUrlParams($cinemaOids, $selectedDate, $sortBy);
 
     history.replaceState(null, '', `?${parameters.toString()}`);
 
     updateLocalStorage($cinemaOids, $selectedDate, $sortBy);
-  }
+  });
 
   // Update local storage
   function updateLocalStorage(
@@ -187,8 +219,14 @@
   {:then movies}
     {#if !Array.isArray(movies) && movies.noCinemasSelected}
       <NoResultsGif />
+    {:else if !Array.isArray(movies) && movies.fetchError}
+      <p class="text-red-500">Greška pri dohvaćanju filmova, pokušajte ponovno</p>
     {:else if Array.isArray(movies) && movies.length === 0}
-      <p class="text-red-500">Nema filmova na odabrani datum</p>
+      {#if moviesEmptyReason === 'db_empty'}
+        <p class="text-red-500">Nema podataka u bazi (vjerojatni uzrok greška u kodu)</p>
+      {:else}
+        <p class="text-red-500">Nema filmova na odabrani datum</p>
+      {/if}
     {:else if Array.isArray(movies) && movies.length > 0}
       <MovieList {movies} on:selectedPerformance={setOpenedPerformance} />
     {/if}

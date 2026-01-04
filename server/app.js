@@ -4,6 +4,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
+const { Movie, Performance } = require("./db/models");
+
 const { dateToHHMM, dateToYYYYMMDD } = require("./utils/utils.js");
 const { getFormattedMovies } = require("./api/index.js");
 const { fetchSeating } = require("./api/seating.js");
@@ -28,9 +30,31 @@ const {
 // Initialize the database
 init();
 
-app.use(cors());
+// We expose a custom header so the browser can read it from fetch() responses.
+// Without `exposedHeaders`, the header is still sent over the network, but JS can't access it due to CORS.
+app.use(
+  cors({
+    exposedHeaders: ["X-Movies-Empty-Reason"],
+  })
+);
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
 app.use(express.json({ limit: "20mb" })); // Increase the limit for JSON payloads, as of writing this a SQLite database is 3mb after scraping
+
+async function getMoviesEmptyReason() {
+  // Why this exists:
+  // The client needs to distinguish between:
+  // - the DB being empty (scraper hasn't run / data got wiped)
+  // - a valid query that simply returns no results
+  // We keep the response body as an array (non-breaking) and add metadata via a header.
+  const [movieCount, performanceCount] = await Promise.all([
+    Movie.count(),
+    Performance.count(),
+  ]);
+
+  if (movieCount === 0 || performanceCount === 0) return "db_empty";
+
+  return "no_performances_for_date";
+}
 
 app.get("/api/movies", analyticsMiddleware, async (req, res) => {
   const result = moviesQuerySchema.safeParse(req.query);
@@ -43,6 +67,12 @@ app.get("/api/movies", analyticsMiddleware, async (req, res) => {
 
   // Movies matching the filters and with performances added to them
   const formattedMovies = await getFormattedMovies(cinemaOids, date, sortBy);
+
+  if (Array.isArray(formattedMovies) && formattedMovies.length === 0) {
+    // The client will use this for a more accurate empty-state message.
+    // (Body stays as `[]` so we don't break existing consumers.)
+    res.setHeader("X-Movies-Empty-Reason", await getMoviesEmptyReason());
+  }
 
   res.send(formattedMovies);
 });
