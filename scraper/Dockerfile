@@ -11,6 +11,7 @@ ENV SCRAPER_SECRET="your_very_secret_string_here"
 ENV CINESTAR_API_URL="https://shop.cinestarcinemas.hr/api"
 ENV RUN_MODE="scheduled"
 ENV CRON_SCHEDULE="0 2 * * *" 
+ENV SCRAPE_ON_START="false"
 
 # Puppeteer images come with Node.js.
 COPY package.json package-lock.json ./

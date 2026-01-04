@@ -141,6 +141,14 @@ async function enrichMoviesWithExternalData(browser, movies) {
   } else if (RUN_MODE === "scheduled") {
     console.log("[startup] Starting scheduler...");
     console.log(`[startup] Using CRON_SCHEDULE: ${CRON_SCHEDULE}`);
+
+    if (configuration.SCRAPE_ON_START) {
+      console.log("[startup] SCRAPE_ON_START is true, running initial scrape...");
+      performScrape().catch((err) => {
+        console.error("[startup] Initial scrape failed:", err.message);
+      });
+    }
+
     const job = new CronJob(CRON_SCHEDULE, async () => {
       console.log(`[scheduler] Triggered at ${new Date().toISOString()}`);
       try {

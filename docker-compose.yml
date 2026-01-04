@@ -47,6 +47,7 @@ services:
       - RUN_MODE=scheduled
       # Set the cron schedule for periodic runs (only used if RUN_MODE=scheduled)
       - CRON_SCHEDULE=0 2 * * * # Every day at 2 AM
+      - SCRAPE_ON_START=${SCRAPE_ON_START:-true}
     depends_on:
       - server
     restart: unless-stopped
