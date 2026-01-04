@@ -1,26 +1,23 @@
 const { configuration } = require("../config/environment");
 
-// Define the default headers
-const DEFAULT_HEADERS = {
-  "Accept-Encoding": "gzip, deflate, br",
-};
-
-// Helper function to make a request to the Cinestar API
-async function cinestarApi(endpoint, cinemaOid) {
+// Helper function to make a request to the Cinestar API using Puppeteer
+async function cinestarApi(page, endpoint, cinemaOid) {
   // Construct the full URL and headers
   const url = `${configuration.CINESTAR_API_URL}${endpoint}`;
-  const headers = { ...DEFAULT_HEADERS, "CENTER-OID": cinemaOid };
 
   try {
-    const response = await fetch(url, { headers });
+    await page.setExtraHTTPHeaders({
+      "CENTER-OID": cinemaOid,
+    });
 
-    if (!response.ok) {
-      throw new Error(
-        `API request failed with status ${response.status}: ${response.statusText}`
-      );
+    const response = await page.goto(url, { waitUntil: "networkidle2" });
+
+    if (!response.ok()) {
+      throw new Error(`API request failed with status ${response.status()}`);
     }
 
-    const data = await response.json();
+    const content = await page.evaluate(() => document.body.innerText);
+    const data = JSON.parse(content);
 
     return data;
   } catch (error) {
@@ -31,23 +28,32 @@ async function cinestarApi(endpoint, cinemaOid) {
 }
 
 // Fetch movies and performances for a list of cinemas
-async function fetchMoviesAndPerformances(cinemas) {
+async function fetchMoviesAndPerformances(browser, cinemas) {
+  const page = await browser.newPage();
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  );
+
   const movies = [];
   const performances = [];
 
-  // Fetch movies and performances for each cinema
-  for (const cinema of cinemas) {
-    try {
-      const { movies: moviesFormatted, formattedPerformances: performancesFormatted } =
-        await getCinemaMoviesAndPerformances(cinema);
+  try {
+    // Fetch movies and performances for each cinema
+    for (const cinema of cinemas) {
+      try {
+        const { movies: moviesFormatted, formattedPerformances: performancesFormatted } =
+          await getCinemaMoviesAndPerformances(page, cinema);
 
-      movies.push(...moviesFormatted);
-      performances.push(...performancesFormatted);
-    } catch (error) {
-      console.log(
-        `Error fetching movies and performances for cinema ${cinema.cinemaName}: ${error.message}`
-      );
+        movies.push(...moviesFormatted);
+        performances.push(...performancesFormatted);
+      } catch (error) {
+        console.log(
+          `Error fetching movies and performances for cinema ${cinema.cinemaName}: ${error.message}`
+        );
+      }
     }
+  } finally {
+    await page.close();
   }
 
   // Filter out duplicate movies
@@ -57,9 +63,9 @@ async function fetchMoviesAndPerformances(cinemas) {
 }
 
 // Function to fetch movies and performances for a single cinema
-async function getCinemaMoviesAndPerformances(cinema) {
+async function getCinemaMoviesAndPerformances(page, cinema) {
   // Fetch the data from the API
-  const data = await cinestarApi("/films", cinema.cinemaOid);
+  const data = await cinestarApi(page, "/films", cinema.cinemaOid);
 
   let performances = [];
 

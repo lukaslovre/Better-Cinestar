@@ -19,13 +19,8 @@ async function fetchAndParseHtml(url) {
   }
 }
 
-async function fillMoviesWithLetterboxdData(movies) {
+async function fillMoviesWithLetterboxdData(browser, movies) {
   if (!Array.isArray(movies)) movies = [movies];
-
-  const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    // headless: false,
-  });
 
   for (const movie of movies) {
     drawProgressBar(movies.indexOf(movie) / movies.length);
@@ -44,9 +39,6 @@ async function fillMoviesWithLetterboxdData(movies) {
     const letterboxdData = await getLetterboxdDataFromUrl(movie.letterboxdUrl);
     Object.assign(movie, letterboxdData);
   }
-
-  // Close the browser after all movies have been processed
-  await browser.close();
 
   return movies;
 }

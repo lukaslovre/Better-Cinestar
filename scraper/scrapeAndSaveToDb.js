@@ -9,17 +9,20 @@ const {
 } = require("./scraping/imdbAndLetterboxdFunctions.js");
 const { configuration } = require("./config/environment.js");
 const { CronJob } = require("cron");
+const { launchBrowser } = require("./scraping/browser.js");
 
 const cinemas = getCinemas();
 
 // Encapsulate the main scrape logic
 async function performScrape() {
+  const browser = await launchBrowser();
   try {
     console.log("[performScrape] Starting data fetch and send process...");
     const { movies, performances, performanceDates } = await updateMoviesAndPerformances(
+      browser,
       cinemas
     );
-    const enrichedMovies = await enrichMoviesWithExternalData(movies);
+    const enrichedMovies = await enrichMoviesWithExternalData(browser, movies);
     // Send data to server API
     console.log("[performScrape] Sending data to server API...");
     const payload = {
@@ -49,18 +52,28 @@ async function performScrape() {
       error.message
     );
     throw error;
+  } finally {
+    console.log("[performScrape] Closing browser...");
+    await browser.close();
   }
 }
 
-async function updateMoviesAndPerformances(cinemas) {
-  console.log("Fetching movies and performances from CineStar...");
+async function updateMoviesAndPerformances(browser, cinemas) {
+  console.log(`Fetching movies and performances for ${cinemas.length} cinemas...`);
 
   const { moviesFormatted, performancesFormatted } = await fetchMoviesAndPerformances(
+    browser,
     cinemas
   );
 
+  if (moviesFormatted.length === 0) {
+    console.warn(
+      "[updateMoviesAndPerformances] WARNING: No movies found! This might indicate a blocking issue or no movies scheduled."
+    );
+  }
+
   console.log(
-    `Found ${moviesFormatted.length} movies and ${performancesFormatted.length} performances.`
+    `Found ${moviesFormatted.length} unique movies and ${performancesFormatted.length} total performances.`
   );
 
   const performanceDates = getPerformanceDatesFrom(performancesFormatted);
@@ -72,8 +85,8 @@ async function updateMoviesAndPerformances(cinemas) {
   };
 }
 
-async function enrichMoviesWithExternalData(movies) {
-  let enrichedMovies = await fillMoviesWithLetterboxdData(movies);
+async function enrichMoviesWithExternalData(browser, movies) {
+  let enrichedMovies = await fillMoviesWithLetterboxdData(browser, movies);
 
   // validation
   if (!enrichedMovies || !Array.isArray(enrichedMovies)) {
