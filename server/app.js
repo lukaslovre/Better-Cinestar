@@ -22,6 +22,7 @@ const {
   moviesQuerySchema,
   seatingQuerySchema,
   performancesQuerySchema,
+  scrapeResultsSchema,
 } = require("./schemas/index.js");
 
 // Initialize the database
@@ -109,12 +110,17 @@ const authenticateScraper = (req, res, next) => {
 
 app.post("/api/v1/scrape-results", authenticateScraper, async (req, res) => {
   try {
-    const { movies, performances, performanceDates } = req.body;
-    if (!movies || !performances || !performanceDates) {
+    const result = scrapeResultsSchema.safeParse(req.body);
+
+    if (!result.success) {
       return res.status(400).json({
-        message: "Missing data: movies, performances, and performanceDates are required.",
+        message: "Invalid data format",
+        errors: result.error.flatten(),
       });
     }
+
+    const { movies, performances, performanceDates } = result.data;
+
     console.log(
       `Received ${movies.length} movies, ${performances.length} performances, ${performanceDates.length} performance dates.`
     );

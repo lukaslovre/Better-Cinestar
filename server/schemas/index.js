@@ -31,8 +31,42 @@ const performancesQuerySchema = z.object({
   movieId: z.string().min(1, "Movie ID is required"),
 });
 
+// Validates the incoming data from the scraper
+const movieSchema = z
+  .object({
+    id: z.string(),
+    title: z.string(),
+  })
+  .passthrough();
+
+const performanceSchema = z
+  .object({
+    id: z.string(),
+    cinemaOid: z.string(),
+    filmId: z.string(),
+    performanceDateTime: z.string(),
+  })
+  .passthrough();
+
+const performanceDatesSchema = z
+  .object({
+    cinemaOid: z.string(),
+    filmId: z.string(),
+    date: z.array(z.string()),
+  })
+  .passthrough();
+
+const scrapeResultsSchema = z.object({
+  movies: z.array(movieSchema).nonempty("Movies array cannot be empty"),
+  performances: z.array(performanceSchema).nonempty("Performances array cannot be empty"),
+  performanceDates: z
+    .array(performanceDatesSchema)
+    .nonempty("Performance dates array cannot be empty"),
+});
+
 module.exports = {
   moviesQuerySchema,
   seatingQuerySchema,
   performancesQuerySchema,
+  scrapeResultsSchema,
 };

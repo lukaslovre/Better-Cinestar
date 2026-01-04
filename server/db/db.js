@@ -33,14 +33,18 @@ async function saveToDatabase(model, data, type) {
     throw new Error(`No ${type} provided to save to the database.`);
   }
 
+  const transaction = await sequelize.transaction();
+
   try {
     // clear the table before inserting new data
-    await model.destroy({ truncate: true });
+    await model.destroy({ truncate: true, transaction });
 
-    await model.bulkCreate(data);
+    await model.bulkCreate(data, { transaction });
 
+    await transaction.commit();
     console.log(`${type} successfully saved to the database.`);
   } catch (error) {
+    await transaction.rollback();
     console.error(`Error saving ${type} to the database:`, error.message);
     throw error;
   }
