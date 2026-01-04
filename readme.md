@@ -1,50 +1,96 @@
 # BetterCinestar
 
-## Project Structure
+BetterCinestar is a web application designed to provide a superior browsing experience for CineStar movie listings. It aggregates data from CineStar, enriches it with ratings and links from Letterboxd and IMDb, and presents it through a modern, responsive interface.
 
-- `/server`
+## Project Architecture
 
-  - Backend built with **Express.js** and **Sequelize ORM** using **SQLite** as the database.
-  - Exposes API endpoints for the client and a POST endpoint for the scraper.
-  - Configure with `.env` (see `/server/.env.example`).
-  - Install dependencies: `npm install --prefix server`
-  - Start server: `npm start --prefix server` or `npm run dev --prefix server`
+The project is a monolith composed of three main services:
 
-- `/scraper`
+### 1. Server (`/server`)
 
-  - Standalone Node.js app for scraping Cinestar, Letterboxd, and IMDb data.
-  - Sends results to the server via HTTP POST.
-  - Configure with `.env` (see `/scraper/.env.example`).
-  - Install dependencies: `npm install --prefix scraper`
-  - Run scraper: `npm run scrape --prefix scraper`
+- **Tech Stack**: Node.js, Express.js, Sequelize ORM, SQLite.
+- **Responsibility**:
+  - Stores movie, performance, and analytics data.
+  - Provides a REST API for the frontend.
+  - Exposes a secure POST endpoint (`/api/v1/scrape-results`) for the scraper to update data.
+- **Setup**:
+  - Requires a `.env` file (see `server/.env.example`).
+  - `npm install --prefix server`
+  - `npm run dev --prefix server` (Development with nodemon)
 
-- `/client`
+### 2. Scraper (`/scraper`)
 
-  - Frontend built with **SvelteKit** (Svelte 4 moving to Svelte 5).
-  - Install dependencies: `npm install --prefix client`
-  - Start dev server: `npm run dev --prefix client`
-  - Build: `npm run build --prefix client`
+- **Tech Stack**: Node.js, Puppeteer, Axios, Cheerio.
+- **Responsibility**:
+  - Scrapes movie and performance data from CineStar.
+  - Enriches data by fetching ratings and URLs from Letterboxd and IMDb.
+  - Sends the processed data to the server.
+  - Can be run as a one-off script or on a cron schedule.
+- **Setup**:
+  - Requires a `.env` file (see `scraper/.env.example`).
+  - `npm install --prefix scraper`
+  - `npm run scrape --prefix scraper`
 
-- `/scripts/research`
-  - Contains scripts and notes for analyzing and understanding what different seat codes mean.
+### 3. Client (`/client`)
+
+- **Tech Stack**: SvelteKit (Svelte 5), Tailwind CSS 4, Vite.
+- **Responsibility**:
+  - Modern UI for browsing movies, filtering by cinema and date, and viewing seating plans.
+  - Built as a Static Site (SPA) using `@sveltejs/adapter-static`.
+- **Setup**:
+  - `npm install --prefix client`
+  - `npm run dev --prefix client`
+
+## Getting Started
+
+### Using Docker (Recommended)
+
+The easiest way to run the entire stack is using Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+This will start the server, the client, and the scraper (configured to run on a schedule).
+
+### Manual Setup
+
+1. **Install all dependencies**:
+   ```bash
+   npm run install-all
+   ```
+2. **Configure Environment Variables**:
+   - Create `.env` files in both `/server` and `/scraper` based on their respective `.env.example` files.
+   - Ensure `SCRAPER_SECRET` is identical in both files.
+3. **Start the Server**:
+   ```bash
+   npm run dev-server
+   ```
+4. **Run the Scraper** (to populate the database):
+   ```bash
+   npm run scrape
+   ```
+5. **Start the Client**:
+   ```bash
+   npm run dev-client
+   ```
 
 ## Monorepo Scripts
 
 - `npm run install-all` — Install all dependencies for server, scraper, and client.
-- `npm run start-server` — Start the server.
-- `npm run dev-server` — Start the server in dev mode (with nodemon).
-- `npm run scrape` — Run the scraper script.
-- `npm run dev-client` — Start the frontend dev server.
+- `npm run start-server` — Start the server in production mode.
+- `npm run dev-server` — Start the server in development mode.
+- `npm run scrape` — Run the scraper script once.
+- `npm run dev-client` — Start the frontend development server.
 - `npm run build-client` — Build the frontend for production.
-
-## Environment Variables
-
-- Both `/server` and `/scraper` require their own `.env` files. The `SCRAPER_SECRET` must match in both.
-- `/client` also has an `.env` file for the backend URL
 
 ## Data Flow
 
-1. Start the server (`/server`).
-2. Run the scraper (`/scraper`).
-3. Scraper POSTs data to the server, which saves it to the database.
-4. Client fetches data from the server API.
+1. **Scraper** fetches data from CineStar and external sources (Letterboxd/IMDb).
+2. **Scraper** sends a POST request with the data to the **Server**.
+3. **Server** validates the request using `SCRAPER_SECRET` and saves data to `Database.sqlite`.
+4. **Client** fetches movie and performance data from the **Server** API to display to the user.
+
+## Research & Tools
+
+- `/scripts/research`: Contains utility scripts for analyzing CineStar's seating codes and other data structures.
