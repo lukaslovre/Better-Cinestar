@@ -37,62 +37,11 @@
   // We keep it outside the movies array to avoid changing the response shape.
   let moviesEmptyReason: MoviesEmptyReason | null = $state(null);
 
-  // Setting store values from URL parameters and local storage on page load
-  setStoreValues();
-
-  // Zove fetchMovies() svaki put kad se promjeni neka vrijednost u dropdownu
-  $effect(() => {
-    moviesPromise = fetchMovies($cinemaOids, $selectedDate, $sortBy);
-  });
-
-  // Disabling/enabling scrolling on body depending on whether a performance is opened
-  $effect(() => {
-    toggleBodyOverflow(openedPerformance);
-  });
-
   // Event handlers
   const setOpenedPerformance = ({ detail }: { detail: any }) =>
     (openedPerformance = detail as any); // Replace 'any' with the actual type
   const setShowTooltipPopup = ({ detail }: { detail: boolean }) =>
     (showTooltipPopup = detail);
-
-  // Fetch movies from the API
-  async function fetchMovies(
-    cinemaOids: string[],
-    selectedDate: string,
-    sortBy: string
-  ): Promise<FetchMoviesResult | Movie[]> {
-    if (cinemaOids.length === 0) {
-      moviesEmptyReason = null;
-      return { noCinemasSelected: true };
-    }
-
-    const urlParams = createUrlParams(cinemaOids, selectedDate, sortBy);
-    const getMoviesUrl = `${PUBLIC_API_URL}/api/movies`;
-
-    try {
-      const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
-
-      if (!res.ok) {
-        moviesEmptyReason = null;
-        console.error('Error fetching movies:', res.statusText);
-        return { fetchError: true, fetchErrorStatus: res.status };
-      }
-
-      const data: Movie[] = await res.json();
-
-      // Why we use a header: we want a richer empty state without changing the JSON body.
-      // This stays non-breaking for any existing consumers expecting an array.
-      const reason = res.headers.get('X-Movies-Empty-Reason') as MoviesEmptyReason | null;
-      moviesEmptyReason = data.length === 0 ? reason : null;
-
-      return data;
-    } catch (e) {
-      moviesEmptyReason = null;
-      console.error('Error fetching movies:', e);
-      return { fetchError: true };
-    }
-  }
 
   // Create URL parameters
   function createUrlParams(
@@ -108,25 +57,15 @@
     return urlParams;
   }
 
-  // Toggle body overflow
-  function toggleBodyOverflow(openedPerformance: any | null) {
-    // Replace 'any' with the actual type
-    document.body.style.overflow = openedPerformance ? 'hidden' : 'auto';
-  }
-
-  // Function to set store values
-  function setStoreValues() {
-    const localStorageValues = getValuesFromLocalStorage();
-    const urlValues = getValuesFromUrl();
-
-    // Merge the two objects, giving priority to urlValues
-    const values = { ...localStorageValues, ...urlValues };
-    console.log(values);
-
-    // Set the store values (triggers URL update and local storage update)
-    if (values.cinemaOids) cinemaOids.set(values.cinemaOids);
-    if (values.selectedDate) selectedDate.set(values.selectedDate);
-    if (values.sortBy) sortBy.set(values.sortBy);
+  // Update local storage
+  function updateLocalStorage(
+    cinemaOids: string[],
+    selectedDate: string,
+    sortBy: string
+  ) {
+    localStorage.setItem('cinemaOids', JSON.stringify(cinemaOids));
+    localStorage.setItem('selectedDate', selectedDate);
+    localStorage.setItem('sortBy', sortBy);
   }
 
   // Function to get values from local storage
@@ -188,6 +127,78 @@
     return values;
   }
 
+  // Function to set store values
+  function setStoreValues() {
+    const localStorageValues = getValuesFromLocalStorage();
+    const urlValues = getValuesFromUrl();
+
+    // Merge the two objects, giving priority to urlValues
+    const values = { ...localStorageValues, ...urlValues };
+    console.log(values);
+
+    // Set the store values (triggers URL update and local storage update)
+    if (values.cinemaOids) cinemaOids.set(values.cinemaOids);
+    if (values.selectedDate) selectedDate.set(values.selectedDate);
+    if (values.sortBy) sortBy.set(values.sortBy);
+  }
+
+  // Toggle body overflow
+  function toggleBodyOverflow(openedPerformance: any | null) {
+    // Replace 'any' with the actual type
+    document.body.style.overflow = openedPerformance ? 'hidden' : 'auto';
+  }
+
+  // Fetch movies from the API
+  async function fetchMovies(
+    cinemaOids: string[],
+    selectedDate: string,
+    sortBy: string
+  ): Promise<FetchMoviesResult | Movie[]> {
+    if (cinemaOids.length === 0) {
+      moviesEmptyReason = null;
+      return { noCinemasSelected: true };
+    }
+
+    const urlParams = createUrlParams(cinemaOids, selectedDate, sortBy);
+    const getMoviesUrl = `${PUBLIC_API_URL}/api/movies`;
+
+    try {
+      const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
+
+      if (!res.ok) {
+        moviesEmptyReason = null;
+        console.error('Error fetching movies:', res.statusText);
+        return { fetchError: true, fetchErrorStatus: res.status };
+      }
+
+      const data: Movie[] = await res.json();
+
+      // Why we use a header: we want a richer empty state without changing the JSON body.
+      // This stays non-breaking for any existing consumers expecting an array.
+      const reason = res.headers.get('X-Movies-Empty-Reason') as MoviesEmptyReason | null;
+      moviesEmptyReason = data.length === 0 ? reason : null;
+
+      return data;
+    } catch (e) {
+      moviesEmptyReason = null;
+      console.error('Error fetching movies:', e);
+      return { fetchError: true };
+    }
+  }
+
+  // Setting store values from URL parameters and local storage on page load
+  setStoreValues();
+
+  // Zove fetchMovies() svaki put kad se promjeni neka vrijednost u dropdownu
+  $effect(() => {
+    moviesPromise = fetchMovies($cinemaOids, $selectedDate, $sortBy);
+  });
+
+  // Disabling/enabling scrolling on body depending on whether a performance is opened
+  $effect(() => {
+    toggleBodyOverflow(openedPerformance);
+  });
+
   // Updating URL parameters whenever store values change
   $effect(() => {
     const parameters = createUrlParams($cinemaOids, $selectedDate, $sortBy);
@@ -196,17 +207,6 @@
 
     updateLocalStorage($cinemaOids, $selectedDate, $sortBy);
   });
-
-  // Update local storage
-  function updateLocalStorage(
-    cinemaOids: string[],
-    selectedDate: string,
-    sortBy: string
-  ) {
-    localStorage.setItem('cinemaOids', JSON.stringify(cinemaOids));
-    localStorage.setItem('selectedDate', selectedDate);
-    localStorage.setItem('sortBy', sortBy);
-  }
 </script>
 
 <Navigation />
