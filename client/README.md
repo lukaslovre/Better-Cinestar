@@ -24,3 +24,10 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+
+## Announcement bar (optional)
+
+The announcement bar above the header is controlled directly in the component.
+
+- Toggle it via the `enabled` boolean in [src/lib/components/AnnouncementBar.svelte](src/lib/components/AnnouncementBar.svelte)
+- Change the message via the `message` constant (and optionally `href`)

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AnnouncementBar from '$lib/components/AnnouncementBar.svelte';
   import { fade } from 'svelte/transition';
   import { resetFiltersToDefault } from '$lib/stores/userSelection.svelte';
   import Hamburger from './navigation/Hamburger.svelte';
@@ -48,6 +49,8 @@
     });
   }
 </script>
+
+<AnnouncementBar />
 
 <nav>
   <div>
