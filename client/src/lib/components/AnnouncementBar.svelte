@@ -18,28 +18,48 @@
 
 <style>
   .announcementBar {
-    /* background: #4065bf; */
-    background: linear-gradient(90deg, #273454 0%, #4065bf 50%, #273454 100%);
-    background-size: 200% 100%;
-    animation: gradientShift 8s ease-in-out infinite;
-
+    position: relative;
+    overflow: hidden;
     color: #ffffff;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
-  @keyframes gradientShift {
+  /* Background layer that animates using transforms (GPU-accelerated) */
+  .announcementBar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* Make it wider so we can translate it to create the moving gradient effect */
+    width: 200%;
+    background: linear-gradient(90deg, #273454 0%, #4065bf 50%, #273454 100%);
+    /* Use transform instead of background-position to leverage the compositor (GPU) */
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translate3d(-50%, 0, 0);
+    animation: slide 3s ease-in-out infinite;
+  }
+
+  @keyframes slide {
     0% {
-      background-position-x: 0%;
+      transform: translate3d(-50%, 0, 0);
     }
     50% {
-      background-position-x: 100%;
+      transform: translate3d(0%, 0, 0);
     }
     100% {
-      background-position-x: 0%;
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcementBar::before {
+      animation: none;
+      transform: none;
     }
   }
 
   .inner {
+    position: relative;
+    z-index: 1;
     max-width: 100rem;
     margin: 0 auto;
     padding: 0.25rem 2rem;
