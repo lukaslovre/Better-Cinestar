@@ -1,4 +1,6 @@
 ---
+name: Svelte 5 Syntax
+description: Provides examples of changes from Svelte 4 to Svelte 5, to guide code generation towards Svelte 5 syntax.
 applyTo: "**/*.svelte"
 ---
 
