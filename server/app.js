@@ -11,6 +11,7 @@ const { getFormattedMovies } = require("./api/index.js");
 const { fetchSeating } = require("./api/seating.js");
 const { getPerformancesForDateAndMovie } = require("./api/performances.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
+const { browserManager } = require("./scraping/browserManager.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const {
   init,
@@ -86,9 +87,29 @@ app.get("/api/seating", analyticsMiddleware, async (req, res) => {
 
   const { cinemaOid, performanceId } = result.data;
 
-  const seating = await fetchSeating(cinemaOid, performanceId);
+  const startedAt = Date.now();
+  console.log(`[seating] Request start cinemaOid=${cinemaOid} performanceId=${performanceId}`);
 
-  res.send(seating);
+  try {
+    const seating = await fetchSeating(cinemaOid, performanceId);
+    console.log(
+      `[seating] Request OK cinemaOid=${cinemaOid} performanceId=${performanceId} (${Date.now() - startedAt}ms)`
+    );
+    res.send(seating);
+  } catch (error) {
+    console.error(
+      `[seating] Failed for cinemaOid=${cinemaOid} performanceId=${performanceId}:`,
+      error
+    );
+
+    console.log(
+      `[seating] Request FAIL cinemaOid=${cinemaOid} performanceId=${performanceId} (${Date.now() - startedAt}ms)`
+    );
+
+    res.status(502).json({
+      message: "Seating temporarily unavailable. Please try again.",
+    });
+  }
 });
 
 app.get("/api/performances", analyticsMiddleware, async (req, res) => {
@@ -169,8 +190,34 @@ app.post("/api/v1/scrape-results", authenticateScraper, async (req, res) => {
 app.use("/analytics", express.static(path.join(__dirname, "public", "analytics")));
 app.use(express.static(path.join(__dirname, "client", "public")));
 
-app.listen(configuration.PORT, () => {
+const httpServer = app.listen(configuration.PORT, () => {
   console.log(`Example app listening on port ${configuration.PORT}`);
 });
+
+// Graceful shutdown: close Chromium so Docker restarts don't leave stray processes.
+async function shutdown(signal) {
+  try {
+    console.log(`[shutdown] Received ${signal}, shutting down...`);
+    await browserManager.shutdown();
+
+    // Stop accepting new connections.
+    httpServer.close(() => {
+      console.log("[shutdown] HTTP server closed.");
+      process.exit(0);
+    });
+
+    // Force-exit after a short grace period.
+    setTimeout(() => {
+      console.warn("[shutdown] Force exiting after timeout");
+      process.exit(1);
+    }, 10_000).unref?.();
+  } catch (e) {
+    console.error("[shutdown] Error during shutdown", e);
+    process.exit(1);
+  }
+}
+
+process.on("SIGTERM", () => void shutdown("SIGTERM"));
+process.on("SIGINT", () => void shutdown("SIGINT"));
 
 console.log("Current time:", dateToHHMM(new Date()));

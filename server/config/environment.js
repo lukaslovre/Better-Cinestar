@@ -12,6 +12,13 @@ const envSchema = z.object({
     }
   }, z.boolean().default(false)),
   SCRAPER_SECRET: z.string(),
+  CINESTAR_API_URL: z.string().default("https://shop.cinestarcinemas.hr/api"),
+  // Optional tuning knobs for the on-demand Puppeteer seating fetcher
+  PUPPETEER_MAX_CONCURRENCY: z.coerce.number().default(2),
+  PUPPETEER_IDLE_TTL_MS: z.coerce.number().default(20 * 60 * 1000), // 20 minutes
+  PUPPETEER_NAV_TIMEOUT_MS: z.coerce.number().default(12_000),
+  SEATING_CACHE_TTL_MS: z.coerce.number().default(60_000),
+  SEATING_CACHE_MAX_ENTRIES: z.coerce.number().default(50),
   ANALYTICS_STORAGE_ITEMS: z.coerce.number().default(200),
   ANALYTICS_STORAGE_TIME_MINUTES: z.coerce.number().default(10),
   ANALYTICS_HASH_SALT: z.string().default(crypto.randomBytes(16).toString("hex")),

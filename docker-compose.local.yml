@@ -1,0 +1,33 @@
+version: "3.8"
+
+# Local overrides for BetterCinestar.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+#
+# Notes:
+# - Exposes server on localhost:3000
+# - Exposes client on localhost:8080
+# - Builds the client with PUBLIC_API_URL=http://localhost:3000
+# - Disables the scraper by default (enable via: --profile scraper)
+
+services:
+  server:
+    ports:
+      - "3000:3000"
+    # Chromium can crash if /dev/shm is too small. This improves stability.
+    shm_size: "256mb"
+
+  client:
+    build:
+      args:
+        PUBLIC_API_URL: "http://localhost:3000"
+    ports:
+      - "8080:80"
+
+  scraper:
+    # Keep scraper off by default locally; enable when needed.
+    profiles: ["scraper"]
+    environment:
+      - RUN_MODE=once
+      - SCRAPE_ON_START=true

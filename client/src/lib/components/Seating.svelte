@@ -6,13 +6,13 @@
   import { getRelativeDate } from '../utils/utils';
   import { PUBLIC_API_URL } from '$env/static/public';
 
-  export let performanceData;
+  export let performanceData: any;
 
   const dispatch = createEventDispatcher();
 
   let showSeatTypes = true;
   let seatsPromise = getSeats();
-  let seatingAreas = [];
+  let seatingAreas: Array<{ id: number; name: string }> = [];
   let invalidskoPostoji = false;
 
   async function getSeats() {
@@ -27,14 +27,24 @@
 
     const res = await fetch(`${getSeatingUrl}?${urlParams.toString()}`);
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log(data);
-      seatingAreas = data.seatingAreas;
-
-      setSeatingLayoutValues(data);
-      return data;
+    if (!res.ok) {
+      // Server returns 502 with `{ message }` when Cinestar blocks the request.
+      let message = `Failed to load seating (${res.status})`;
+      try {
+        const maybeJson = await res.json();
+        if (maybeJson?.message) message = maybeJson.message;
+      } catch {
+        // Ignore JSON parse errors.
+      }
+      throw new Error(message);
     }
+
+    const data = await res.json();
+    seatingAreas = data.seatingAreas;
+    invalidskoPostoji = false;
+
+    setSeatingLayoutValues(data);
+    return data;
   }
 
   let seatLocationMultiplier = 2.5;
@@ -64,14 +74,15 @@
     seatsContainer.style.setProperty('height', 64 + seatsHeight + 'px');
   }
 
-  function getSeatColor(seat, useColors) {
+  function getSeatColor(seat: any, useColors?: boolean) {
     // Ako je slobodno (128 je u splitu slobodno??? nez)
     if ([4, 256, 260, 128].includes(seat.stat)) {
       // Ako se ne koriste boje, sve su plave
       if (useColors === false || useColors === undefined) return '#80A6FF';
 
       // Ako se koriste boje, onda se gleda tip sjedala
-      const name = seatingAreas.find((area) => area.id === seat.sar).name;
+      const name = seatingAreas.find((area) => area.id === seat.sar)?.name;
+      if (!name) return '#80A6FF';
 
       if (['Boutique', 'VIP Relax', 'VIP'].includes(name)) return '#DFDF9F';
       else if (name === 'Royal bed') return '#EA80FF';
@@ -90,8 +101,8 @@
   }
 
   // Utils
-  function formatDate(dateString, time) {
-    const options = {
+  function formatDate(dateString: string, time: string) {
+    const options: Intl.DateTimeFormatOptions = {
       weekday: 'short',
       day: '2-digit',
       month: '2-digit'
@@ -110,7 +121,7 @@
 <div id="card">
   <button
     id="closeSeatsButton"
-    on:click={() => {
+    onclick={() => {
       dispatch('selectedPerformance', null);
     }}
   >
@@ -130,20 +141,33 @@
           style:top={64 + seat.y * seatLocationMultiplier + 'px'}
           style:width={seatSize + 'px'}
           style:height={seatSize + 'px'}
-        />
+        ></div>
       {/each}
+    {:catch error}
+      <div class="seatingError">
+        <p class="seatingErrorTitle">Seating temporarily unavailable</p>
+        <p class="seatingErrorBody">{error?.message ?? 'Please try again.'}</p>
+        <button
+          class="seatingRetryButton"
+          onclick={() => {
+            seatsPromise = getSeats();
+          }}
+        >
+          Try again
+        </button>
+      </div>
     {/await}
   </div>
 
   <div class="seatsLegend">
     {#if showSeatTypes === false}
       <div>
-        <div class="seat" style:background-color="#80A6FF" />
+        <div class="seat" style:background-color="#80A6FF"></div>
         <p>Slobodno</p>
       </div>
 
       <div>
-        <div class="seat" style:background-color="#373B43" />
+        <div class="seat" style:background-color="#373B43"></div>
         <p>Zauzeto</p>
       </div>
     {:else}
@@ -155,7 +179,7 @@
               { sar: area.id, stat: 4 },
               showSeatTypes
             )}
-          />
+          ></div>
           <p>{area.name}</p>
         </div>
       {/each}
@@ -165,13 +189,13 @@
           <div
             class="seat"
             style:background-color={showSeatTypes ? '#A1DF9F' : '#80A6FF'}
-          />
+          ></div>
           <p>Invalidsko</p>
         </div>
       {/if}
 
       <div>
-        <div class="seat" style:background-color="#373B43" />
+        <div class="seat" style:background-color="#373B43"></div>
         <p>Zauzeto</p>
       </div>
     {/if}
@@ -286,6 +310,41 @@
     height: 300px;
     position: relative;
     display: block;
+  }
+
+  .seatingError {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .seatingErrorTitle {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .seatingErrorBody {
+    color: #bfbfbf;
+    font-weight: 400;
+    font-size: 0.9rem;
+    max-width: 22rem;
+  }
+  .seatingRetryButton {
+    margin-top: 0.75rem;
+    background: #2057df;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .seatingRetryButton:hover {
+    filter: brightness(1.05);
   }
   #seatsContainer > img {
     width: 100%;
