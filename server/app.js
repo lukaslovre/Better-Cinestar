@@ -8,7 +8,7 @@ const { Movie, Performance } = require("./db/models");
 
 const { dateToHHMM, dateToYYYYMMDD } = require("./utils/utils.js");
 const { getFormattedMovies } = require("./api/index.js");
-const { fetchSeating } = require("./api/seating.js");
+const { fetchSeating, getSeatingCacheStats } = require("./api/seating.js");
 const { getPerformancesForDateAndMovie } = require("./api/performances.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { browserManager } = require("./scraping/browserManager.js");
@@ -138,7 +138,11 @@ app.get("/api/performances", analyticsMiddleware, async (req, res) => {
 });
 
 app.get("/api/health", (req, res) => {
-  res.send("OK");
+  res.status(200).json({
+    status: "OK",
+    browser: browserManager.stats(),
+    seatingCache: getSeatingCacheStats(),
+  });
 });
 
 app.get("/api/getAnalyticsData", async (req, res) => {

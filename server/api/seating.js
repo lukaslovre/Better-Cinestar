@@ -7,6 +7,10 @@ const seatingCache = new TtlCache({
   maxEntries: configuration.SEATING_CACHE_MAX_ENTRIES,
 });
 
+function getSeatingCacheStats() {
+  return seatingCache.stats();
+}
+
 function isRetryableCinestarError(error) {
   if (!error) return true;
 
@@ -173,6 +177,7 @@ function findLargestY(seatGroups) {
 
 module.exports = {
   fetchSeating,
+  getSeatingCacheStats,
   // Exported for internal diagnostics/testing.
   cinestarApiViaBrowser,
 };
