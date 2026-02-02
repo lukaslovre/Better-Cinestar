@@ -48,10 +48,42 @@ The project is a monolith composed of three main services:
 The easiest way to run the entire stack is using Docker Compose:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This will start the server, the client, and the scraper (configured to run on a schedule).
+
+#### Local development override
+
+For local testing (server exposed on `localhost:3000`, client on `localhost:8080`), run:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+```
+
+Notes:
+
+- The local override builds the client with `PUBLIC_API_URL=http://localhost:3000`.
+- The scraper is disabled by default in the local override; enable it with:
+  ```bash
+  docker compose -f docker-compose.yml -f docker-compose.local.yml --profile scraper up --build
+  ```
+
+### Environment variables (important)
+
+This repo uses environment variables in two different ways:
+
+- **Runtime env (server/scraper containers):** values are read at process startup by the Zod-based config loaders:
+  - [server/config/environment.js](server/config/environment.js)
+  - [scraper/config/environment.js](scraper/config/environment.js)
+
+  When running via Docker Compose, these are set via `environment:` in [docker-compose.yml](docker-compose.yml) (or your platform’s equivalent, e.g. Coolify).
+
+- **Build-time env (client container):** the client is a static build, so `PUBLIC_API_URL` is baked in at build time. It is passed as a Docker build arg (`build.args.PUBLIC_API_URL`) and is exported during the build in [client/Dockerfile](client/Dockerfile).
+
+#### Recommended way to set secrets in production
+
+- Set `SCRAPER_SECRET` and `ANALYTICS_HASH_SALT` in your deployment platform (Coolify) or via a root-level `.env` used by Compose for variable substitution.
 
 ### Manual Setup
 
@@ -90,6 +122,17 @@ This will start the server, the client, and the scraper (configured to run on a 
 2. **Scraper** sends a POST request with the data to the **Server**.
 3. **Server** validates the request using `SCRAPER_SECRET` and saves data to `Database.sqlite`.
 4. **Client** fetches movie and performance data from the **Server** API to display to the user.
+
+## Useful config knobs
+
+Common runtime tunables (server container):
+
+- `CINESTAR_API_URL` (default: `https://shop.cinestarcinemas.hr/api`)
+- `PUPPETEER_MAX_CONCURRENCY` (default: `2`)
+- `PUPPETEER_IDLE_TTL_MS` (default: `1200000`)
+- `PUPPETEER_NAV_TIMEOUT_MS` (default: `12000`)
+- `SEATING_CACHE_TTL_MS` (default: `60000`)
+- `SEATING_CACHE_MAX_ENTRIES` (default: `50`)
 
 ## Research & Tools
 
