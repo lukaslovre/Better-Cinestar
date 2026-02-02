@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const { configuration } = require("../config/environment.js");
+const { configuration } = require("../../config/environment.js");
 
 /**
  * Simple async semaphore to cap concurrency.
@@ -79,6 +79,8 @@ class BrowserManager {
     this.lastUsedAt = 0;
     this.isShuttingDown = false;
 
+    this.lastLaunchError = null;
+
     this.metrics = {
       launches: 0,
       restarts: 0,
@@ -89,10 +91,22 @@ class BrowserManager {
   }
 
   stats() {
+    const pid = this.browser?.process?.()?.pid ?? null;
+
     return {
       hasBrowser: Boolean(this.browser),
+      pid,
+      isLaunching: Boolean(this.launching),
+      isRestarting: Boolean(this.restarting),
+      isShuttingDown: this.isShuttingDown,
       lastUsedAt: this.lastUsedAt,
+      lastLaunchError: this.lastLaunchError,
       metrics: { ...this.metrics },
+      queue: {
+        maxConcurrency: this.semaphore.max,
+        active: this.semaphore.active,
+        queued: this.semaphore.queue.length,
+      },
       maxConcurrency: this.maxConcurrency,
       idleTtlMs: this.idleTtlMs,
       navigationTimeoutMs: this.navigationTimeoutMs,
@@ -111,20 +125,29 @@ class BrowserManager {
       this.metrics.launches++;
       console.log("[browser] Launching Chromium...");
 
-      const browser = await puppeteer.launch({
-        headless: true,
-        // Prefer Puppeteer's bundled Chromium. Allow overriding for custom environments.
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
+      try {
+        const browser = await puppeteer.launch({
+          headless: true,
+          // Prefer Puppeteer's bundled Chromium. Allow overriding for custom environments.
+          executablePath: configuration.PUPPETEER_EXECUTABLE_PATH || undefined,
+          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
 
-      browser.on("disconnected", () => {
-        console.warn("[browser] Disconnected; will re-launch on next request");
-        this.browser = null;
-      });
+        browser.on("disconnected", () => {
+          console.warn("[browser] Disconnected; will re-launch on next request");
+          this.browser = null;
+        });
 
-      this.browser = browser;
-      return browser;
+        this.browser = browser;
+        this.lastLaunchError = null;
+        return browser;
+      } catch (error) {
+        this.lastLaunchError = {
+          at: Date.now(),
+          message: error?.message || String(error),
+        };
+        throw error;
+      }
     })();
 
     try {
@@ -266,7 +289,7 @@ const browserManager = new BrowserManager({
   maxConcurrency: configuration.PUPPETEER_MAX_CONCURRENCY,
   idleTtlMs: configuration.PUPPETEER_IDLE_TTL_MS,
   navigationTimeoutMs: configuration.PUPPETEER_NAV_TIMEOUT_MS,
-  userAgent: process.env.PUPPETEER_USER_AGENT || DEFAULT_USER_AGENT,
+  userAgent: configuration.PUPPETEER_USER_AGENT || DEFAULT_USER_AGENT,
 });
 
 module.exports = { browserManager, BrowserManager };

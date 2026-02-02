@@ -11,7 +11,7 @@ const { getFormattedMovies } = require("./api/index.js");
 const { fetchSeating, getSeatingCacheStats } = require("./api/seating.js");
 const { getPerformancesForDateAndMovie } = require("./api/performances.js");
 const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
-const { browserManager } = require("./scraping/browserManager.js");
+const { browserManager } = require("./lib/browser/browserManager.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const {
   init,
@@ -155,7 +155,7 @@ app.get("/api/getCinemasList", (req, res) => {
 
 const authenticateScraper = (req, res, next) => {
   const secret = req.headers["x-scraper-secret"];
-  if (secret && secret === process.env.SCRAPER_SECRET) {
+  if (secret && secret === configuration.SCRAPER_SECRET) {
     next();
   } else {
     console.warn("Unauthorized attempt to access scrape endpoint");

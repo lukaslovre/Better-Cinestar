@@ -8,6 +8,9 @@ WORKDIR /app
 # Set build-time argument for API URL
 ARG PUBLIC_API_URL="https://api.bettercinestar.com"
 
+# SvelteKit's $env/static/public reads from environment variables at build time.
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+
 # Copy package.json and package-lock.json first to leverage Docker cache
 COPY package.json package-lock.json ./
 

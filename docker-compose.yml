@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   server:
     build:
@@ -15,6 +13,14 @@ services:
       - ANALYTICS_STORAGE_ITEMS=200
       - ANALYTICS_STORAGE_TIME_MINUTES=10
       - ANALYTICS_HASH_SALT=${ANALYTICS_HASH_SALT:-your_very_secret_string_here}
+      - CINESTAR_API_URL=${CINESTAR_API_URL:-https://shop.cinestarcinemas.hr/api}
+      - PUPPETEER_MAX_CONCURRENCY=${PUPPETEER_MAX_CONCURRENCY:-2}
+      - PUPPETEER_IDLE_TTL_MS=${PUPPETEER_IDLE_TTL_MS:-1200000}
+      - PUPPETEER_NAV_TIMEOUT_MS=${PUPPETEER_NAV_TIMEOUT_MS:-12000}
+      - PUPPETEER_USER_AGENT=${PUPPETEER_USER_AGENT:-}
+      - PUPPETEER_EXECUTABLE_PATH=${PUPPETEER_EXECUTABLE_PATH:-}
+      - SEATING_CACHE_TTL_MS=${SEATING_CACHE_TTL_MS:-60000}
+      - SEATING_CACHE_MAX_ENTRIES=${SEATING_CACHE_MAX_ENTRIES:-50}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]

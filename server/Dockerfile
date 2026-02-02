@@ -6,12 +6,6 @@ FROM ghcr.io/puppeteer/puppeteer:24
 WORKDIR /app
 
 ENV PORT=3000
-ENV SCRAPER_SECRET="your_very_secret_string_here"
-ENV CINESTAR_API_URL="https://shop.cinestarcinemas.hr/api"
-ENV SEQUELIZE_LOGGING=false
-ENV ANALYTICS_STORAGE_ITEMS=200
-ENV ANALYTICS_STORAGE_TIME_MINUTES=10
-ENV ANALYTICS_HASH_SALT="your_very_secret_salt_here"
 
 # Note: we intentionally allow Puppeteer to download its compatible Chromium
 # during `npm ci` (the base image provides all OS dependencies).

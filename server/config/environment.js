@@ -1,22 +1,35 @@
 const { z } = require("zod");
 const crypto = require("node:crypto");
 
+function parseBooleanish(value) {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
+  if (typeof value === "string") {
+    const v = value.trim().toLowerCase();
+    if (["true", "1", "yes", "y", "on"].includes(v)) return true;
+    if (["false", "0", "no", "n", "off", ""].includes(v)) return false;
+  }
+  return undefined;
+}
+
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   // SEQUELIZE_LOGGING: z.coerce.boolean().default(false), // This is not good because Boolean("false") === true
-  SEQUELIZE_LOGGING: z.preprocess((val) => {
-    if (typeof val === "string") {
-      if (val.toLowerCase() === "false") return false;
-    } else {
-      return Boolean(val);
-    }
-  }, z.boolean().default(false)),
+  SEQUELIZE_LOGGING: z.preprocess(parseBooleanish, z.boolean().default(false)),
   SCRAPER_SECRET: z.string(),
   CINESTAR_API_URL: z.string().default("https://shop.cinestarcinemas.hr/api"),
   // Optional tuning knobs for the on-demand Puppeteer seating fetcher
   PUPPETEER_MAX_CONCURRENCY: z.coerce.number().default(2),
   PUPPETEER_IDLE_TTL_MS: z.coerce.number().default(20 * 60 * 1000), // 20 minutes
   PUPPETEER_NAV_TIMEOUT_MS: z.coerce.number().default(12_000),
+  PUPPETEER_EXECUTABLE_PATH: z
+    .string()
+    .optional()
+    .transform((v) => (typeof v === "string" && v.trim() === "" ? undefined : v)),
+  PUPPETEER_USER_AGENT: z
+    .string()
+    .optional()
+    .transform((v) => (typeof v === "string" && v.trim() === "" ? undefined : v)),
   SEATING_CACHE_TTL_MS: z.coerce.number().default(60_000),
   SEATING_CACHE_MAX_ENTRIES: z.coerce.number().default(50),
   ANALYTICS_STORAGE_ITEMS: z.coerce.number().default(200),

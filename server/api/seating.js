@@ -1,5 +1,5 @@
 const { configuration } = require("../config/environment.js");
-const { browserManager } = require("../scraping/browserManager.js");
+const { browserManager } = require("../lib/browser/browserManager.js");
 const { TtlCache } = require("../utils/ttlCache.js");
 
 const seatingCache = new TtlCache({
