@@ -35,7 +35,7 @@ export function getSeatColor(
     const name = typeof rawName === 'string' ? rawName.trim() : '';
     const nameLower = name.toLowerCase();
 
-    if (!name) return { color: REGULAR_COLOR, invalidskoFound: false };
+    if (!name) return { color: UNKNOWN_SEAT_TYPE_COLOR, invalidskoFound: false };
 
     // VIP / Boutique / Relax / Premium
     if (
