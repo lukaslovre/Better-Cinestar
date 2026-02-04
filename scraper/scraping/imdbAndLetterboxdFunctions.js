@@ -495,15 +495,75 @@ async function getImdbDataFromUrl(url) {
     return null;
   }
   try {
-    const $ = await fetchAndParseHtml(url);
+    const normalizedUrl = String(url)
+      .replace(/^http:\/\//i, "https://")
+      .replace(/\/maindetails\/?$/i, "/")
+      .replace(/\/$/, "/");
 
-    const scriptTag = $('[type="application/ld+json"]').text();
+    // IMDb can serve different HTML depending on headers; use a stable desktop UA.
+    const response = await fetch(normalizedUrl, {
+      redirect: "follow",
+      headers: {
+        "User-Agent": DEFAULT_USER_AGENT,
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        "Upgrade-Insecure-Requests": "1",
+      },
+    });
 
-    if (!scriptTag) return null;
+    if (!response.ok) {
+      return null;
+    }
 
-    const imdbData = JSON.parse(scriptTag);
-    if (!imdbData.aggregateRating) return null;
-    return imdbData.aggregateRating.ratingValue;
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    // IMDb embeds schema.org JSON-LD. Sometimes there are multiple script tags,
+    // and some can be arrays or @graph structures.
+    const scripts = $("script[type='application/ld+json']");
+    if (!scripts.length) return null;
+
+    const extractRatingValue = (node) => {
+      if (!node || typeof node !== "object") return null;
+
+      // Direct aggregateRating
+      const ratingValue = node?.aggregateRating?.ratingValue;
+      if (ratingValue != null) {
+        const parsed = Number.parseFloat(String(ratingValue));
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+
+      // @graph container
+      // if (Array.isArray(node["@graph"])) {
+      //   for (const graphNode of node["@graph"]) {
+      //     const found = extractRatingValue(graphNode);
+      //     if (found != null) return found;
+      //   }
+      // }
+
+      return null;
+    };
+
+    for (const el of scripts.toArray()) {
+      const raw = $(el).text();
+      if (!raw) continue;
+
+      try {
+        const parsed = JSON.parse(raw);
+        const candidates = Array.isArray(parsed) ? parsed : [parsed];
+        for (const candidate of candidates) {
+          const found = extractRatingValue(candidate);
+          if (found != null) return found;
+        }
+      } catch (_) {
+        // ignore parse errors and continue scanning other scripts
+      }
+    }
+
+    return null;
   } catch (err) {
     console.log(err);
     return null;

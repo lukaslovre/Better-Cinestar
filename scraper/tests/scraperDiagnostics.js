@@ -1,5 +1,7 @@
 require("dotenv").config();
 const path = require("path");
+const fs = require("fs/promises");
+const cheerio = require("cheerio");
 const { launchBrowser } = require("../scraping/browser.js");
 const { configuration } = require("../config/environment.js");
 const { getCinemas } = require("../utils/cinemasList.js");
@@ -103,14 +105,28 @@ async function runDiagnostics() {
     console.log("\n[3/4] Checking IMDb via scraper enrichment...");
     try {
       if (knownMovie.imdbUrl) {
+        console.log(`Using IMDb URL: ${knownMovie.imdbUrl}`);
         const [imdbEnriched] = await fillMoviesWithImdbData([knownMovie]);
         if (imdbEnriched?.imdbRating) {
           console.log(`✅ IMDb: Rating fetched: ${imdbEnriched.imdbRating}`);
           results.imdb = true;
         } else {
-          console.log(
-            "❌ IMDb: URL present but rating not found (blocked or page changed).",
-          );
+          console.log("❌ IMDb: Rating not returned (blocked or page changed).");
+
+          // Capture forensics (fetch-based; no Puppeteer) to see what HTML was returned.
+          try {
+            const artifactsDir = path.resolve(__dirname, "artifacts");
+            const meta = await captureImdbForensics({
+              artifactsDir,
+              imdbUrl: knownMovie.imdbUrl,
+            });
+            console.log(
+              `Debug: status=${meta.httpStatus}, finalUrl=${meta.finalUrl}, title=${meta.title}, ldJsonCount=${meta.ldJsonCount}, hasAggregateRating=${meta.hasAggregateRating}`,
+            );
+            console.log(`Artifacts: ${meta.artifacts.metaPath}`);
+          } catch (_) {
+            console.log("Debug: IMDb forensics capture failed.");
+          }
         }
       } else {
         console.log(
@@ -154,6 +170,128 @@ async function runDiagnostics() {
       console.log("\n⚠️ Some checks failed. Please investigate the errors above.");
     }
   }
+}
+
+function sanitizeForFilename(value) {
+  return String(value)
+    .normalize("NFKD")
+    .replace(/[^a-zA-Z0-9._-]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 100);
+}
+
+function detectImdbBlockMarkers(html) {
+  if (!html || typeof html !== "string") return [];
+  const lower = html.toLowerCase();
+  const markers = [
+    "captcha",
+    "verify you are human",
+    "robot",
+    "automated access",
+    "access denied",
+    "consent",
+    "privacy choices",
+    "unusual traffic",
+  ];
+  return markers.filter((m) => lower.includes(m));
+}
+
+function extractHtmlTitle($) {
+  try {
+    const t = $("title").first().text().trim();
+    return t || null;
+  } catch {
+    return null;
+  }
+}
+
+function analyzeImdbHtml(html) {
+  const $ = cheerio.load(html || "");
+  const scripts = $("script[type='application/ld+json']");
+  let hasAggregateRating = false;
+
+  scripts.each((_, el) => {
+    if (hasAggregateRating) return;
+    const raw = $(el).text();
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      const candidates = Array.isArray(parsed) ? parsed : [parsed];
+      for (const c of candidates) {
+        if (c && c.aggregateRating && c.aggregateRating.ratingValue != null) {
+          hasAggregateRating = true;
+          break;
+        }
+      }
+    } catch {
+      // ignore individual script parse failures
+    }
+  });
+
+  return {
+    title: extractHtmlTitle($),
+    ldJsonCount: scripts.length,
+    hasAggregateRating,
+    blockMarkers: detectImdbBlockMarkers(html),
+  };
+}
+
+async function captureImdbForensics({ artifactsDir, imdbUrl }) {
+  await fs.mkdir(artifactsDir, { recursive: true });
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const slug = `${sanitizeForFilename(imdbUrl)}_${timestamp}`;
+  const basePath = path.join(artifactsDir, `imdb_${slug}`);
+  const htmlPath = `${basePath}.html`;
+  const metaPath = `${basePath}.json`;
+
+  const headers = {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+    Accept:
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+  };
+
+  let response = null;
+  let html = "";
+  let error = null;
+
+  try {
+    response = await fetch(imdbUrl, { headers });
+    html = await response.text();
+  } catch (e) {
+    error = e;
+  }
+
+  const analysis = analyzeImdbHtml(html);
+  const meta = {
+    kind: "imdb_forensics",
+    timestamp: new Date().toISOString(),
+    imdbUrl,
+    httpStatus: response ? response.status : null,
+    finalUrl: response ? response.url : null,
+    contentType: response ? response.headers.get("content-type") : null,
+    htmlLength: html ? html.length : 0,
+    title: analysis.title,
+    ldJsonCount: analysis.ldJsonCount,
+    hasAggregateRating: analysis.hasAggregateRating,
+    blockMarkers: analysis.blockMarkers,
+    error: error ? String(error && error.message ? error.message : error) : null,
+    artifacts: {
+      htmlPath,
+      metaPath,
+    },
+  };
+
+  try {
+    await fs.writeFile(htmlPath, html || "", "utf8");
+  } catch (e) {
+    meta.artifacts.htmlWriteError = String(e && e.message ? e.message : e);
+  }
+
+  await fs.writeFile(metaPath, JSON.stringify(meta, null, 2), "utf8");
+  return meta;
 }
 
 runDiagnostics();
