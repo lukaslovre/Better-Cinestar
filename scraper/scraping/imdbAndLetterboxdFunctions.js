@@ -173,6 +173,7 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear, options
   const filmSearchUrl = `https://letterboxd.com/search/films/${nameToSearchFormat}/`;
   let page = null;
   let response = null;
+  let gotoError = null;
 
   try {
     page = await browser.newPage();
@@ -195,15 +196,21 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear, options
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     );
 
-    // Navigate to the search URL
-    response = await page.goto(filmSearchUrl, {
-      waitUntil: "networkidle0",
-    });
+    // Navigate to the search URL.
+    // NOTE: `networkidle0` is too strict for Letterboxd (ads/analytics can keep the network busy),
+    // which can cause a timeout even though results are already present in the DOM.
+    try {
+      response = await page.goto(filmSearchUrl, {
+        waitUntil: "domcontentloaded",
+      });
+    } catch (e) {
+      gotoError = e;
+      // If navigation timed out, the DOM may still be usable (we'll attempt parsing below).
+      if (!(e && e.name === "TimeoutError")) throw e;
+    }
 
-    if (!response || !response.ok()) {
-      throw new Error(
-        `Navigation failed: ${response ? response.status() : "No response"}`,
-      );
+    if (response && !response.ok()) {
+      throw new Error(`Navigation failed: ${response.status()}`);
     }
 
     // Handle cookie consent
@@ -216,6 +223,13 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear, options
       await page.click(cookieButtonSelector);
     } catch (err) {
       console.log("No cookie button found");
+    }
+
+    // Wait for results to exist (or time out and attempt best-effort parsing anyway).
+    try {
+      await page.waitForSelector("ul.results li", { timeout: 7000 });
+    } catch (_) {
+      // ignore
     }
 
     const parserMode = options?.letterboxdSearchParser?.mode || "dom"; // 'dom' preserves legacy behavior
@@ -267,7 +281,7 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear, options
           searchUrl: filmSearchUrl,
           html,
           resultsCount: results.length,
-          error: null,
+          error: gotoError,
           onCapture: forensics.onCapture,
         });
       }
@@ -432,10 +446,22 @@ async function getPortraitUrlFromActorProfile(url) {
 
     const $ = await fetchAndParseHtml(url);
 
+    if (!$) {
+      throw new Error("Failed to fetch Letterboxd person profile HTML");
+    }
+
     const personTmdbId = $("body").attr("data-tmdb-id");
-    const personTmdbUrl = `http://www.themoviedb.org/person/${personTmdbId}`;
+    if (!personTmdbId) {
+      return "/images/defaultPersonImage.jpg";
+    }
+
+    const personTmdbUrl = `https://www.themoviedb.org/person/${personTmdbId}`;
 
     const $2 = await fetchAndParseHtml(personTmdbUrl);
+
+    if (!$2) {
+      throw new Error("Failed to fetch TMDB person page HTML");
+    }
 
     const imageUrl = $2("meta[property='og:image']").attr("content");
     if (!imageUrl) {
