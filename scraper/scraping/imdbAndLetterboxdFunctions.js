@@ -4,6 +4,66 @@ const path = require("path");
 const fs = require("fs/promises");
 const { parseLetterboxdSearchResults } = require("./letterboxdParser.js");
 
+const DEFAULT_PERSON_IMAGE = "/images/defaultPersonImage.jpg";
+const DEFAULT_USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+const BLOCKED_RESOURCE_TYPES = ["image", "stylesheet", "font", "media"];
+
+async function loadHtmlViaBrowser(browser, url, options = {}) {
+  const {
+    waitUntil = "domcontentloaded",
+    timeoutMs = 30_000,
+    userAgent = DEFAULT_USER_AGENT,
+    blockResources = true,
+  } = options;
+
+  if (!browser || typeof browser.newPage !== "function") {
+    throw new Error("Browser instance is required");
+  }
+
+  const page = await browser.newPage();
+  try {
+    await page.setViewport({ width: 1280, height: 720 });
+    await page.setUserAgent(userAgent);
+
+    if (blockResources) {
+      await page.setRequestInterception(true);
+      page.on("request", (request) => {
+        if (BLOCKED_RESOURCE_TYPES.includes(request.resourceType())) {
+          request.abort();
+        } else {
+          request.continue();
+        }
+      });
+    }
+
+    page.setDefaultNavigationTimeout(timeoutMs);
+    page.setDefaultTimeout(timeoutMs);
+
+    // If this times out, the DOM might still be usable; caller can decide.
+    await page.goto(url, { waitUntil });
+
+    return await page.content();
+  } finally {
+    try {
+      await page.close();
+    } catch (_) {
+      // ignore
+    }
+  }
+}
+
+async function getCheerioFromUrl(url, options = {}) {
+  const { browser, ...browserOptions } = options;
+
+  if (browser) {
+    const html = await loadHtmlViaBrowser(browser, url, browserOptions);
+    return cheerio.load(html);
+  }
+
+  return fetchAndParseHtml(url);
+}
+
 async function fetchAndParseHtml(url) {
   try {
     const response = await fetch(url);
@@ -39,7 +99,11 @@ async function fillMoviesWithLetterboxdData(browser, movies, options = {}) {
     }
 
     // If the movie has a Letterboxd URL, get the data from it
-    const letterboxdData = await getLetterboxdDataFromUrl(movie.letterboxdUrl);
+    const letterboxdData = await getLetterboxdDataFromUrl(
+      browser,
+      movie.letterboxdUrl,
+      options,
+    );
     Object.assign(movie, letterboxdData);
   }
 
@@ -192,9 +256,7 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear, options
 
     // Set viewport and user agent
     await page.setViewport({ width: 1280, height: 720 });
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    );
+    await page.setUserAgent(DEFAULT_USER_AGENT);
 
     // Navigate to the search URL.
     // NOTE: `networkidle0` is too strict for Letterboxd (ads/analytics can keep the network busy),
@@ -322,7 +384,7 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear, options
   }
 }
 
-async function getLetterboxdDataFromUrl(url) {
+async function getLetterboxdDataFromUrl(browser, url, options = {}) {
   const defaultData = {
     letterboxdRating: null,
     imdbUrl: null,
@@ -342,7 +404,14 @@ async function getLetterboxdDataFromUrl(url) {
   }
 
   try {
-    const $ = await fetchAndParseHtml(url);
+    // Letterboxd may 403/block plain fetch for some pages.
+    // Use the existing Puppeteer browser for consistency and resilience.
+    const $ = await getCheerioFromUrl(url, {
+      browser,
+      waitUntil: "domcontentloaded",
+      timeoutMs: 30_000,
+      blockResources: true,
+    });
 
     const scriptTag = $("[type='application/ld+json']").text();
 
@@ -366,7 +435,10 @@ async function getLetterboxdDataFromUrl(url) {
       });
 
       for (const director of englishDirectors) {
-        director.portraitUrl = await getPortraitUrlFromActorProfile(director.lbUrl);
+        director.portraitUrl = await getPortraitUrlFromActorProfile(
+          browser,
+          director.lbUrl,
+        );
       }
 
       actors = actors.slice(0, Math.min(8, actors.length)).map(({ name, sameAs }) => {
@@ -374,7 +446,7 @@ async function getLetterboxdDataFromUrl(url) {
       });
 
       for (const actor of actors) {
-        actor.portraitUrl = await getPortraitUrlFromActorProfile(actor.lbUrl);
+        actor.portraitUrl = await getPortraitUrlFromActorProfile(browser, actor.lbUrl);
       }
 
       // add fields to defaultData object by overwriting
@@ -438,13 +510,19 @@ async function getImdbDataFromUrl(url) {
   }
 }
 
-async function getPortraitUrlFromActorProfile(url) {
+async function getPortraitUrlFromActorProfile(browser, url) {
   try {
     if (!url) {
       throw new Error("No URL provided");
     }
 
-    const $ = await fetchAndParseHtml(url);
+    // Letterboxd person pages can 403 for plain fetch; use Puppeteer.
+    const $ = await getCheerioFromUrl(url, {
+      browser,
+      waitUntil: "domcontentloaded",
+      timeoutMs: 30_000,
+      blockResources: true,
+    });
 
     if (!$) {
       throw new Error("Failed to fetch Letterboxd person profile HTML");
@@ -452,7 +530,7 @@ async function getPortraitUrlFromActorProfile(url) {
 
     const personTmdbId = $("body").attr("data-tmdb-id");
     if (!personTmdbId) {
-      return "/images/defaultPersonImage.jpg";
+      return DEFAULT_PERSON_IMAGE;
     }
 
     const personTmdbUrl = `https://www.themoviedb.org/person/${personTmdbId}`;
@@ -472,7 +550,7 @@ async function getPortraitUrlFromActorProfile(url) {
     return `https://image.tmdb.org/t/p/w138_and_h175_face${imageId}`;
   } catch (err) {
     console.log(err.message);
-    return "/images/defaultPersonImage.jpg";
+    return DEFAULT_PERSON_IMAGE;
   }
 }
 
