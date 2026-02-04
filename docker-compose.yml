@@ -4,12 +4,13 @@ services:
       context: ./server
       dockerfile: Dockerfile
     volumes:
-      - ./server/Database.sqlite:/app/Database.sqlite # Persist the SQLite database between container restarts
+      - server_sqlite_data:/app/data # Persist the SQLite database between container restarts
     expose:
       - "3000" # Expose port 3000 to other containers in the same network
     environment:
       - SCRAPER_SECRET=${SCRAPER_SECRET:-your_very_secret_string_here}
       - SEQUELIZE_LOGGING=false
+      - SQLITE_STORAGE=/app/data/Database.sqlite
       - ANALYTICS_STORAGE_ITEMS=200
       - ANALYTICS_STORAGE_TIME_MINUTES=10
       - ANALYTICS_HASH_SALT=${ANALYTICS_HASH_SALT:-your_very_secret_string_here}
@@ -57,3 +58,6 @@ services:
     depends_on:
       - server
     restart: unless-stopped
+
+volumes:
+  server_sqlite_data:

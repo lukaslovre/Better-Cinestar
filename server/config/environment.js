@@ -16,6 +16,10 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   // SEQUELIZE_LOGGING: z.coerce.boolean().default(false), // This is not good because Boolean("false") === true
   SEQUELIZE_LOGGING: z.preprocess(parseBooleanish, z.boolean().default(false)),
+  SQLITE_STORAGE: z
+    .string()
+    .optional()
+    .transform((v) => (typeof v === "string" && v.trim() === "" ? undefined : v)),
   SCRAPER_SECRET: z.string(),
   CINESTAR_API_URL: z.string().default("https://shop.cinestarcinemas.hr/api"),
   // Optional tuning knobs for the on-demand Puppeteer seating fetcher
