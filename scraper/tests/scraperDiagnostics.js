@@ -2,7 +2,7 @@ require("dotenv").config();
 const path = require("path");
 const fs = require("fs/promises");
 const cheerio = require("cheerio");
-const { launchBrowser } = require("../scraping/browser.js");
+const { launchBrowser } = require("../modules/browser/browser.js");
 const { configuration } = require("../config/environment.js");
 const { getCinemas } = require("../utils/cinemasList.js");
 const axios = require("axios");

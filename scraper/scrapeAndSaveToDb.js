@@ -9,7 +9,7 @@ const {
 } = require("./scraping/imdbAndLetterboxdFunctions.js");
 const { configuration } = require("./config/environment.js");
 const { CronJob } = require("cron");
-const { launchBrowser } = require("./scraping/browser.js");
+const { launchBrowser } = require("./modules/browser/browser.js");
 const { withRetry } = require("./utils/retry.js");
 
 const cinemas = getCinemas();
@@ -21,7 +21,7 @@ async function performScrape() {
     console.log("[performScrape] Starting data fetch and send process...");
     const { movies, performances, performanceDates } = await updateMoviesAndPerformances(
       browser,
-      cinemas
+      cinemas,
     );
     const enrichedMovies = await enrichMoviesWithExternalData(browser, movies);
     // Send data to server API
@@ -54,11 +54,11 @@ async function performScrape() {
           }
           return true;
         },
-      }
+      },
     );
     console.log("[performScrape] Data successfully sent to server:", response.data);
     const moviesWithLetterboxdUrl = enrichedMovies.filter(
-      (movie) => movie.letterboxdUrl
+      (movie) => movie.letterboxdUrl,
     ).length;
     const percentageWithLetterboxdUrl = (
       (moviesWithLetterboxdUrl / enrichedMovies.length) *
@@ -69,7 +69,7 @@ async function performScrape() {
   } catch (error) {
     console.error(
       "[performScrape] Error occurred during data fetch and send process:",
-      error.message
+      error.message,
     );
     throw error;
   } finally {
@@ -83,17 +83,17 @@ async function updateMoviesAndPerformances(browser, cinemas) {
 
   const { moviesFormatted, performancesFormatted } = await fetchMoviesAndPerformances(
     browser,
-    cinemas
+    cinemas,
   );
 
   if (moviesFormatted.length === 0) {
     console.warn(
-      "[updateMoviesAndPerformances] WARNING: No movies found! This might indicate a blocking issue or no movies scheduled."
+      "[updateMoviesAndPerformances] WARNING: No movies found! This might indicate a blocking issue or no movies scheduled.",
     );
   }
 
   console.log(
-    `Found ${moviesFormatted.length} unique movies and ${performancesFormatted.length} total performances.`
+    `Found ${moviesFormatted.length} unique movies and ${performancesFormatted.length} total performances.`,
   );
 
   const performanceDates = getPerformanceDatesFrom(performancesFormatted);
@@ -111,7 +111,7 @@ async function enrichMoviesWithExternalData(browser, movies) {
   // validation
   if (!enrichedMovies || !Array.isArray(enrichedMovies)) {
     throw new Error(
-      "Error occurred during LetterBoxd data enrichment process: movies is not an array"
+      "Error occurred during LetterBoxd data enrichment process: movies is not an array",
     );
   }
 
@@ -154,12 +154,12 @@ async function enrichMoviesWithExternalData(browser, movies) {
       try {
         await performScrape();
         console.log(
-          `[scheduler] Scrape task completed successfully at ${new Date().toISOString()}`
+          `[scheduler] Scrape task completed successfully at ${new Date().toISOString()}`,
         );
       } catch (err) {
         console.error(
           `[scheduler] Scrape task failed at ${new Date().toISOString()}:`,
-          err
+          err,
         );
       }
     });
