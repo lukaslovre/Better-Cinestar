@@ -1,26 +1,17 @@
-let tableRows = [];
+let analyticsData = null;
 let cinemas = [];
 
-// the data array contains object with the following structure:
-// {
-//     createdAt: "2021-09-01T00:00:00.000Z",
-//     id: 1,
-//     responseTime: 100,
-//     statusCode: 200,
-//     uniqueVisitors: "192.168.25.199", note: this is now a hash
-//     url: "/api/movies?search=star+wars",
-//     userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36",
-// }
+const timespanFromUrl =
+  new URLSearchParams(window.location.search).get("timespan") || "hour";
 
 // Get data from the database
-fetch("/api/getAnalyticsData")
+fetch(`/api/getAnalyticsData?timespan=${timespanFromUrl}`)
   .then((response) => {
     return response.json();
   })
   .then((data) => {
-    if (data && Array.isArray(data)) {
-      console.log(data.slice(0, 10));
-      tableRows = data;
+    if (data) {
+      analyticsData = data;
     }
   })
   .catch((error) => {
@@ -33,7 +24,6 @@ fetch("/api/getCinemasList")
   })
   .then((data) => {
     if (data && Array.isArray(data)) {
-      console.log(data.slice(0, 10));
       cinemas = data;
     }
   })
@@ -47,21 +37,11 @@ fetch("/api/getCinemasList")
  *
  */
 
-async function groupDataBy(key) {
+async function waitForData() {
   // Wait for the data to be fetched
-  while (tableRows.length === 0 || cinemas.length === 0) {
+  while (!analyticsData || cinemas.length === 0) {
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-
-  const groupedData = tableRows.reduce((acc, item) => {
-    if (!acc[item[key]]) {
-      acc[item[key]] = [];
-    }
-    acc[item[key]].push(item);
-    return acc;
-  }, {});
-
-  return groupedData;
 }
 
 function getCinemaFromOid(oid) {

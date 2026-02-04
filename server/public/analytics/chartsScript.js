@@ -10,132 +10,80 @@ let timespan = new URLSearchParams(window.location.search).get("timespan") || "h
 chartMain();
 
 async function chartMain() {
+  await waitForData(); // Wait for data fetch to complete
+
   // Status Codes
-  const distinctStatusCodes = await groupDataBy("statusCode");
+  const distinctStatusCodes = {};
+  if (analyticsData.statusCodes) {
+    analyticsData.statusCodes.forEach((item) => {
+      distinctStatusCodes[item.statusCode] = item.count;
+    });
+  }
 
   createChart(
     distinctStatusCodes,
     statusCtx,
     "bar",
     "Status Codes",
-    (data) => data.length
+    (data) => data
   );
 
   // Response Times
-  const responseTimes = await groupDataBy("responseTime");
-
   const responseTimesRanges = {};
-
-  Object.keys(responseTimes).forEach((key) => {
-    const range =
-      (key < 50
-        ? Math.floor(key / 4) * 4
-        : key < 100
-        ? Math.floor(key / 10) * 10
-        : key < 1000
-        ? Math.floor(key / 100) * 100
-        : Math.floor(key / 1000) * 1000) + " ms";
-    if (!responseTimesRanges[range]) {
-      responseTimesRanges[range] = [];
-    }
-    responseTimesRanges[range].push(...responseTimes[key]);
-  });
+  if (analyticsData.responseTimes) {
+    analyticsData.responseTimes.forEach((time) => {
+      const range =
+        (time < 50
+        ? Math.floor(time / 4) * 4
+        : time < 100
+        ? Math.floor(time / 10) * 10
+        : time < 1000
+        ? Math.floor(time / 100) * 100
+        : Math.floor(time / 1000) * 1000) + " ms";
+      if (!responseTimesRanges[range]) {
+        responseTimesRanges[range] = 0;
+      }
+      responseTimesRanges[range]++;
+    });
+  }
 
   createChart(
     responseTimesRanges,
     responseTimeCtx,
     "line",
     "Response Time (ms)",
-    (data) => data.length
+    (data) => data
   );
 
-  // visitors per 'timespan'
+  // Visitors per 'timespan'
+  // Data is already aggregated by dateKey
   const dateRanges = {};
-
-  tableRows.forEach((row) => {
-    const dateInTimezone = new Date(row.createdAt);
-    let dateKey;
-
-    switch (timespan) {
-      case "hour":
-        dateKey = `${dateInTimezone.getFullYear()}-${
-          dateInTimezone.getMonth() + 1
-        }-${dateInTimezone.getDate()} ${dateInTimezone.getHours()}:00:00`;
-        break;
-      case "day":
-        dateKey = `${dateInTimezone.getFullYear()}-${
-          dateInTimezone.getMonth() + 1
-        }-${dateInTimezone.getDate()}`;
-        break;
-      case "week":
-        // getDay() returns the day of the week (from 0 to 6) for the specified date
-        // subtracting it from the date gives the first day of the week (Sunday)
-        const firstDayOfWeek = new Date(
-          dateInTimezone.setDate(dateInTimezone.getDate() - dateInTimezone.getDay())
-        );
-        dateKey = `${firstDayOfWeek.getFullYear()}-${
-          firstDayOfWeek.getMonth() + 1
-        }-${firstDayOfWeek.getDate()}`;
-        break;
-      default:
-        throw new Error(`Invalid timespan: ${timespan}`);
-    }
-
-    if (!dateRanges[dateKey]) {
-      dateRanges[dateKey] = [];
-    }
-
-    dateRanges[dateKey].push(row);
-  });
+  if (analyticsData.visitors) {
+    analyticsData.visitors.forEach((item) => {
+      dateRanges[item.dateKey] = item.count;
+    });
+  }
 
   createChart(
     dateRanges,
     uniqueVisitorsCtx,
     "line",
     `Visitors per ${timespan}`,
-    (data) => new Set(data.map((item) => item.uniqueVisitors)).size
+    (data) => data
   );
 
-  // pie chart of params
-  const urlParams = await groupDataBy("url");
-
+  // Pie chart of params
   const cinemaOidsCount = {};
-  const sortByCount = {};
+  const sortByCount = (analyticsData.filters && analyticsData.filters.sortBy) || {};
 
-  Object.keys(urlParams).forEach((key) => {
-    const url = key.split("?")[1];
+  if (analyticsData.filters && analyticsData.filters.cinemaOids) {
+    Object.entries(analyticsData.filters.cinemaOids).forEach(([oid, count]) => {
+      const cinema = getCinemaFromOid(oid);
+      const label = cinema ? cinema.cinemaName : oid;
 
-    // make a urlParams object
-    const params = new URLSearchParams(url);
-
-    // make a count of cinemaOids
-    if (params.has("cinemaOid")) {
-      const cinemaOids = params.getAll("cinemaOid");
-
-      cinemaOids.forEach((cinemaOid) => {
-        const cinema = getCinemaFromOid(cinemaOid);
-
-        const label = cinema.cinemaName;
-
-        if (!cinemaOidsCount[label]) {
-          cinemaOidsCount[label] = 0;
-        }
-        cinemaOidsCount[label]++;
-      });
-    }
-
-    // make a count of sort by params
-    if (params.has("sortBy")) {
-      const sortBy = params.getAll("sortBy");
-
-      sortBy.forEach((sort) => {
-        if (!sortByCount[sort]) {
-          sortByCount[sort] = 0;
-        }
-        sortByCount[sort]++;
-      });
-    }
-  });
+      cinemaOidsCount[label] = (cinemaOidsCount[label] || 0) + count;
+    });
+  }
 
   createChart(cinemaOidsCount, cinemaOidsCtx, "pie", "Cinema Oids", (data) => data);
 

@@ -15,7 +15,7 @@ const { browserManager } = require("./lib/browser/browserManager.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const {
   init,
-  getAnalytics,
+  getAggregatedAnalytics,
   saveMoviesToDatabase,
   savePerformancesToDatabase,
   savePerformanceDatesToDatabase,
@@ -25,6 +25,7 @@ const {
   moviesQuerySchema,
   seatingQuerySchema,
   performancesQuerySchema,
+  analyticsQuerySchema,
   scrapeResultsSchema,
 } = require("./schemas/index.js");
 
@@ -146,7 +147,14 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/api/getAnalyticsData", async (req, res) => {
-  const analytics = await getAnalytics();
+  const result = analyticsQuerySchema.safeParse(req.query);
+
+  if (!result.success) {
+    return res.status(400).json({ errors: result.error.flatten() });
+  }
+
+  const { timespan } = result.data;
+  const analytics = await getAggregatedAnalytics(timespan);
   res.send(analytics);
 });
 app.get("/api/getCinemasList", (req, res) => {

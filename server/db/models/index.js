@@ -104,6 +104,14 @@ const Analytics = sequelize.define(
     // only allow the createdAt field and not the updatedAt
     timestamps: true,
     updatedAt: false,
+    indexes: [
+      {
+        fields: ["createdAt"],
+      },
+      {
+        fields: ["statusCode"],
+      },
+    ],
   }
 );
 
