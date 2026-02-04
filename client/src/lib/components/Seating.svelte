@@ -5,6 +5,7 @@
   import { getAverageHorizontalSeatDistance } from '../utils/performanceSeats';
   import { getRelativeDate } from '../utils/utils';
   import { PUBLIC_API_URL } from '$env/static/public';
+  import { getSeatColor as getSeatColorUtil } from '../utils/seatingColors';
 
   export let performanceData: any;
 
@@ -74,30 +75,10 @@
     seatsContainer.style.setProperty('height', 64 + seatsHeight + 'px');
   }
 
-  function getSeatColor(seat: any, useColors?: boolean) {
-    // Ako je slobodno (128 je u splitu slobodno??? nez)
-    if ([4, 256, 260, 128].includes(seat.stat)) {
-      // Ako se ne koriste boje, sve su plave
-      if (useColors === false || useColors === undefined) return '#80A6FF';
-
-      // Ako se koriste boje, onda se gleda tip sjedala
-      const name = seatingAreas.find((area) => area.id === seat.sar)?.name;
-      if (!name) return '#80A6FF';
-
-      if (['Boutique', 'VIP Relax', 'VIP'].includes(name)) return '#DFDF9F';
-      else if (name === 'Royal bed') return '#EA80FF';
-      else if (name === 'Lovebox') return '#FF8080';
-      else if (name === 'Regular') {
-        // Ako je invalidsko
-        if ([163, 193].includes(seat.sg)) {
-          if (invalidskoPostoji === false) invalidskoPostoji = true;
-          return '#A1DF9F';
-        } else return '#80A6FF';
-      }
-    } else {
-      // Ako je zauzeto
-      return '#373B43';
-    }
+  function getSeatColorForSeat(seat: any) {
+    const { color, invalidskoFound } = getSeatColorUtil(seat, seatingAreas, showSeatTypes);
+    if (invalidskoFound && invalidskoPostoji === false) invalidskoPostoji = true;
+    return color;
   }
 
   // Utils
@@ -136,7 +117,7 @@
       {#each seatsData.seats as seat}
         <div
           class="seat"
-          style:background-color={getSeatColor(seat, showSeatTypes)}
+          style:background-color={getSeatColorForSeat(seat)}
           style:left={seatOffsetX + seat.x * seatLocationMultiplier + 'px'}
           style:top={64 + seat.y * seatLocationMultiplier + 'px'}
           style:width={seatSize + 'px'}
@@ -175,10 +156,7 @@
         <div>
           <div
             class="seat"
-            style:background-color={getSeatColor(
-              { sar: area.id, stat: 4 },
-              showSeatTypes
-            )}
+            style:background-color={getSeatColorForSeat({ sar: area.id, stat: 4 })}
           ></div>
           <p>{area.name}</p>
         </div>
@@ -207,10 +185,7 @@
         <div>
           <div
             class="seat"
-            style:background-color={getSeatColor(
-              { sar: area.id, stat: 4 },
-              showSeatTypes
-            )}
+            style:background-color={getSeatColorForSeat({ sar: area.id, stat: 4 })}
           />
           <p>{area.name}</p>
         </div>
