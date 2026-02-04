@@ -3,3 +3,6 @@ npm-debug.log
 yarn-error.log
 .env
 Database.sqlite
+
+# Generated diagnostics artifacts
+scraper/tests/artifacts/

@@ -1,5 +1,8 @@
 const cheerio = require("cheerio");
 const { drawProgressBar } = require("./consoleProgress.js");
+const path = require("path");
+const fs = require("fs/promises");
+const { parseLetterboxdSearchResults } = require("./letterboxdParser.js");
 
 async function fetchAndParseHtml(url) {
   try {
@@ -18,7 +21,7 @@ async function fetchAndParseHtml(url) {
   }
 }
 
-async function fillMoviesWithLetterboxdData(browser, movies) {
+async function fillMoviesWithLetterboxdData(browser, movies, options = {}) {
   if (!Array.isArray(movies)) movies = [movies];
 
   for (const movie of movies) {
@@ -29,7 +32,8 @@ async function fillMoviesWithLetterboxdData(browser, movies) {
       movie.letterboxdUrl = await getLetterboxdUrlFromName(
         browser,
         movie.originalTitle,
-        movie.nationwideStart.slice(0, 4)
+        movie.nationwideStart.slice(0, 4),
+        options,
         // movie.director
       );
     }
@@ -40,6 +44,114 @@ async function fillMoviesWithLetterboxdData(browser, movies) {
   }
 
   return movies;
+}
+
+function sanitizeForFilename(value) {
+  return String(value)
+    .normalize("NFKD")
+    .replace(/[^a-zA-Z0-9._-]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80);
+}
+
+async function captureLetterboxdSearchForensics({
+  forensicsDir,
+  page,
+  response,
+  targetName,
+  targetYear,
+  searchUrl,
+  html,
+  resultsCount,
+  error,
+  onCapture,
+}) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const slug = `${sanitizeForFilename(targetName)}_${sanitizeForFilename(
+    targetYear,
+  )}_${timestamp}`;
+
+  const resolvedDir = forensicsDir
+    ? path.resolve(forensicsDir)
+    : path.resolve(__dirname, "../tests/artifacts");
+  await fs.mkdir(resolvedDir, { recursive: true });
+
+  const basePath = path.join(resolvedDir, `letterboxd_search_${slug}`);
+  const screenshotPath = `${basePath}.png`;
+  const htmlPath = `${basePath}.html`;
+  const snippetPath = `${basePath}_results.html`;
+  const metaPath = `${basePath}.json`;
+
+  let title = null;
+  let finalUrl = null;
+  try {
+    title = page ? await page.title() : null;
+  } catch (_) {
+    title = null;
+  }
+  try {
+    finalUrl = page ? page.url() : null;
+  } catch (_) {
+    finalUrl = null;
+  }
+
+  const meta = {
+    kind: "letterboxd_search_forensics",
+    timestamp: new Date().toISOString(),
+    targetName,
+    targetYear,
+    searchUrl,
+    httpStatus: response ? response.status() : null,
+    finalUrl,
+    title,
+    resultsCount: Number.isFinite(resultsCount) ? resultsCount : null,
+    error: error ? String(error && error.message ? error.message : error) : null,
+    artifacts: {
+      screenshotPath,
+      htmlPath,
+      snippetPath,
+      metaPath,
+    },
+  };
+
+  if (page) {
+    try {
+      await page.screenshot({ path: screenshotPath, fullPage: true });
+    } catch (e) {
+      meta.artifacts.screenshotError = String(e && e.message ? e.message : e);
+    }
+  }
+
+  if (html && typeof html === "string") {
+    try {
+      await fs.writeFile(htmlPath, html, "utf8");
+    } catch (e) {
+      meta.artifacts.htmlWriteError = String(e && e.message ? e.message : e);
+    }
+
+    try {
+      const $ = cheerio.load(html);
+      const resultsUl = $("ul.results").first();
+      const snippet = resultsUl.length ? $.html(resultsUl) : "";
+      await fs.writeFile(
+        snippetPath,
+        snippet || "<!-- ul.results not found -->\n",
+        "utf8",
+      );
+    } catch (e) {
+      meta.artifacts.snippetWriteError = String(e && e.message ? e.message : e);
+    }
+  }
+
+  await fs.writeFile(metaPath, JSON.stringify(meta, null, 2), "utf8");
+  if (typeof onCapture === "function") {
+    try {
+      onCapture(meta);
+    } catch (_) {
+      // ignore callback errors
+    }
+  }
+  return meta;
 }
 
 async function fillMoviesWithImdbData(movies) {
@@ -56,10 +168,11 @@ async function fillMoviesWithImdbData(movies) {
   return movies;
 }
 
-async function getLetterboxdUrlFromName(browser, targetName, targetYear) {
+async function getLetterboxdUrlFromName(browser, targetName, targetYear, options = {}) {
   const nameToSearchFormat = targetName.replaceAll(" ", "+"); // ex. "The Matrix" -> "The+Matrix"
   const filmSearchUrl = `https://letterboxd.com/search/films/${nameToSearchFormat}/`;
   let page = null;
+  let response = null;
 
   try {
     page = await browser.newPage();
@@ -79,17 +192,17 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear) {
     // Set viewport and user agent
     await page.setViewport({ width: 1280, height: 720 });
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     );
 
     // Navigate to the search URL
-    const response = await page.goto(filmSearchUrl, {
+    response = await page.goto(filmSearchUrl, {
       waitUntil: "networkidle0",
     });
 
     if (!response || !response.ok()) {
       throw new Error(
-        `Navigation failed: ${response ? response.status() : "No response"}`
+        `Navigation failed: ${response ? response.status() : "No response"}`,
       );
     }
 
@@ -105,32 +218,84 @@ async function getLetterboxdUrlFromName(browser, targetName, targetYear) {
       console.log("No cookie button found");
     }
 
-    // Get formatted array of search results
-    const results = await page.evaluate(() => {
-      const movieLiElements = Array.from(document.querySelectorAll("ul.results li"));
+    const parserMode = options?.letterboxdSearchParser?.mode || "dom"; // 'dom' preserves legacy behavior
+    let html = null;
+    let results = [];
 
-      return movieLiElements.map((itemLi) => {
-        const titleElement = itemLi.querySelector(".film-title-wrapper > a");
-        const yearElement = itemLi.querySelector(".film-title-wrapper > .metadata");
+    if (parserMode === "html") {
+      html = await page.content();
+      results = parseLetterboxdSearchResults(html);
+    } else {
+      // Legacy DOM extraction
+      results = await page.evaluate(() => {
+        const movieLiElements = Array.from(document.querySelectorAll("ul.results li"));
 
-        return {
-          title: titleElement?.innerText?.trim() || "",
-          url: titleElement?.href || "",
-          year: yearElement ? parseInt(yearElement.innerText.slice(0, 4)) : null,
-        };
+        return movieLiElements.map((itemLi) => {
+          const titleElement = itemLi.querySelector(".film-title-wrapper > a");
+          const yearElement = itemLi.querySelector(".film-title-wrapper > .metadata");
+
+          return {
+            title: titleElement?.innerText?.trim() || "",
+            url: titleElement?.href || "",
+            year: yearElement ? parseInt(yearElement.innerText.slice(0, 4)) : null,
+          };
+        });
       });
-    });
+    }
 
     // Process results
     const match = results.find(
-      (item) => item.year && Math.abs(targetYear - item.year) < 3 && item.url
+      (item) => item.year && Math.abs(targetYear - item.year) < 3 && item.url,
     );
 
-    console.log(`Matched letterboxd movie: ${match ? match.url : "N/A"}`);
+    console.log(
+      `Matched letterboxd movie: ${match ? match.url : "N/A"} (results: ${results.length})`,
+    );
+
+    if (!match?.url) {
+      const forensics = options?.letterboxdSearchForensics;
+      if (forensics?.enabled) {
+        if (!html) {
+          html = await page.content().catch(() => null);
+        }
+        await captureLetterboxdSearchForensics({
+          forensicsDir: forensics.dir,
+          page,
+          response,
+          targetName,
+          targetYear,
+          searchUrl: filmSearchUrl,
+          html,
+          resultsCount: results.length,
+          error: null,
+          onCapture: forensics.onCapture,
+        });
+      }
+    }
 
     return match?.url || null;
   } catch (err) {
     console.log(err);
+    const forensics = options?.letterboxdSearchForensics;
+    if (forensics?.enabled && page) {
+      try {
+        const html = await page.content().catch(() => null);
+        await captureLetterboxdSearchForensics({
+          forensicsDir: forensics.dir,
+          page,
+          response,
+          targetName,
+          targetYear,
+          searchUrl: filmSearchUrl,
+          html,
+          resultsCount: null,
+          error: err,
+          onCapture: forensics.onCapture,
+        });
+      } catch (_) {
+        // ignore forensics failures
+      }
+    }
     return null;
   } finally {
     if (page) {
@@ -215,7 +380,7 @@ async function getLetterboxdDataFromUrl(url) {
     const trailerId = trailer
       ? `https://www.youtube.com/watch?v=${trailer.slice(
           trailer.indexOf("embed/") + 6,
-          trailer.indexOf("?")
+          trailer.indexOf("?"),
         )}`
       : null;
 
