@@ -16,6 +16,10 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Ensure the app directory is writable for the non-root user.
 RUN chown -R pptruser:pptruser /app
+
+# Create the SQLite data directory so Docker named volumes mounted here
+# get initialized with the correct ownership/permissions.
+RUN mkdir -p /app/data && chown -R pptruser:pptruser /app/data
 USER pptruser
 
 # Copy root package.json and package-lock.json

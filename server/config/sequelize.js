@@ -12,6 +12,10 @@ const storagePath =
 try {
   fs.mkdirSync(path.dirname(storagePath), { recursive: true });
 
+  // Provide a clear error if the directory isn't writable by the current user.
+  // This is a common cause when running as non-root with a volume owned by root.
+  fs.accessSync(path.dirname(storagePath), fs.constants.W_OK);
+
   if (fs.existsSync(storagePath) && fs.statSync(storagePath).isDirectory()) {
     throw new Error(
       `SQLITE_STORAGE points to a directory: ${storagePath}. ` +
