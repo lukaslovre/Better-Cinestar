@@ -3,9 +3,6 @@ const axios = require("axios");
 const { getCinemas } = require("./utils/cinemasList.js");
 const { fetchMoviesAndPerformances } = require("./scraping/cinestarFunctions.js");
 const { getPerformanceDatesFrom } = require("./scraping/getPerformanceDates.js");
-const {
-  // NOTE: legacy enrichment is required lazily only when enabled.
-} = {};
 const { configuration } = require("./config/environment.js");
 const { CronJob } = require("cron");
 const { launchBrowser } = require("./modules/browser/browser.js");
@@ -24,7 +21,7 @@ async function performScrape() {
       browser,
       cinemas,
     );
-    const enrichedMovies = await enrichMovies(browser, movies);
+    const enrichedMovies = await enrichMovies(movies);
     // Send data to server API
     console.log("[performScrape] Sending data to server API...");
     const payload = {
@@ -117,60 +114,16 @@ async function updateMoviesAndPerformances(browser, cinemas) {
   };
 }
 
-async function enrichMoviesWithExternalData(browser, movies) {
-  let enrichedMovies = await fillMoviesWithLetterboxdData(browser, movies);
+async function enrichMovies(movies) {
+  const { fillMoviesWithTmdbData } = require("./modules/tmdb/index.js");
 
-  // validation
-  if (!enrichedMovies || !Array.isArray(enrichedMovies)) {
-    throw new Error(
-      "Error occurred during LetterBoxd data enrichment process: movies is not an array",
-    );
+  try {
+    return await fillMoviesWithTmdbData(movies);
+  } catch (err) {
+    // Graceful fallback: keep CineStar data if TMDB is unavailable/misconfigured.
+    console.warn(`[enrichMovies] TMDB enrichment skipped: ${err.message}`);
+    return movies;
   }
-
-  console.log("Finished enriching with Letterboxd data and starting IMDb data fetch...");
-
-  enrichedMovies = await fillMoviesWithImdbData(enrichedMovies);
-
-  return enrichedMovies;
-}
-
-async function enrichMovies(browser, movies) {
-  const provider = configuration.METADATA_ENRICHMENT_PROVIDER;
-  console.log(`[enrichMovies] Provider: ${provider}`);
-
-  let enrichedMovies = movies;
-
-  if (provider === "tmdb" || provider === "both") {
-    const { fillMoviesWithTmdbData } = require("./modules/tmdb/index.js");
-    enrichedMovies = await fillMoviesWithTmdbData(enrichedMovies);
-  }
-
-  if (provider === "legacy" || provider === "both") {
-    const {
-      fillMoviesWithLetterboxdData,
-      fillMoviesWithImdbData,
-    } = require("./scraping/imdbAndLetterboxdFunctions.js");
-
-    enrichedMovies = await fillMoviesWithLetterboxdData(browser, enrichedMovies);
-
-    if (!enrichedMovies || !Array.isArray(enrichedMovies)) {
-      throw new Error(
-        "Error occurred during LetterBoxd data enrichment process: movies is not an array",
-      );
-    }
-
-    console.log(
-      "Finished enriching with Letterboxd data and starting IMDb data fetch...",
-    );
-
-    enrichedMovies = await fillMoviesWithImdbData(enrichedMovies);
-  }
-
-  if (provider === "none") {
-    console.log("[enrichMovies] Provider is none; skipping enrichment.");
-  }
-
-  return enrichedMovies;
 }
 
 // --- ENTRY POINT ---

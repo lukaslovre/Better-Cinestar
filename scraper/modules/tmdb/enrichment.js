@@ -88,7 +88,6 @@ async function enrichMovieWithTmdb(movie) {
   if (!match?.id) return nullEnrichment();
 
   const { details } = await fetchMovieDetailsWithFallback(match.id);
-  console.log(details);
 
   const posterPath = details?.poster_path ?? match?.poster_path ?? null;
   const rating = details?.vote_average ?? match?.vote_average ?? null;

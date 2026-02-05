@@ -5,10 +5,7 @@ const envSchema = z.object({
   SCRAPER_SECRET: z.string(),
   CINESTAR_API_URL: z.string().url().default("https://shop.cinestarcinemas.hr/api"),
 
-  // Metadata enrichment (Phase 1: TMDB)
-  METADATA_ENRICHMENT_PROVIDER: z
-    .enum(["tmdb", "legacy", "both", "none"])
-    .default("tmdb"),
+  // Metadata enrichment (TMDB)
 
   SCRAPER_DRY_RUN: z
     .enum(["true", "false"])
