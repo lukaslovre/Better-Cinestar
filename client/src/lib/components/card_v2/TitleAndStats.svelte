@@ -6,9 +6,7 @@
 
   let { movie, isFullscreened }: TitleAndStatsProps = $props();
 
-  let primaryGenre = $derived(
-    movie.tmdb_genres?.[0]?.name || movie.genres?.[0] || 'N/A'
-  );
+  let primaryGenre = $derived(movie.tmdb_genres?.[0]?.name || movie.genres?.[0] || 'N/A');
 
   let runtimeText = $derived.by(() => {
     const mins = movie.tmdb_runtime ?? movie.lengthInMinutes ?? null;
@@ -45,7 +43,11 @@
       <div>
         {#if tmdbRatingText}
           <div class="ratingIconAndValue">
-            <img class="tmdbLogo" src="/images/tmdb_logo_blue_short.svg" alt="TMDB logo" />
+            <img
+              class="tmdbLogo"
+              src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_1-5bdc75aaebeb75dc7ae79426ddd9be3b2be1e342510f8202baf6bffa71d7f5c4.svg"
+              alt="TMDB logo"
+            />
             <p>{tmdbRatingText}</p>
           </div>
         {/if}
@@ -103,7 +105,7 @@
   }
 
   .movieStats .ratingIconAndValue > img.tmdbLogo {
-    height: 0.9rem;
+    height: 0.4rem;
     width: auto;
   }
 </style>
