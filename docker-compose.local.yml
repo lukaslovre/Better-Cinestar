@@ -15,6 +15,9 @@ services:
       - "3000:3000"
     # Chromium can crash if /dev/shm is too small. This improves stability.
     shm_size: "256mb"
+    environment:
+      - DB_SCHEMA_VERSION=${DB_SCHEMA_VERSION:-1}
+      - FORCE_DB_RESET=${FORCE_DB_RESET:-false}
 
   client:
     build:

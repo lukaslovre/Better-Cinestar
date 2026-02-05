@@ -22,6 +22,9 @@ services:
       - PUPPETEER_EXECUTABLE_PATH=${PUPPETEER_EXECUTABLE_PATH:-}
       - SEATING_CACHE_TTL_MS=${SEATING_CACHE_TTL_MS:-60000}
       - SEATING_CACHE_MAX_ENTRIES=${SEATING_CACHE_MAX_ENTRIES:-50}
+      # Optional: DB schema control (increment or set FORCE_DB_RESET=true to wipe DB on startup)
+      - DB_SCHEMA_VERSION=${DB_SCHEMA_VERSION:-1}
+      - FORCE_DB_RESET=${FORCE_DB_RESET:-false}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]

@@ -39,6 +39,11 @@ const envSchema = z.object({
   ANALYTICS_STORAGE_ITEMS: z.coerce.number().default(200),
   ANALYTICS_STORAGE_TIME_MINUTES: z.coerce.number().default(10),
   ANALYTICS_HASH_SALT: z.string().default(crypto.randomBytes(16).toString("hex")),
+  // Optional DB schema version - increment when your models change in incompatible ways
+  // If this value differs from the DB PRAGMA user_version the server can optionally reset the DB schema.
+  DB_SCHEMA_VERSION: z.coerce.number().default(1),
+  // If true, always reset DB schema on startup (dangerous: destroys data)
+  FORCE_DB_RESET: z.preprocess(parseBooleanish, z.boolean().default(false)),
 });
 
 const env = envSchema.parse(process.env); // This will throw if the environment variables are not set correctly and shut down the server
