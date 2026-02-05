@@ -107,7 +107,7 @@
   }
   .movieExtraInfo .peopleContainer .person {
     flex-shrink: 0;
-    width: 4rem;
+    width: 5rem;
     display: flex;
     flex-direction: column;
     row-gap: 0.25rem;
@@ -118,8 +118,8 @@
     }
   }
   .movieExtraInfo .peopleContainer .person img {
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
     object-fit: cover;
     border-radius: 50%;
   }

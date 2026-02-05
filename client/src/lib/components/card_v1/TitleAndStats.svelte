@@ -34,14 +34,25 @@
 
     {#if tmdbRatingText}
       <p>·</p>
-      <div class="ratingIconAndValue">
-        <img
-          class="tmdbLogo"
-          src="/images/tmdb_logo_blue_short.svg"
-          alt="TMDB logo"
-        />
-        <p>{tmdbRatingText}</p>
-      </div>
+      {#if movie.tmdb_url}
+        <a href={movie.tmdb_url} target="_blank" rel="noopener noreferrer" class="ratingIconAndValue">
+          <img
+            class="tmdbLogo"
+            src="/images/tmdb_logo_blue_short.svg"
+            alt="TMDB logo"
+          />
+          <p>{tmdbRatingText}</p>
+        </a>
+      {:else}
+        <div class="ratingIconAndValue">
+          <img
+            class="tmdbLogo"
+            src="/images/tmdb_logo_blue_short.svg"
+            alt="TMDB logo"
+          />
+          <p>{tmdbRatingText}</p>
+        </div>
+      {/if}
     {/if}
   </div>
 </div>
