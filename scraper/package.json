@@ -2,9 +2,9 @@
   "name": "bettercinestar-scraper",
   "version": "1.0.0",
   "description": "Scraper for BetterCinestar",
-  "main": "scrapeAndSaveToDb.js",
+  "main": "app.js",
   "scripts": {
-    "scrape": "node scrapeAndSaveToDb.js",
+    "scrape": "node app.js",
     "test": "node tests/tmdbMatching.test.js",
     "diagnostics": "node tests/scraperDiagnostics.js",
     "tmdb-diagnostics": "node tests/tmdbDiagnostics.js"
