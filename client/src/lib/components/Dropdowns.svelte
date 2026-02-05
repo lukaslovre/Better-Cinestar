@@ -1,28 +1,39 @@
-<script>
+<script lang="ts">
   import LocationDropdown from './LocationDropdown.svelte';
   import DateDropdown from './DateDropdown.svelte';
   import SortDropdown from './SortDropdown.svelte';
 
+  let { onshowPerformanceInfoPopup } = $props();
+
   // Setting initial dropdown states
-  let locationDropdownOpen = {
+  let locationDropdownOpen = $state({
     level: 0,
     selectedCity: null
-  };
-  let dateDropdownOpen = {
+  });
+  let dateDropdownOpen = $state({
     value: false
-  };
-  let sortDropdownOpen = {
+  });
+  let sortDropdownOpen = $state({
     value: false
-  };
+  });
 
   // Event listener to close dropdowns when clicking outside of them
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.dropdown-options')) return;
-    if (e.target.closest('.dropdown-element')) return;
+  $effect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (!e.target || !(e.target instanceof Element)) return;
+      if (e.target.closest('.dropdown-options')) return;
+      if (e.target.closest('.dropdown-element')) return;
 
-    locationDropdownOpen.level = 0;
-    dateDropdownOpen.value = false;
-    sortDropdownOpen.value = false;
+      locationDropdownOpen.level = 0;
+      dateDropdownOpen.value = false;
+      sortDropdownOpen.value = false;
+    };
+
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
   });
 </script>
 
