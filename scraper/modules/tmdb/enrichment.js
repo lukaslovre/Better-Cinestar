@@ -1,7 +1,7 @@
 const { configuration } = require("../../config/environment.js");
 const { getTargetYearFromMovie } = require("./utils.js");
 const { searchMovie, fetchMovieDetails } = require("./tmdbClient.js");
-const { pickBestMatch } = require("./matching.js");
+const { pickBestMatch, computeCandidates } = require("./matching.js");
 const {
   buildImageUrl,
   tmdbMovieUrl,
@@ -60,29 +60,49 @@ async function enrichMovieWithTmdb(movie) {
 
   let search = null;
   try {
-    search = await searchMovie({ query, year: targetYear, language: primaryLang });
+    search = await searchMovie({ query, year: targetYear, language: fallbackLang });
   } catch (e) {
     console.warn(`[tmdb] Search failed for "${query}": ${e.message}`);
     return nullEnrichment();
   }
 
   const results = Array.isArray(search?.results) ? search.results : [];
+  // compute diagnostics for primary-language search
+  const primaryCandidates = computeCandidates({ movie, results, targetYear });
   let match = pickBestMatch({ movie, results, targetYear });
 
+  let fallbackCandidates = null;
   if (!match && primaryLang !== fallbackLang) {
     try {
       const searchFallback = await searchMovie({
         query,
         year: targetYear,
-        language: fallbackLang,
+        language: primaryLang,
       });
       const resultsFallback = Array.isArray(searchFallback?.results)
         ? searchFallback.results
         : [];
+      fallbackCandidates = computeCandidates({
+        movie,
+        results: resultsFallback,
+        targetYear,
+      });
       match = pickBestMatch({ movie, results: resultsFallback, targetYear });
     } catch (_) {
       // ignore
     }
+  }
+
+  // Attach diagnostics to the movie for inclusion in dry-run artifacts / payload
+  try {
+    Object.defineProperty(movie, "tmdb_search_candidates", {
+      value: { primary: primaryCandidates, fallback: fallbackCandidates },
+      enumerable: true,
+      configurable: true,
+      writable: true,
+    });
+  } catch (_) {
+    // ignore if movie object cannot be extended
   }
 
   if (!match?.id) return nullEnrichment();

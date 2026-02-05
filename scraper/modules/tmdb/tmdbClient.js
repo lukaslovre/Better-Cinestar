@@ -115,7 +115,7 @@ async function searchMovie({ query, year, language }) {
     query,
     include_adult: "false", //Why?
     language,
-    primary_release_year: year ? String(year) : undefined,
+    // primary_release_year: year ? String(year) : undefined,
     page: "1",
   });
 }

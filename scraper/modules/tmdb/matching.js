@@ -1,6 +1,6 @@
 const { normalizeTitle, tokenize, jaccard, parseYearFromDate } = require("./utils.js");
 
-function scoreCandidate({ movie, tmdbItem, targetYear }) {
+function scoreCandidateBreakdown({ movie, tmdbItem, targetYear }) {
   const cineTitles = [movie?.originalTitle, movie?.title, movie?.name].filter(Boolean);
   const tmdbTitles = [tmdbItem?.original_title, tmdbItem?.title].filter(Boolean);
 
@@ -20,7 +20,6 @@ function scoreCandidate({ movie, tmdbItem, targetYear }) {
 
         if (na.includes(nb) || nb.includes(na)) s += 20;
 
-        // Prefer exact token match on first token for sequels etc.
         if (tokA[0] && tokB[0] && tokA[0] === tokB[0]) s += 5;
 
         if (s > best) best = s;
@@ -46,13 +45,20 @@ function scoreCandidate({ movie, tmdbItem, targetYear }) {
 
   const posterBonus = tmdbItem?.poster_path ? 2 : 0;
 
-  return bestTitleScore + yearScore + popularityScore + posterBonus;
+  const total = bestTitleScore + yearScore + popularityScore + posterBonus;
+  return {
+    titleScore: bestTitleScore,
+    yearScore,
+    popularityScore,
+    posterBonus,
+    totalScore: total,
+  };
 }
 
-function pickBestMatch({ movie, results, targetYear }) {
-  if (!Array.isArray(results) || results.length === 0) return null;
+function computeCandidates({ movie, results, targetYear }) {
+  if (!Array.isArray(results) || results.length === 0) return [];
 
-  // Validate year window first (±2), if we have a year.
+  // Apply the same year-window filtering used by pickBestMatch (±2 years)
   const filtered = targetYear
     ? results.filter((r) => {
         const y = parseYearFromDate(r?.release_date);
@@ -60,22 +66,41 @@ function pickBestMatch({ movie, results, targetYear }) {
       })
     : results;
 
-  let best = null;
-  let bestScore = -Infinity;
+  const candidates = filtered.map((item) => {
+    const breakdown = scoreCandidateBreakdown({ movie, tmdbItem: item, targetYear });
+    return {
+      id: item?.id ?? null,
+      title: item?.title ?? null,
+      original_title: item?.original_title ?? null,
+      release_date: item?.release_date ?? null,
+      poster_path: item?.poster_path ?? null,
+      popularity: item?.popularity ?? null,
+      score: breakdown.totalScore,
+      breakdown,
+    };
+  });
 
-  for (const item of filtered) {
-    const score = scoreCandidate({ movie, tmdbItem: item, targetYear });
-    if (score > bestScore) {
-      bestScore = score;
-      best = item;
-    }
-  }
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates;
+}
 
-  // Threshold prevents wild mismatches on generic titles.
-  if (!best || bestScore < 45) return null;
-  return best;
+function pickBestMatch({ movie, results, targetYear }) {
+  const candidates = computeCandidates({ movie, results, targetYear });
+  if (candidates.length === 0) return null;
+  const best = candidates[0];
+  if (!best || best.score < 45) return null;
+  // convert back to a TMDB-like item shape minimal
+  return {
+    id: best.id,
+    title: best.title,
+    original_title: best.original_title,
+    release_date: best.release_date,
+    poster_path: best.poster_path,
+    popularity: best.popularity,
+  };
 }
 
 module.exports = {
   pickBestMatch,
+  computeCandidates,
 };
