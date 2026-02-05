@@ -19,7 +19,7 @@
 >
   <img
     class="moviePoster"
-    src={movie.posterUrl || movie.imageUrl}
+    src={movie.tmdb_poster_url || movie.imageUrl}
     alt="{movie.originalTitle} poster"
   />
 

@@ -14,11 +14,17 @@
     {
       question: 'Koliko su točne informacije na ovoj web stranici?',
       answer:
-        'Osnovni podaci, uključujući popis filmova, raspored prikazivanja i informacije o sjedalima, preuzimaju se sa službene web stranice Cinestar-a. Dodatni detalji poput liste glumaca, redatelja i ocjena dolaze sa Letterboxd-a. Može se dogoditi da program pronađe krivu Letterboxd stranicu za film, ali to se lako primjeti jer naslov filma i slika neće odgovarati.'
+        'Osnovni podaci, uključujući popis filmova, raspored prikazivanja i informacije o sjedalima, preuzimaju se sa službenih Cinestarovih izvora. Dodatni detalji (opis, glumci, redatelji, trailer i ocjena) dolaze preko TMDB API-ja. Ako TMDB ne pronađe film ili ako neki podatak nedostaje, prikazat će se osnovni Cinestar podaci.'
     },
     {
       question: 'Koliko često se ažuriraju podaci na ovoj web stranici?',
-      answer: 'Svi podaci (Cinestar i Letterboxd) se ažuriraju jednom dnevno, u 00:30'
+      answer:
+        'Svi podaci se ažuriraju jednom dnevno (trenutno u 02:00). Termini i raspored dolaze iz Cinestar izvora, a dodatni podaci se osvježavaju preko TMDB-a.'
+    },
+    {
+      question: 'Zašto je opis ponekad na engleskom?',
+      answer:
+        'Primarni jezik je hrvatski, ali ako TMDB nema opis na hrvatskom za određeni film, koristi se engleska verzija.'
     },
     {
       question: 'Zašto nema filmova nakon srijede?',

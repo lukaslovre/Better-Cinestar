@@ -1,6 +1,29 @@
-<script>
-  export let movie;
-  export let isFullscreened;
+<script lang="ts">
+  interface TitleAndStatsProps {
+    movie: Movie;
+    isFullscreened: boolean;
+  }
+
+  let { movie, isFullscreened }: TitleAndStatsProps = $props();
+
+  let primaryGenre = $derived(
+    movie.tmdb_genres?.[0]?.name || movie.genres?.[0] || 'N/A'
+  );
+
+  let runtimeText = $derived.by(() => {
+    const mins = movie.tmdb_runtime ?? movie.lengthInMinutes ?? null;
+    if (!mins || mins <= 0) return null;
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return h > 0 ? `${h}h ${m}min` : `${m}min`;
+  });
+
+  let tmdbRatingText = $derived.by(() => {
+    const r = movie.tmdb_rating;
+    if (r == null) return null;
+    const rounded = Math.round(r * 10) / 10;
+    return `${rounded}/10`;
+  });
 </script>
 
 <div class="titleAndStats" class:sticky={isFullscreened}>
@@ -16,31 +39,26 @@
   <div class="movieStats">
     <div class="row">
       <div>
-        <p>{movie.englishCategories?.[0] || movie.genres?.[0] || 'N/A'}</p>
+        <p>{primaryGenre}</p>
       </div>
 
       <div>
-        {#if movie.imdbRating}
+        {#if tmdbRatingText}
           <div class="ratingIconAndValue">
-            <img src="/images/imdbIcon.png" alt="imdb icon" />
-            <p>{movie.imdbRating}/10</p>
+            <img class="tmdbLogo" src="/images/tmdb_logo_blue_short.svg" alt="TMDB logo" />
+            <p>{tmdbRatingText}</p>
           </div>
         {/if}
       </div>
     </div>
     <div class="row">
       <div>
-        {#if movie.duration}
-          <p>{movie.duration}</p>
+        {#if runtimeText}
+          <p>{runtimeText}</p>
         {/if}
       </div>
       <div>
-        {#if movie.letterboxdRating}
-          <div class="ratingIconAndValue">
-            <img src="/images/letterboxdIcon.png" alt="letterboxd icon" />
-            <p>{movie.letterboxdRating}/5</p>
-          </div>
-        {/if}
+        <!-- reserved for future stats -->
       </div>
     </div>
   </div>
@@ -83,7 +101,9 @@
     align-items: center;
     column-gap: 0.25rem;
   }
-  .movieStats .ratingIconAndValue > img {
-    height: 1rem;
+
+  .movieStats .ratingIconAndValue > img.tmdbLogo {
+    height: 0.9rem;
+    width: auto;
   }
 </style>

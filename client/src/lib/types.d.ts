@@ -3,9 +3,14 @@
 ///////
 
 interface Person {
-  name?: string;
-  portraitUrl?: string;
-  lbUrl?: string;
+  id?: number | null;
+  name?: string | null;
+  character?: string | null;
+  job?: string | null;
+  department?: string | null;
+  profile_path?: string | null;
+  profile_url?: string | null;
+  profile_image_url?: string | null;
 }
 
 interface AgeRatingInformation {
@@ -34,34 +39,36 @@ interface Limitations {
 
 interface Movie {
   id: string;
-  actors?: Person[];
   ageRating?: string;
   ageRatingInformation?: AgeRatingInformation;
   countries?: string[];
   director?: string;
-  duration?: string;
-  durationMins?: number;
-  englishCategories?: string[];
-  englishDirectors?: Person[];
-  englishSynopsis?: string;
   filmEDI?: string;
   filmNumber?: number;
   genres?: string[];
   imageUrl?: string;
-  imdbRating?: number;
-  imdbUrl?: string;
   lengthInMinutes?: number;
-  letterboxdRating?: string;
-  letterboxdUrl?: string;
   name?: string;
   nationwideStart?: string; // Date string YYYY-MM-DD
   originalTitle?: string;
-  posterUrl?: string;
   productionYear?: string;
   synopsis?: string;
   ticketTitle?: string;
   title?: string;
-  trailerLink?: string;
+
+  tmdb_movie_id?: number | null;
+  tmdb_url?: string | null;
+  tmdb_rating?: number | null;
+  tmdb_vote_count?: number | null;
+  tmdb_synopsis?: string | null;
+  tmdb_genres?: { id?: number; name?: string }[] | null;
+  tmdb_runtime?: number | null;
+  tmdb_poster_path?: string | null;
+  tmdb_poster_url?: string | null;
+  tmdb_cast?: Person[] | null;
+  tmdb_directors?: Person[] | null;
+  tmdb_trailer_url?: string | null;
+
   performances?: MoviePerformance[]; // Added based on API response
   availableDates?: string[]; // Added based on API response (Date strings YYYY-MM-DD)
 }

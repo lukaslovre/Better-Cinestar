@@ -123,9 +123,26 @@
           transition:fade={{ delay: transitionDelay * 5, duration: transitionDuration }}
         >
           <p class="title">GitHub repository</p>
-          <a href="https://github.com/lukaslovre/Better-Cinestar" class="text"
-            >github.com/lukaslovre/Better-Cinestar</a
-          >
+          <a href="https://github.com/lukaslovre/Better-Cinestar" class="text">
+            github.com/lukaslovre/Better-Cinestar
+          </a>
+        </section>
+
+        <section
+          transition:fade={{ delay: transitionDelay * 6, duration: transitionDuration }}
+        >
+          <p class="title">Attribution</p>
+          <div class="text flex flex-row items-center gap-3">
+            <img
+              class="inline-block h-3"
+              src="/images/tmdb_logo_blue_short.svg"
+              alt="TMDB logo"
+              loading="lazy"
+            />
+            <p class="text creditsText">
+              This product uses the TMDB API but is not endorsed or certified by TMDB.
+            </p>
+          </div>
         </section>
       </div>
     {/if}
@@ -210,10 +227,5 @@
   }
   .menu button:hover {
     background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .menu img {
-    width: 100%;
-    height: 100%;
   }
 </style>

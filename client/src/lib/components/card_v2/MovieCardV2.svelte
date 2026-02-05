@@ -21,12 +21,12 @@
 >
   <div
     class="posterContainer"
-    style="background-image: url({movie.posterUrl || movie.imageUrl});"
+    style="background-image: url({movie.tmdb_poster_url || movie.imageUrl});"
   >
     <div class="overlay"></div>
     <img
       class="moviePoster"
-      src={movie.posterUrl || movie.imageUrl}
+      src={movie.tmdb_poster_url || movie.imageUrl}
       alt="{movie.originalTitle} poster"
     />
   </div>

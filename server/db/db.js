@@ -39,7 +39,10 @@ async function saveToDatabase(model, data, type) {
     // clear the table before inserting new data
     await model.destroy({ truncate: true, transaction });
 
-    await model.bulkCreate(data, { transaction });
+    await model.bulkCreate(data, {
+      transaction,
+      fields: Object.keys(model.rawAttributes),
+    });
 
     await transaction.commit();
     console.log(`${type} successfully saved to the database.`);

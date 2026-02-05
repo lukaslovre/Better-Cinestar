@@ -3,14 +3,12 @@ const axios = require("axios");
 const { getCinemas } = require("./utils/cinemasList.js");
 const { fetchMoviesAndPerformances } = require("./scraping/cinestarFunctions.js");
 const { getPerformanceDatesFrom } = require("./scraping/getPerformanceDates.js");
-const {
-  fillMoviesWithLetterboxdData,
-  fillMoviesWithImdbData,
-} = require("./scraping/imdbAndLetterboxdFunctions.js");
 const { configuration } = require("./config/environment.js");
 const { CronJob } = require("cron");
 const { launchBrowser } = require("./modules/browser/browser.js");
 const { withRetry } = require("./utils/retry.js");
+const fs = require("fs/promises");
+const path = require("path");
 
 const cinemas = getCinemas();
 
@@ -23,7 +21,7 @@ async function performScrape() {
       browser,
       cinemas,
     );
-    const enrichedMovies = await enrichMoviesWithExternalData(browser, movies);
+    const enrichedMovies = await enrichMovies(movies);
     // Send data to server API
     console.log("[performScrape] Sending data to server API...");
     const payload = {
@@ -32,39 +30,50 @@ async function performScrape() {
       performanceDates: performanceDates,
     };
 
-    const response = await withRetry(
-      () =>
-        axios.post(configuration.SERVER_API_URL, payload, {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Scraper-Secret": configuration.SCRAPER_SECRET,
+    if (configuration.SCRAPER_DRY_RUN) {
+      const artifactsDir = path.resolve(__dirname, "tests", "artifacts");
+      await fs.mkdir(artifactsDir, { recursive: true });
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const outPath = path.join(artifactsDir, `dry_run_payload_${timestamp}.json`);
+      await fs.writeFile(outPath, JSON.stringify(payload, null, 2), "utf8");
+      console.log(
+        `[performScrape] DRY RUN enabled: skipping POST. Payload written to ${outPath}`,
+      );
+    } else {
+      const response = await withRetry(
+        () =>
+          axios.post(configuration.SERVER_API_URL, payload, {
+            headers: {
+              "Content-Type": "application/json",
+              "X-Scraper-Secret": configuration.SCRAPER_SECRET,
+            },
+          }),
+        {
+          retries: 5,
+          delay: 2000,
+          shouldRetry: (error) => {
+            // Don't retry if the server explicitly rejected the request (4xx)
+            if (
+              error.response &&
+              error.response.status >= 400 &&
+              error.response.status < 500
+            ) {
+              return false;
+            }
+            return true;
           },
-        }),
-      {
-        retries: 5,
-        delay: 2000,
-        shouldRetry: (error) => {
-          // Don't retry if the server explicitly rejected the request (4xx)
-          if (
-            error.response &&
-            error.response.status >= 400 &&
-            error.response.status < 500
-          ) {
-            return false;
-          }
-          return true;
         },
-      },
-    );
-    console.log("[performScrape] Data successfully sent to server:", response.data);
-    const moviesWithLetterboxdUrl = enrichedMovies.filter(
-      (movie) => movie.letterboxdUrl,
+      );
+      console.log("[performScrape] Data successfully sent to server:", response.data);
+    }
+    const moviesWithTmdbMatch = enrichedMovies.filter(
+      (movie) => movie.tmdb_movie_id,
     ).length;
-    const percentageWithLetterboxdUrl = (
-      (moviesWithLetterboxdUrl / enrichedMovies.length) *
+    const percentageWithTmdbMatch = (
+      (moviesWithTmdbMatch / enrichedMovies.length) *
       100
     ).toFixed(2);
-    const successMessage = `Successfully sent ${enrichedMovies.length} movies and ${performances.length} performances to the server. ${moviesWithLetterboxdUrl} (${percentageWithLetterboxdUrl}%) of the movies have a Letterboxd URL.`;
+    const successMessage = `Processed ${enrichedMovies.length} movies and ${performances.length} performances. ${moviesWithTmdbMatch} (${percentageWithTmdbMatch}%) of the movies matched on TMDB.`;
     console.log("[performScrape] " + successMessage);
   } catch (error) {
     console.error(
@@ -105,21 +114,16 @@ async function updateMoviesAndPerformances(browser, cinemas) {
   };
 }
 
-async function enrichMoviesWithExternalData(browser, movies) {
-  let enrichedMovies = await fillMoviesWithLetterboxdData(browser, movies);
+async function enrichMovies(movies) {
+  const { fillMoviesWithTmdbData } = require("./modules/tmdb/index.js");
 
-  // validation
-  if (!enrichedMovies || !Array.isArray(enrichedMovies)) {
-    throw new Error(
-      "Error occurred during LetterBoxd data enrichment process: movies is not an array",
-    );
+  try {
+    return await fillMoviesWithTmdbData(movies);
+  } catch (err) {
+    // Graceful fallback: keep CineStar data if TMDB is unavailable/misconfigured.
+    console.warn(`[enrichMovies] TMDB enrichment skipped: ${err.message}`);
+    return movies;
   }
-
-  console.log("Finished enriching with Letterboxd data and starting IMDb data fetch...");
-
-  enrichedMovies = await fillMoviesWithImdbData(enrichedMovies);
-
-  return enrichedMovies;
 }
 
 // --- ENTRY POINT ---
