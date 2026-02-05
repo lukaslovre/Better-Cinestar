@@ -114,6 +114,20 @@ function formatMovie(movie) {
     trailerLink: null,
     englishDirectors: null,
     posterUrl: null,
+
+    // TMDB-enriched metadata (Phase 1)
+    tmdb_movie_id: null,
+    tmdb_url: null,
+    tmdb_rating: null,
+    tmdb_vote_count: null,
+    tmdb_synopsis: null,
+    tmdb_genres: null,
+    tmdb_runtime: null,
+    tmdb_poster_path: null,
+    tmdb_poster_url: null,
+    tmdb_cast: null,
+    tmdb_directors: null,
+    tmdb_trailer_url: null,
   };
 }
 
