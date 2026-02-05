@@ -1,21 +1,36 @@
 <script lang="ts">
   let { movie }: { movie: Movie } = $props();
+
+  let directorsLabel = $derived(
+    movie.tmdb_directors && movie.tmdb_directors.length > 1 ? 'Redatelji' : 'Redatelj'
+  );
+
+  let synopsisText = $derived(movie.tmdb_synopsis || movie.synopsis || '');
 </script>
 
 <div class="movieExtraInfo">
   <div class="infoContainer">
-    <p class="infoLabel">
-      {movie.englishDirectors && movie.englishDirectors.length > 1
-        ? 'Redatelji'
-        : 'Redatelj'}
-    </p>
+    <p class="infoLabel">{directorsLabel}</p>
     <div class="peopleContainer">
-      {#if movie.englishDirectors}
-        {#each movie.englishDirectors as director}
-          <a href={director.lbUrl} class="person">
-            <img src={director.portraitUrl} alt={director.name + 'portrait'} />
-            <p class="personName">{director.name}</p>
-          </a>
+      {#if movie.tmdb_directors && movie.tmdb_directors.length}
+        {#each movie.tmdb_directors as director}
+          {#if director?.profile_url}
+            <a href={director.profile_url} class="person" target="_blank" rel="noopener">
+              <img
+                src={director.profile_image_url || '/images/defaultPersonImage.jpg'}
+                alt={(director.name || 'Director') + ' portrait'}
+              />
+              <p class="personName">{director.name}</p>
+            </a>
+          {:else}
+            <div class="person">
+              <img
+                src={director?.profile_image_url || '/images/defaultPersonImage.jpg'}
+                alt={(director?.name || 'Director') + ' portrait'}
+              />
+              <p class="personName">{director?.name}</p>
+            </div>
+          {/if}
         {/each}
       {:else}
         <div class="person">
@@ -26,15 +41,28 @@
     </div>
   </div>
 
-  {#if movie.actors}
+  {#if movie.tmdb_cast && movie.tmdb_cast.length}
     <div class="infoContainer">
       <p class="infoLabel">Glumci</p>
       <div class="peopleContainer">
-        {#each movie.actors as actor}
-          <a href={actor.lbUrl} class="person">
-            <img src={actor.portraitUrl} alt={actor.name + ' portrait'} />
-            <p class="personName">{actor.name}</p>
-          </a>
+        {#each movie.tmdb_cast as actor}
+          {#if actor?.profile_url}
+            <a href={actor.profile_url} class="person" target="_blank" rel="noopener">
+              <img
+                src={actor.profile_image_url || '/images/defaultPersonImage.jpg'}
+                alt={(actor.name || 'Actor') + ' portrait'}
+              />
+              <p class="personName">{actor.name}</p>
+            </a>
+          {:else}
+            <div class="person">
+              <img
+                src={actor?.profile_image_url || '/images/defaultPersonImage.jpg'}
+                alt={(actor?.name || 'Actor') + ' portrait'}
+              />
+              <p class="personName">{actor?.name}</p>
+            </div>
+          {/if}
         {/each}
       </div>
     </div>
@@ -42,16 +70,12 @@
 
   <div class="infoContainer">
     <p class="infoLabel">Opis</p>
-    {#if movie.englishSynopsis}
-      <p class="infoText">{movie.englishSynopsis}</p>
-    {:else}
-      <p class="infoText">{movie.synopsis}</p>
-    {/if}
+    <p class="infoText">{synopsisText}</p>
   </div>
 
-  {#if movie.trailerLink}
+  {#if movie.tmdb_trailer_url}
     <a
-      href={movie.trailerLink}
+      href={movie.tmdb_trailer_url}
       class="trailerButton"
       target="_blank"
       rel="noopener"

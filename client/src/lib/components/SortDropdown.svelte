@@ -1,19 +1,25 @@
-<script>
+<script lang="ts">
   import { sortBy } from '$lib/stores/userSelection.svelte';
 
-  export let sortDropdownOpen;
+  type SortOptionValue = 'nationwideStart' | 'tmdb_rating' | 'genre' | 'tmdb_runtime';
 
-  const dropdownOptionValues = [
+  interface SortDropdownOpen {
+    value: boolean;
+  }
+
+  let { sortDropdownOpen }: { sortDropdownOpen: SortDropdownOpen } = $props();
+
+  const dropdownOptionValues: { text: string; value: SortOptionValue }[] = [
     { text: 'po Datumu izlaska', value: 'nationwideStart' },
-    { text: 'po IMDB ocjeni', value: 'imdbRating' },
-    { text: 'po Letterboxd ocjeni', value: 'letterboxdRating' },
+    { text: 'po TMDB ocjeni', value: 'tmdb_rating' },
     { text: 'po Žanru', value: 'genre' },
-    { text: 'po Trajanju', value: 'durationMins' }
+    { text: 'po Trajanju', value: 'tmdb_runtime' }
   ];
 
-  $: selectedSortText = dropdownOptionValues.find(
-    (option) => option.value === $sortBy
-  )?.text;
+  let selectedSortText = $derived(
+    dropdownOptionValues.find((option) => option.value === ($sortBy as SortOptionValue))
+      ?.text
+  );
 
   function toggleDropdown() {
     sortDropdownOpen.value = !sortDropdownOpen.value;
@@ -31,7 +37,7 @@
   <button
     type="button"
     class="dropdown-element secondary-color-scheme"
-    on:click={toggleDropdown}
+    onclick={toggleDropdown}
   >
     <p class="selectedValue">{selectedSortText}</p>
     <svg
@@ -59,7 +65,7 @@
         type="button"
         class="option"
         class:selected={$sortBy === sortOption.value}
-        on:click={() => {
+        onclick={() => {
           $sortBy = sortOption.value;
           sortDropdownOpen.value = false;
         }}
