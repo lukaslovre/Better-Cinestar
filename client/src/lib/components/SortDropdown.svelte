@@ -11,7 +11,7 @@
 
   const dropdownOptionValues: { text: string; value: SortOptionValue }[] = [
     { text: 'po Datumu izlaska', value: 'nationwideStart' },
-    { text: 'po TMDB ocjeni', value: 'tmdb_rating' },
+    { text: 'po Ocjeni', value: 'tmdb_rating' },
     { text: 'po Žanru', value: 'genre' },
     { text: 'po Trajanju', value: 'tmdb_runtime' }
   ];

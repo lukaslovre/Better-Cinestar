@@ -45,7 +45,7 @@
       <div>
         {#if tmdbRatingText}
           <div class="ratingIconAndValue">
-            <p>TMDB</p>
+            <img class="tmdbLogo" src="/images/tmdb_logo_blue_short.svg" alt="TMDB logo" />
             <p>{tmdbRatingText}</p>
           </div>
         {/if}
@@ -100,5 +100,10 @@
     display: flex;
     align-items: center;
     column-gap: 0.25rem;
+  }
+
+  .movieStats .ratingIconAndValue > img.tmdbLogo {
+    height: 0.9rem;
+    width: auto;
   }
 </style>
