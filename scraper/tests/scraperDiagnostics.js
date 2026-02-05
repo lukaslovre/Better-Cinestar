@@ -3,7 +3,10 @@ const { launchBrowser } = require("../modules/browser/browser.js");
 const { configuration } = require("../config/environment.js");
 const { getCinemas } = require("../utils/cinemasList.js");
 const axios = require("axios");
-const { fillMoviesWithTmdbData } = require("../modules/tmdb/index.js");
+const {
+  runTmdbDiagnostics,
+  DEFAULT_TMDB_DIAGNOSTIC_MOVIES,
+} = require("./tmdbDiagnostics.js");
 
 /**
  * Scraper Diagnostics Tool
@@ -56,26 +59,26 @@ async function runDiagnostics() {
 
     // 2. Check TMDB (via real enrichment code paths)
     console.log("\n[2/3] Checking TMDB via scraper enrichment...");
-    if (!configuration.TMDB_API_KEY) {
-      console.log("❌ TMDB: TMDB_API_KEY is not set.");
-    } else {
-      const knownMovie = {
-        id: "diagnostic-1",
-        originalTitle: "The Matrix",
-        title: "The Matrix",
-        nationwideStart: "1999-03-31",
-      };
-      try {
-        const [enriched] = await fillMoviesWithTmdbData([knownMovie]);
-        if (enriched?.tmdb_movie_id) {
-          console.log(`✅ TMDB: Matched movie id: ${enriched.tmdb_movie_id}`);
-          results.tmdb = true;
-        } else {
-          console.log("❌ TMDB: No match returned for known movie.");
-        }
-      } catch (e) {
-        console.log(`❌ TMDB: Enrichment path failed: ${e.message}`);
+    try {
+      const sampleMovie = DEFAULT_TMDB_DIAGNOSTIC_MOVIES[0];
+      const tmdbResult = await runTmdbDiagnostics({
+        sampleMovies: [sampleMovie],
+        requireAllMatch: true,
+        printHeader: false,
+        printPerMovie: false,
+      });
+
+      if (tmdbResult.ok) {
+        const matchedMovie = tmdbResult.movies.find((m) => m.tmdb_movie_id);
+        console.log(
+          `✅ TMDB: Matched movie id: ${matchedMovie?.tmdb_movie_id || "(unknown)"}`,
+        );
+        results.tmdb = true;
+      } else {
+        console.log(`❌ TMDB: ${tmdbResult.reason || "No match returned."}`);
       }
+    } catch (e) {
+      console.log(`❌ TMDB: Enrichment path failed: ${e.message}`);
     }
 
     // 3. Check Server API
