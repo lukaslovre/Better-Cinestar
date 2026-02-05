@@ -104,18 +104,7 @@ async function getCinemaMoviesAndPerformances(page, cinema) {
 function formatMovie(movie) {
   return {
     ...movie,
-    duration: null,
-    letterboxdUrl: null,
-    letterboxdRating: null,
-    imdbUrl: null,
-    imdbRating: null,
-    englishCategories: null,
-    englishSynopsis: null,
-    trailerLink: null,
-    englishDirectors: null,
-    posterUrl: null,
-
-    // TMDB-enriched metadata (Phase 1)
+    // TMDB-enriched metadata
     tmdb_movie_id: null,
     tmdb_url: null,
     tmdb_rating: null,

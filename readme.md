@@ -1,6 +1,6 @@
 # BetterCinestar
 
-BetterCinestar is a web application designed to provide a superior browsing experience for CineStar movie listings. It aggregates data from CineStar, enriches it with ratings and links from Letterboxd and IMDb, and presents it through a modern, responsive interface.
+BetterCinestar is a web application designed to provide a superior browsing experience for CineStar movie listings. It aggregates data from CineStar, enriches it with metadata from TMDB (ratings, posters, cast, trailers), and presents it through a modern, responsive interface.
 
 ## Project Architecture
 
@@ -23,7 +23,7 @@ The project is a monolith composed of three main services:
 - **Tech Stack**: Node.js, Puppeteer, Cheerio.
 - **Responsibility**:
   - Scrapes movie and performance data from CineStar.
-  - Enriches data by fetching ratings and URLs from Letterboxd and IMDb.
+  - Enriches movie metadata using the TMDB API.
   - Sends the processed data to the server.
   - Can be run as a one-off script or on a cron schedule.
 - **Setup**:
@@ -81,9 +81,14 @@ This repo uses environment variables in two different ways:
 
 - **Build-time env (client container):** the client is a static build, so `PUBLIC_API_URL` is baked in at build time. It is passed as a Docker build arg (`build.args.PUBLIC_API_URL`) and is exported during the build in [client/Dockerfile](client/Dockerfile).
 
+#### Scraper metadata enrichment
+
+- To enable TMDB enrichment in Docker, set `TMDB_API_KEY` (recommended via a root `.env`; see `.env.example`).
+
 #### Recommended way to set secrets in production
 
 - Set `SCRAPER_SECRET` and `ANALYTICS_HASH_SALT` in your deployment platform (Coolify) or via a root-level `.env` used by Compose for variable substitution.
+- Set `TMDB_API_KEY` in the same way for TMDB enrichment.
 
 ### Manual Setup
 
@@ -118,7 +123,7 @@ This repo uses environment variables in two different ways:
 
 ## Data Flow
 
-1. **Scraper** fetches data from CineStar and external sources (Letterboxd/IMDb).
+1. **Scraper** fetches data from CineStar and enriches metadata via the TMDB API.
 2. **Scraper** sends a POST request with the data to the **Server**.
 3. **Server** validates the request using `SCRAPER_SECRET` and saves data to `Database.sqlite`.
 4. **Client** fetches movie and performance data from the **Server** API to display to the user.
