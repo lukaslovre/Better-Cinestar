@@ -211,7 +211,7 @@
 
 <Navigation />
 
-<div id="content">
+<main id="content">
   <Dropdowns on:showPerformanceInfoPopup={setShowTooltipPopup} />
 
   {#await moviesPromise}
@@ -231,7 +231,7 @@
       <MovieList {movies} on:selectedPerformance={setOpenedPerformance} />
     {/if}
   {/await}
-</div>
+</main>
 
 <!-- Popup prozori -->
 {#if openedPerformance}
