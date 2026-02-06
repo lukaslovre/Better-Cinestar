@@ -38,8 +38,26 @@
   let moviesEmptyReason: MoviesEmptyReason | null = $state(null);
 
   // Event handlers
-  const setOpenedPerformance = ({ detail }: { detail: any }) =>
-    (openedPerformance = detail as any); // Replace 'any' with the actual type
+  $effect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state;
+      if (openedPerformance && (!state || !state.popupOpen)) {
+        openedPerformance = null;
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  });
+
+  const handlePerformanceOpen = ({ detail }: { detail: any }) => {
+    history.pushState({ popupOpen: true }, '', '');
+    openedPerformance = detail;
+  };
+
+  const handlePerformanceClose = () => {
+    history.back(); // Triggers the popstate event
+  };
+
   const setShowTooltipPopup = ({ detail }: { detail: boolean }) =>
     (showTooltipPopup = detail);
 
@@ -228,17 +246,14 @@
         <p class="text-red-500">Nema filmova na odabrani datum</p>
       {/if}
     {:else if Array.isArray(movies) && movies.length > 0}
-      <MovieList {movies} on:selectedPerformance={setOpenedPerformance} />
+      <MovieList {movies} on:selectedPerformance={handlePerformanceOpen} />
     {/if}
   {/await}
 </main>
 
 <!-- Popup prozori -->
 {#if openedPerformance}
-  <Seating
-    performanceData={openedPerformance}
-    on:selectedPerformance={setOpenedPerformance}
-  />
+  <Seating performanceData={openedPerformance} onclose={handlePerformanceClose} />
 {/if}
 
 {#if showTooltipPopup}

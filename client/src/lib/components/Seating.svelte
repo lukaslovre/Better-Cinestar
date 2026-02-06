@@ -1,27 +1,37 @@
 <script lang="ts">
   import Loading from './Loading.svelte';
-  import { createEventDispatcher } from 'svelte';
   import { cinemas } from '../utils/cinemas';
   import { getAverageHorizontalSeatDistance } from '../utils/performanceSeats';
   import { getRelativeDate } from '../utils/utils';
   import { PUBLIC_API_URL } from '$env/static/public';
   import { getSeatColor as getSeatColorUtil } from '../utils/seatingColors';
 
-  export let performanceData: any;
+  interface PerformanceData {
+    movie: Movie;
+    performance: MoviePerformance;
+  }
 
-  const dispatch = createEventDispatcher();
+  let { performanceData, onclose } = $props<{
+    performanceData: PerformanceData;
+    onclose: () => void;
+  }>();
 
-  let showSeatTypes = true;
-  let seatsPromise = getSeats();
-  let seatingAreas: Array<{ id: number; name: string }> = [];
-  let invalidskoPostoji = false;
+  let showSeatTypes = $state(true);
+  let seatingAreas: SeatingArea[] = $state([]);
+  let invalidskoPostoji = $state(false);
+
+  // Layout state
+  let seatLocationMultiplier = 2.5;
+  let seatOffsetX = 0;
+  let seatSize = 9;
+  let seatsContainerHeight = $state('auto');
+  let seatsContainerElement: HTMLElement | undefined = $state();
 
   async function getSeats() {
     const { cinemaOid, id: performanceId } = performanceData.performance;
 
-    // create a URL parameter from the arguments
     const urlParams = new URLSearchParams();
-    urlParams.append('cinemaOid', cinemaOid);
+    urlParams.append('cinemaOid', cinemaOid!);
     urlParams.append('performanceId', performanceId);
 
     const getSeatingUrl = `${PUBLIC_API_URL}/api/seating`;
@@ -29,7 +39,6 @@
     const res = await fetch(`${getSeatingUrl}?${urlParams.toString()}`);
 
     if (!res.ok) {
-      // Server returns 502 with `{ message }` when Cinestar blocks the request.
       let message = `Failed to load seating (${res.status})`;
       try {
         const maybeJson = await res.json();
@@ -40,7 +49,7 @@
       throw new Error(message);
     }
 
-    const data = await res.json();
+    const data: SeatingLayout = await res.json();
     seatingAreas = data.seatingAreas;
     invalidskoPostoji = false;
 
@@ -48,18 +57,15 @@
     return data;
   }
 
-  let seatLocationMultiplier = 2.5;
-  let seatOffsetX = 0;
-  let seatSize = 9;
+  let seatsPromise = $state(getSeats());
 
   function setSeatingLayoutValues(seats: SeatingLayout) {
-    const seatsContainer = document.getElementById('seatsContainer');
-    if (!seatsContainer) {
-      console.error('Seats container not found (#seatsContainer) in Seating.svelte');
+    if (!seatsContainerElement) {
+      console.error('Seats container not found in Seating.svelte');
       return;
     }
 
-    const containerWidth = seatsContainer.clientWidth - 10;
+    const containerWidth = seatsContainerElement.clientWidth - 10;
 
     const furthestSeat = seats.maxX;
 
@@ -72,16 +78,19 @@
 
     const seatsHeight = seats.maxY * seatLocationMultiplier + seatSize;
 
-    seatsContainer.style.setProperty('height', 64 + seatsHeight + 'px');
+    seatsContainerHeight = 64 + seatsHeight + 'px';
   }
 
   function getSeatColorForSeat(seat: any) {
-    const { color, invalidskoFound } = getSeatColorUtil(seat, seatingAreas, showSeatTypes);
+    const { color, invalidskoFound } = getSeatColorUtil(
+      seat as Seat,
+      seatingAreas,
+      showSeatTypes
+    );
     if (invalidskoFound && invalidskoPostoji === false) invalidskoPostoji = true;
     return color;
   }
 
-  // Utils
   function formatDate(dateString: string, time: string) {
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'short',
@@ -100,16 +109,15 @@
 </script>
 
 <div id="card">
-  <button
-    id="closeSeatsButton"
-    onclick={() => {
-      dispatch('selectedPerformance', null);
-    }}
-  >
+  <button id="closeSeatsButton" onclick={onclose}>
     <img src="/images/xIcon.svg" alt="close seats icon" />
   </button>
 
-  <div id="seatsContainer">
+  <div
+    id="seatsContainer"
+    bind:this={seatsContainerElement}
+    style:height={seatsContainerHeight}
+  >
     {#await seatsPromise}
       <Loading />
     {:then seatsData}
@@ -156,7 +164,10 @@
         <div>
           <div
             class="seat"
-            style:background-color={getSeatColorForSeat({ sar: area.id, stat: 4 })}
+            style:background-color={getSeatColorForSeat({
+              sar: area.id,
+              stat: 4
+            })}
           ></div>
           <p>{area.name}</p>
         </div>
@@ -179,30 +190,6 @@
     {/if}
   </div>
 
-  <!-- {#if showSeatTypes}
-    <div class="seatsLegend typesLegend">
-      {#each seatingAreas as area}
-        <div>
-          <div
-            class="seat"
-            style:background-color={getSeatColorForSeat({ sar: area.id, stat: 4 })}
-          />
-          <p>{area.name}</p>
-        </div>
-      {/each}
-
-      {#if invalidskoPostoji}
-        <div>
-          <div
-            class="seat"
-            style:background-color={showSeatTypes ? "#A1DF9F" : "#80A6FF"}
-          />
-          <p>Invalidsko</p>
-        </div>
-      {/if}
-    </div>
-  {/if} -->
-
   <div class="seatTypesSwitchContainer">
     <label for="seatTypesSwitch">Prikaži vrste sjedala</label>
     <input type="checkbox" id="seatTypesSwitch" bind:checked={showSeatTypes} />
@@ -219,7 +206,7 @@
       <img src="/images/clockIcon.svg" alt="clock icon" />
       <p>
         {formatDate(
-          performanceData.performance.cinemaDate,
+          performanceData.performance.cinemaDate!,
           performanceData.performance.performanceTime
         )}
       </p>
@@ -234,7 +221,7 @@
     </div>
     <div class="performanceInfoRow">
       <img src="/images/clapperIcon.svg" alt="clapper icon" />
-      <p>{performanceData.performance.performanceFeatures.join(' · ')}</p>
+      <p>{performanceData.performance.performanceFeatures?.join(' · ')}</p>
     </div>
   </div>
 
