@@ -16,7 +16,6 @@
     onclose: () => void;
   }>();
 
-  let showSeatTypes = $state(true);
   let seatingAreas: SeatingArea[] = $state([]);
   let invalidskoPostoji = $state(false);
 
@@ -51,7 +50,12 @@
 
     const data: SeatingLayout = await res.json();
     seatingAreas = data.seatingAreas;
-    invalidskoPostoji = false;
+
+    // Check if any seat is "invalidsko" (accessible seating)
+    invalidskoPostoji = data.seats.some((seat) => {
+      const { invalidskoFound } = getSeatColorUtil(seat as any, seatingAreas, true);
+      return invalidskoFound;
+    });
 
     setSeatingLayoutValues(data);
     return data;
@@ -82,12 +86,7 @@
   }
 
   function getSeatColorForSeat(seat: any) {
-    const { color, invalidskoFound } = getSeatColorUtil(
-      seat as Seat,
-      seatingAreas,
-      showSeatTypes
-    );
-    if (invalidskoFound && invalidskoPostoji === false) invalidskoPostoji = true;
+    const { color } = getSeatColorUtil(seat as Seat, seatingAreas, true);
     return color;
   }
 
@@ -108,58 +107,78 @@
   }
 </script>
 
-<div id="card">
-  <button id="closeSeatsButton" onclick={onclose}>
-    <img src="/images/xIcon.svg" alt="close seats icon" />
-  </button>
+<div id="backdrop" onclick={onclose} role="presentation">
+  <div id="card" onclick={(e) => e.stopPropagation()} role="presentation">
+    <button id="closeSeatsButton" onclick={onclose}>
+      <img src="/images/xIcon.svg" alt="close seats icon" />
+    </button>
 
-  <div
-    id="seatsContainer"
-    bind:this={seatsContainerElement}
-    style:height={seatsContainerHeight}
-  >
-    {#await seatsPromise}
-      <Loading />
-    {:then seatsData}
-      <img src="/images/cinemaScreen.svg" alt="screen" id="screenImage" />
-      {#each seatsData.seats as seat}
-        <div
-          class="seat"
-          style:background-color={getSeatColorForSeat(seat)}
-          style:left={seatOffsetX + seat.x * seatLocationMultiplier + 'px'}
-          style:top={64 + seat.y * seatLocationMultiplier + 'px'}
-          style:width={seatSize + 'px'}
-          style:height={seatSize + 'px'}
-        ></div>
-      {/each}
-    {:catch error}
-      <div class="seatingError">
-        <p class="seatingErrorTitle">Seating temporarily unavailable</p>
-        <p class="seatingErrorBody">{error?.message ?? 'Please try again.'}</p>
-        <button
-          class="seatingRetryButton"
-          onclick={() => {
-            seatsPromise = getSeats();
-          }}
-        >
-          Try again
-        </button>
+    <div id="performanceInfo">
+      <p class="movieTitle">
+        {performanceData.movie.title}
+        {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== '0'}
+          ({performanceData.movie.ageRating}+)
+        {/if}
+      </p>
+      <div class="performanceInfoRow">
+        <img src="/images/clockIcon.svg" alt="clock icon" />
+        <p>
+          {formatDate(
+            performanceData.performance.cinemaDate!,
+            performanceData.performance.performanceTime
+          )}
+        </p>
       </div>
-    {/await}
-  </div>
+      <div class="performanceInfoRow">
+        <img src="/images/locationIcon2.svg" alt="location icon" />
+        <p>
+          {cinemas.find(
+            (cinema) => cinema.cinemaOid === performanceData.performance.cinemaOid
+          )?.cinemaName || 'N/A'}
+        </p>
+      </div>
+      <div class="performanceInfoRow">
+        <img src="/images/clapperIcon.svg" alt="clapper icon" />
+        <p>{performanceData.performance.performanceFeatures?.join(' · ')}</p>
+      </div>
+    </div>
 
-  <div class="seatsLegend">
-    {#if showSeatTypes === false}
-      <div>
-        <div class="seat" style:background-color="#80A6FF"></div>
-        <p>Slobodno</p>
-      </div>
+    <div
+      id="seatsContainer"
+      bind:this={seatsContainerElement}
+      style:height={seatsContainerHeight}
+    >
+      {#await seatsPromise}
+        <Loading />
+      {:then seatsData}
+        <img src="/images/cinemaScreen.svg" alt="screen" id="screenImage" />
+        {#each seatsData.seats as seat}
+          <div
+            class="seat"
+            style:background-color={getSeatColorForSeat(seat)}
+            style:left={seatOffsetX + seat.x * seatLocationMultiplier + 'px'}
+            style:top={64 + seat.y * seatLocationMultiplier + 'px'}
+            style:width={seatSize + 'px'}
+            style:height={seatSize + 'px'}
+          ></div>
+        {/each}
+      {:catch error}
+        <div class="seatingError">
+          <p class="seatingErrorTitle">Seating temporarily unavailable</p>
+          <p class="seatingErrorBody">{error?.message ?? 'Please try again.'}</p>
+          <button
+            class="seatingRetryButton"
+            onclick={() => {
+              seatsPromise = getSeats();
+            }}
+          >
+            Try again
+          </button>
+        </div>
+      {/await}
+    </div>
 
-      <div>
-        <div class="seat" style:background-color="#373B43"></div>
-        <p>Zauzeto</p>
-      </div>
-    {:else}
+    <div class="seatsLegend">
       {#each seatingAreas as area}
         <div>
           <div
@@ -175,10 +194,7 @@
 
       {#if invalidskoPostoji}
         <div>
-          <div
-            class="seat"
-            style:background-color={showSeatTypes ? '#A1DF9F' : '#80A6FF'}
-          ></div>
+          <div class="seat" style:background-color="#A1DF9F"></div>
           <p>Invalidsko</p>
         </div>
       {/if}
@@ -187,91 +203,107 @@
         <div class="seat" style:background-color="#373B43"></div>
         <p>Zauzeto</p>
       </div>
-    {/if}
-  </div>
-
-  <div class="seatTypesSwitchContainer">
-    <label for="seatTypesSwitch">Prikaži vrste sjedala</label>
-    <input type="checkbox" id="seatTypesSwitch" bind:checked={showSeatTypes} />
-  </div>
-
-  <div id="performanceInfo">
-    <p class="movieTitle">
-      {performanceData.movie.title}
-      {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== '0'}
-        ({performanceData.movie.ageRating}+)
-      {/if}
-    </p>
-    <div class="performanceInfoRow">
-      <img src="/images/clockIcon.svg" alt="clock icon" />
-      <p>
-        {formatDate(
-          performanceData.performance.cinemaDate!,
-          performanceData.performance.performanceTime
-        )}
-      </p>
     </div>
-    <div class="performanceInfoRow">
-      <img src="/images/locationIcon2.svg" alt="location icon" />
-      <p>
-        {cinemas.find(
-          (cinema) => cinema.cinemaOid === performanceData.performance.cinemaOid
-        )?.cinemaName || 'N/A'}
-      </p>
-    </div>
-    <div class="performanceInfoRow">
-      <img src="/images/clapperIcon.svg" alt="clapper icon" />
-      <p>{performanceData.performance.performanceFeatures?.join(' · ')}</p>
-    </div>
-  </div>
 
-  <a
-    id="buyTicketButton"
-    target="_blank"
-    href={`https://shop.cinestarcinemas.hr/landingpage?center=${performanceData.performance.cinemaOid}&page=seatingplan&performance=${performanceData.performance.id}`}
-  >
-    <p>Kupi kartu na cinestar.hr</p>
-    <img src="images/linkArrow.svg" alt="arrow" />
-  </a>
+    <a
+      id="buyTicketButton"
+      target="_blank"
+      href={`https://shop.cinestarcinemas.hr/landingpage?center=${performanceData.performance.cinemaOid}&page=seatingplan&performance=${performanceData.performance.id}`}
+    >
+      <p>Kupi kartu na cinestar.hr</p>
+      <img src="images/linkArrow.svg" alt="arrow" />
+    </a>
+  </div>
 </div>
 
 <style>
-  #card {
+  #backdrop {
     position: fixed;
-    top: 0;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  #card {
     width: 100%;
-    max-width: 30rem;
-    height: 100%;
-    overflow-y: auto;
+    max-width: 32rem;
+    max-height: 90dvh;
     background-color: #131a2a;
-    z-index: 5;
-
-    padding: 2rem 1rem;
-    background: #131a2a;
-
+    border-radius: 1rem;
+    overflow-y: auto;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
+
   #card > * {
     flex-shrink: 0;
   }
 
   #closeSeatsButton {
-    margin-bottom: 3rem;
-    align-self: flex-end;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
     cursor: pointer;
-    background: none;
+    background: rgba(255, 255, 255, 0.05);
     border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
+    transition: background 0.2s;
+  }
+  #closeSeatsButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  #performanceInfo {
+    margin-bottom: 2.5rem;
+    padding-right: 3rem; /* Space for close button */
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+  }
+
+  #performanceInfo > .movieTitle {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  #performanceInfo > .performanceInfoRow {
+    display: flex;
+    column-gap: 0.5rem;
+    align-items: center;
+  }
+  #performanceInfo > .performanceInfoRow > img {
+    width: 1rem;
+    height: 1rem;
+    opacity: 0.7;
+  }
+  #performanceInfo > .performanceInfoRow > p {
+    color: #bfbfbf;
+    font-weight: 400;
+    font-size: 0.875rem;
   }
 
   #seatsContainer {
-    height: 300px;
     position: relative;
     display: block;
+    margin-bottom: 2rem;
   }
 
   .seatingError {
@@ -292,7 +324,7 @@
   .seatingErrorBody {
     color: #bfbfbf;
     font-weight: 400;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     max-width: 22rem;
   }
   .seatingRetryButton {
@@ -319,22 +351,27 @@
   }
 
   .seatsLegend {
-    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
     display: flex;
     justify-content: center;
-    column-gap: 2rem;
-    row-gap: 0.5rem;
+    column-gap: 1.5rem;
+    row-gap: 0.75rem;
     flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.025);
+    box-shadow: 0 0.25rem 1rem 0 rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
   }
   .seatsLegend > div {
     display: flex;
     align-items: center;
-    column-gap: 0.25rem;
+    column-gap: 0.35rem;
   }
   .seatsLegend > div > .seat {
-    width: 10px;
-    height: 10px;
-    border-radius: 1rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
     flex-shrink: 0;
   }
   .seatsLegend > div > p {
@@ -343,94 +380,43 @@
     font-size: 0.875rem;
   }
 
-  .seatTypesSwitchContainer {
-    margin-top: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .seatTypesSwitchContainer label {
-    color: #bfbfbf;
-    font-weight: 500;
-    font-size: 0.875rem;
-  }
-  .seatTypesSwitchContainer input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    width: 4rem;
-    height: 2rem;
-    background: #60729f;
-    border-radius: 2rem;
-    position: relative;
-
-    transition: background-color 0.2s;
-
-    outline: none;
-    cursor: pointer;
-  }
-  .seatTypesSwitchContainer input:checked {
-    background: #2057df;
-  }
-
-  .seatTypesSwitchContainer input::before {
-    content: '';
-    position: absolute;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
-    background-color: #e9eefc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    top: 50%;
-    left: 0.25rem; /* (2rem - 1.5rem) / 2 */
-    transform: translateY(-50%);
-
-    transition: left 0.2s ease-out;
-  }
-  .seatTypesSwitchContainer input:checked::before {
-    left: calc(100% - 1.75rem);
-  }
-
-  #performanceInfo {
-    margin-top: 5rem;
-    margin-bottom: 5rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 1rem;
-  }
-  #performanceInfo > .movieTitle {
-    color: #ffffff;
-    font-weight: 400;
-    font-size: 1.125rem;
-    margin-bottom: 0.25rem;
-  }
-
-  #performanceInfo > .performanceInfoRow {
-    display: flex;
-    column-gap: 0.75rem;
-  }
-  #performanceInfo > .performanceInfoRow > p {
-    color: #e6e6e6;
-    font-weight: 400;
-    font-size: 1rem;
-  }
-
   #buyTicketButton {
     display: flex;
     align-items: center;
     justify-content: center;
     column-gap: 1rem;
 
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    background: rgba(232, 197, 71, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: #e8c547;
     cursor: pointer;
+    transition: transform 0.1s;
+    margin-top: auto;
+  }
+  #buyTicketButton:active {
+    transform: scale(0.98);
   }
   #buyTicketButton > p {
-    color: #e8c547;
+    color: #131a2a;
+    font-weight: 700;
   }
-  #buyTicketButton:hover > p {
-    text-decoration: underline;
+  #buyTicketButton > img {
+    filter: brightness(0); /* Make arrow black */
+  }
+
+  @media (max-width: 640px) {
+    #backdrop {
+      padding: 0;
+      align-items: flex-end;
+    }
+    #card {
+      max-height: 95dvh;
+      border-radius: 1.5rem 1.5rem 0 0;
+      padding: 1.5rem 1rem 3rem 1rem;
+    }
+    #closeSeatsButton {
+      top: 1rem;
+      right: 1rem;
+    }
   }
 </style>
