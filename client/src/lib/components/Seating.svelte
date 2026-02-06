@@ -5,6 +5,8 @@
   import { getRelativeDate } from '../utils/utils';
   import { PUBLIC_API_URL } from '$env/static/public';
   import { getSeatColor as getSeatColorUtil } from '../utils/seatingColors';
+  import { fly } from 'svelte/transition';
+  import { cubicOut } from 'svelte/easing';
 
   interface PerformanceData {
     movie: Movie;
@@ -105,10 +107,28 @@
 
     return time + ', ' + formattedDate + ' (' + relativeDate + ')';
   }
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 </script>
 
 <div id="backdrop" onclick={onclose} role="presentation">
-  <div id="card" onclick={(e) => e.stopPropagation()} role="presentation">
+  <div
+    id="card"
+    onclick={(e) => e.stopPropagation()}
+    role="presentation"
+    in:fly={{
+      y: isMobile ? 200 : 20,
+      duration: 300,
+      easing: cubicOut,
+      opacity: 0
+    }}
+    out:fly={{
+      y: isMobile ? 200 : 20,
+      duration: 200,
+      easing: cubicOut,
+      opacity: 0
+    }}
+  >
     <button id="closeSeatsButton" onclick={onclose}>
       <img src="/images/xIcon.svg" alt="close seats icon" />
     </button>
