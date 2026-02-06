@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="hr">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%sveltekit.assets%/favicon.ico" type="image/x-icon" />
@@ -7,11 +7,37 @@
 
     %sveltekit.head%
 
-    <title>Better Cinestar</title>
+    <title>Better Cinestar | Brži i pregledniji kino raspored i program</title>
     <meta
       name="description"
-      content="Neslužbena Cinestar stranica za prikazivanje trenutnih filmova i rasporeda. Pruža vizualno i funkcionalno poboljšanje nad službenom stranicom."
+      content="Brži i pregledniji Cinestar kino raspored. Provjerite termine filmova, dvorane i slobodna sjedala za sva kina. Moderno sučelje s TMDB ocjenama i bez reklama."
     />
+
+    <!-- Open Graph (Social Media) -->
+    <meta
+      property="og:title"
+      content="Better Cinestar | Brži i pregledniji kino raspored i program"
+    />
+    <meta
+      property="og:description"
+      content="Provjerite termine, dvorane i slobodna sjedala za sve filmove u Cinestaru. Brže, preglednije i bez reklama."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="%sveltekit.assets%/images/logo.png" />
+    <meta property="og:site_name" content="Better Cinestar" />
+    <meta property="og:locale" content="hr_HR" />
+
+    <!-- Schema.org (Google Rich Results) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Better Cinestar",
+        "alternateName": "BetterCinestar",
+        "description": "Brži i pregledniji Cinestar kino raspored za sva kina u Hrvatskoj.",
+        "inLanguage": "hr-HR"
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
