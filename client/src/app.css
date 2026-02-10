@@ -13,7 +13,7 @@ a {
   text-decoration: none;
 }
 body {
-  background-color: #202b46;
+  background-color: hsl(223, 37%, 15%);
   /* max-width: 30rem; */
   /* max-width: 100rem; */
   margin: auto;

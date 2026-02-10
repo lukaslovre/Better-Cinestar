@@ -73,7 +73,7 @@
       </div>
       <div>
         {#if movie.ageRating && movie.ageRating !== '0'}
-          <p>({movie.ageRating}+)</p>
+          <p>{movie.ageRating}+</p>
         {/if}
       </div>
     </div>

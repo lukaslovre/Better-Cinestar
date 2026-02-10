@@ -6,9 +6,31 @@
   );
 
   let synopsisText = $derived(movie.tmdb_synopsis || movie.synopsis || '');
+
+  function compareTitlesWithoutFormatting(
+    a: string | null | undefined,
+    b: string | null | undefined
+  ): boolean {
+    if (a == null || b == null) {
+      return a === b;
+    }
+
+    const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/gi, '');
+    const lowerA = normalize(a);
+    const lowerB = normalize(b);
+
+    return lowerA === lowerB;
+  }
 </script>
 
 <div class="movieExtraInfo">
+  {#if movie.originalTitle && !compareTitlesWithoutFormatting(movie.originalTitle, movie.title)}
+    <div class="infoContainer">
+      <p class="infoLabel">Originalni naziv</p>
+      <p class="infoText">{movie.originalTitle}</p>
+    </div>
+  {/if}
+
   <div class="infoContainer">
     <p class="infoLabel">{directorsLabel}</p>
     <div class="peopleContainer">
@@ -135,13 +157,13 @@
     color: #e6e6e6;
     font-size: 0.75rem;
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
   .movieExtraInfo .infoText {
     color: #bfbfbf;
     font-size: 0.75rem;
     font-weight: 400;
-    margin-left: 0.75rem;
+    margin-left: 0rem;
     line-height: 140%;
   }
   .movieExtraInfo .trailerButton {
@@ -154,7 +176,7 @@
     font-weight: 500;
 
     background-color: rgba(255, 255, 255, 0.05);
-    color: #336eff;
+    color: hsl(223, 100%, 60%);
 
     margin-top: 0.5rem;
   }

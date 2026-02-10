@@ -152,7 +152,7 @@
 <style>
   nav {
     padding: 1.5rem 1rem;
-    background: #273454;
+    background: hsl(223, 37%, 20%);
     box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
     margin-bottom: 3rem;
   }
@@ -177,7 +177,7 @@
 
   .menu {
     z-index: 2;
-    background-color: #273454;
+    background: hsl(223, 37%, 20%);
     position: absolute;
     top: 100%;
     left: 0;
