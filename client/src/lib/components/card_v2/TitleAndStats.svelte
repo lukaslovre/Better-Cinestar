@@ -28,11 +28,6 @@
 <div class="titleAndStats" class:sticky={isFullscreened}>
   <p class="movieTitle">
     {movie.title}
-    {#if movie.ageRating && movie.ageRating !== '0'}
-      <span class="ageRating">
-        ({movie.ageRating}+)
-      </span>
-    {/if}
   </p>
 
   <div class="movieStats">
@@ -44,7 +39,12 @@
       <div>
         {#if tmdbRatingText}
           {#if movie.tmdb_url}
-            <a href={movie.tmdb_url} target="_blank" rel="noopener noreferrer" class="ratingIconAndValue">
+            <a
+              href={movie.tmdb_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="ratingIconAndValue"
+            >
               <img
                 class="tmdbLogo"
                 src="/images/tmdb_logo_blue_short.svg"
@@ -72,7 +72,9 @@
         {/if}
       </div>
       <div>
-        <!-- reserved for future stats -->
+        {#if movie.ageRating && movie.ageRating !== '0'}
+          <p>({movie.ageRating}+)</p>
+        {/if}
       </div>
     </div>
   </div>
@@ -91,9 +93,7 @@
     font-weight: 500;
     margin-bottom: 1.5rem;
   }
-  .movieTitle .ageRating {
-    color: #b3b3b3;
-  }
+
   .movieStats {
     display: flex;
     flex-direction: column;
