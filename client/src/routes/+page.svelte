@@ -61,6 +61,21 @@
   const setShowTooltipPopup = ({ detail }: { detail: boolean }) =>
     (showTooltipPopup = detail);
 
+  function sanitizeSelectedDate(value: string | null | undefined): string | undefined {
+    if (!value) return undefined;
+    if (value === 'any') return 'any';
+
+    const today = dateToYMDFormat(new Date());
+
+    const isYmd = /^\d{4}-\d{2}-\d{2}$/.test(value);
+
+    // If the value is malformed, fall back to today to avoid “Invalid Date” UI.
+    if (!isYmd) return today;
+
+    // YYYY-MM-DD compares lexicographically.
+    return value < today ? today : value;
+  }
+
   // Create URL parameters
   function createUrlParams(
     cinemaOids: string[],
@@ -104,14 +119,9 @@
     }
 
     if (localStorage.getItem('selectedDate')) {
-      // If date is before today, set it to today
-      const today = dateToYMDFormat(new Date());
-      const storedDate = localStorage.getItem('selectedDate') || '';
-      if (storedDate < today) {
-        values.selectedDate = today;
-      } else {
-        values.selectedDate = storedDate;
-      }
+      const storedDate = localStorage.getItem('selectedDate');
+      const sanitizedDate = sanitizeSelectedDate(storedDate);
+      if (sanitizedDate) values.selectedDate = sanitizedDate;
     }
 
     if (localStorage.getItem('sortBy')) {
@@ -135,7 +145,9 @@
     }
 
     if (urlParams.has('date')) {
-      values.selectedDate = urlParams.get('date') || '';
+      const urlDate = urlParams.get('date');
+      const sanitizedDate = sanitizeSelectedDate(urlDate);
+      if (sanitizedDate) values.selectedDate = sanitizedDate;
     }
 
     if (urlParams.has('sortBy')) {
@@ -153,6 +165,11 @@
     // Merge the two objects, giving priority to urlValues
     const values = { ...localStorageValues, ...urlValues };
     console.log(values);
+
+    // Ensure URL/localStorage can’t override with a past/invalid date.
+    // This also lets the existing URL-sync $effect rewrite the URL.
+    const sanitizedDate = sanitizeSelectedDate(values.selectedDate);
+    if (sanitizedDate) values.selectedDate = sanitizedDate;
 
     // Set the store values (triggers URL update and local storage update)
     if (values.cinemaOids) cinemaOids.set(values.cinemaOids);
