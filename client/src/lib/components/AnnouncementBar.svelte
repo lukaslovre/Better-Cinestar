@@ -1,6 +1,6 @@
 <script lang="ts">
   const enabled = true;
-  const message = 'isprike šta se raspada stranica';
+  const message = '';
   const href = '';
 </script>
 
