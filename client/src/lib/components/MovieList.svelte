@@ -1,5 +1,4 @@
 <script lang="ts">
-  import MovieCardV1 from './card_v1/MovieCardV1.svelte';
   import MovieCardV2 from './card_v2/MovieCardV2.svelte';
 
   interface MovieListProps {
@@ -7,27 +6,6 @@
   }
 
   let { movies }: MovieListProps = $props();
-
-  let movieCardDesign: CardDesign = $state('v2');
-
-  // TODO: card design bi trebao biti u store-u da bude reaktivno i na jednom mjestu da bude default vrijednost
-
-  $effect(() => {
-    const movieCardDesignFromLocalstorage = localStorage.getItem(
-      'movieCardDesign'
-    ) as CardDesign | null;
-
-    console.log(
-      'Getting movieCardDesign from localStorage:',
-      movieCardDesignFromLocalstorage
-    );
-
-    if (movieCardDesignFromLocalstorage) {
-      movieCardDesign = movieCardDesignFromLocalstorage;
-    } else {
-      localStorage.setItem('movieCardDesign', 'v2');
-    }
-  });
 
   let fullscreenedMovieNumber: number = $state(0);
   let selectedCardSize = $state({
@@ -84,21 +62,12 @@
 
 <div id="movieCardsContainer">
   {#each movies.filter((m) => m.performances && m.performances.length > 0) as movie (movie.id)}
-    {#if movieCardDesign === 'v1'}
-      <MovieCardV1
-        {movie}
-        {fullscreenedMovieNumber}
-        on:setFullscreen={setFullscreen}
-        on:selectedPerformance
-      />
-    {:else}
-      <MovieCardV2
-        {movie}
-        {fullscreenedMovieNumber}
-        on:setFullscreen={setFullscreen}
-        on:selectedPerformance
-      />
-    {/if}
+    <MovieCardV2
+      {movie}
+      {fullscreenedMovieNumber}
+      on:setFullscreen={setFullscreen}
+      on:selectedPerformance
+    />
   {/each}
 </div>
 

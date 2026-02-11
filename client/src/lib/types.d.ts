@@ -143,8 +143,6 @@ interface SeatingLayout {
 ///////
 // Frontend types
 ///////
-type CardDesign = 'v1' | 'v2';
-
 type LabelValue<T> = {
   label: string;
   value: T;

@@ -1,8 +1,8 @@
 <script lang="ts">
   interface SegmentedButtonProps {
-    options: LabelValue<CardDesign>[];
-    selectedOption: CardDesign;
-    onOptionChange: (option: CardDesign) => void;
+    options: LabelValue<string>[];
+    selectedOption: string;
+    onOptionChange: (option: string) => void;
     label: string;
   }
 

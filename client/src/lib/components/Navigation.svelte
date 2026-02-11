@@ -4,24 +4,12 @@
   import { resetFiltersToDefault } from '$lib/stores/userSelection.svelte';
   import Hamburger from './navigation/Hamburger.svelte';
   import Faq from './navigation/Faq.svelte';
-  import SegmentedButton from './navigation/SegmentedButton.svelte';
   import { PUBLIC_API_URL } from '$env/static/public';
 
   const contactEmail = 'lovretic2002@gmail.com';
 
   const transitionDuration: number = 150;
   const transitionDelay: number = 75;
-
-  const defaultCardDesign: CardDesign = 'v2';
-
-  let selectedCardDesign: CardDesign = $state(
-    (localStorage.getItem('movieCardDesign') as CardDesign) || defaultCardDesign
-  );
-
-  function changeCardDesign(design: CardDesign) {
-    localStorage.setItem('movieCardDesign', design);
-    selectedCardDesign = design;
-  }
 
   let menuOpen = $state(false);
 
@@ -70,28 +58,12 @@
         <section
           transition:fade={{ delay: transitionDelay * 1, duration: transitionDuration }}
         >
-          <p class="title">Dizajn kartice filma</p>
-
-          <SegmentedButton
-            options={[
-              { label: 'Stari', value: 'v1' },
-              { label: 'Novi', value: 'v2' }
-            ]}
-            selectedOption={selectedCardDesign}
-            onOptionChange={changeCardDesign}
-            label="Movie card design"
-          />
-        </section>
-
-        <section
-          transition:fade={{ delay: transitionDelay * 2, duration: transitionDuration }}
-        >
           <p class="title">FAQ</p>
           <Faq />
         </section>
 
         <section
-          transition:fade={{ delay: transitionDelay * 3, duration: transitionDuration }}
+          transition:fade={{ delay: transitionDelay * 2, duration: transitionDuration }}
         >
           <p class="title">Kontakt</p>
           <div class="emailAndCopyButton">
@@ -106,7 +78,7 @@
         </section>
 
         <section
-          transition:fade={{ delay: transitionDelay * 4, duration: transitionDuration }}
+          transition:fade={{ delay: transitionDelay * 3, duration: transitionDuration }}
         >
           <p class="title">Privacy policy</p>
           <p class="text">
@@ -120,7 +92,7 @@
         </section>
 
         <section
-          transition:fade={{ delay: transitionDelay * 5, duration: transitionDuration }}
+          transition:fade={{ delay: transitionDelay * 4, duration: transitionDuration }}
         >
           <p class="title">GitHub repository</p>
           <a href="https://github.com/lukaslovre/Better-Cinestar" class="text">
@@ -129,7 +101,7 @@
         </section>
 
         <section
-          transition:fade={{ delay: transitionDelay * 6, duration: transitionDuration }}
+          transition:fade={{ delay: transitionDelay * 5, duration: transitionDuration }}
         >
           <p class="title">Attribution</p>
           <div class="text flex flex-row items-center gap-3">
