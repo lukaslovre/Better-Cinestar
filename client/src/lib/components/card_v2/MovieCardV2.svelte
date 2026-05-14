@@ -31,7 +31,7 @@
     />
   </div>
 
-  <div class="movieData">
+  <div class="card-body">
     <TitleAndStats {movie} {isFullscreened} />
 
     {#if isFullscreened}
@@ -76,12 +76,7 @@
     z-index: 1;
   }
 
-  .movieData {
-    flex: 1;
-
+  .card-body {
     padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 2.5rem;
   }
 </style>

@@ -44,7 +44,7 @@
     justify-content: flex-end;
     column-gap: 1.25rem;
 
-    margin-top: auto;
+    margin-top: 0.5rem;
   }
 
   .imageButton {

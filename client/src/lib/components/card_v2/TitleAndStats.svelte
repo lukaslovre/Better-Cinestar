@@ -91,13 +91,13 @@
     color: #e6e6e6;
     font-size: 1.5rem;
     font-weight: 500;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .movieStats {
     display: flex;
     flex-direction: column;
-    row-gap: 0.75rem;
+    row-gap: 0.375rem;
   }
   .movieStats .row {
     display: flex;

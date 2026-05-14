@@ -177,5 +177,6 @@
     display: flex;
     flex-direction: column;
     row-gap: 0.625rem;
+    margin-top: 0.75rem;
   }
 </style>
