@@ -123,10 +123,10 @@
 
 <style>
   nav {
-    padding: 1.5rem 1rem;
+    padding: 1rem 1rem;
     background: hsl(223, 37%, 20%);
-    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
-    margin-bottom: 3rem;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
   }
   nav > div {
     position: relative;
@@ -139,7 +139,7 @@
   }
 
   #logo {
-    width: 7rem;
+    width: 6rem;
     border-radius: 0.25rem;
     cursor: pointer;
   }
