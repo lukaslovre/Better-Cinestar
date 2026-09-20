@@ -29,6 +29,7 @@ services:
   scraper:
     # Keep scraper off by default locally; enable when needed.
     profiles: ["scraper"]
+    restart: "no"
     environment:
       - RUN_MODE=once
       - SCRAPE_ON_START=true

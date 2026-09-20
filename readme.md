@@ -1,144 +1,213 @@
 # BetterCinestar
 
-BetterCinestar is a web application designed to provide a superior browsing experience for CineStar movie listings. It aggregates data from CineStar, enriches it with metadata from TMDB (ratings, posters, cast, trailers), and presents it through a modern, responsive interface.
+BetterCinestar is a web app for browsing CineStar films and showtimes, filtering by cinema and date, and viewing seating availability. It combines CineStar listings with TMDB metadata such as ratings, posters, cast, and trailers.
 
-## Project Architecture
+## How it works
 
-The project is a monolith composed of three main services:
+| Part | Responsibility | Technology |
+| --- | --- | --- |
+| `client/` | Builds the interface that runs in the user's browser. In Docker, Caddy serves its built files. | Svelte 5, SvelteKit, Tailwind, Vite |
+| `server/` | Provides the HTTP API, stores listings and analytics, and fetches seating on demand. | Node.js, Express, Sequelize, SQLite, Puppeteer |
+| `scraper/` | Fetches CineStar listings, adds TMDB metadata, and uploads results to the server. | Node.js, Puppeteer, Axios, cron |
+| `shared/` | Keeps cinema IDs, names, and cities consistent across all three apps. | JSON |
 
-### 1. Server (`/server`)
-
-- **Tech Stack**: Node.js, Express.js, Sequelize ORM, SQLite.
-- **Responsibility**:
-  - Stores movie, performance, and analytics data.
-  - Provides a REST API for the frontend.
-  - Exposes a secure POST endpoint (`/api/v1/scrape-results`) for the scraper to upload data.
-- **Setup**:
-  - Requires a `.env` file (see `server/.env.example`).
-  - `npm install --prefix server`
-  - `npm run dev --prefix server` (Development with nodemon)
-
-### 2. Scraper (`/scraper`)
-
-- **Tech Stack**: Node.js, Puppeteer, Cheerio.
-- **Responsibility**:
-  - Scrapes movie and performance data from CineStar.
-  - Enriches movie metadata using the TMDB API.
-  - Sends the processed data to the server.
-  - Can be run as a one-off script or on a cron schedule.
-- **Setup**:
-  - Requires a `.env` file (see `scraper/.env.example`).
-  - `npm install --prefix scraper`
-  - `npm run scrape --prefix scraper`
-
-### 3. Client (`/client`)
-
-- **Tech Stack**: SvelteKit (Svelte 5), Tailwind, Vite.
-- **Responsibility**:
-  - Modern UI for browsing movies, filtering by cinema and date, and viewing seating plans.
-  - Built as a Static Site (SPA) using `@sveltejs/adapter-static`.
-- **Setup**:
-  - `npm install --prefix client`
-  - `npm run dev --prefix client`
-
-## Getting Started
-
-### Using Docker (Recommended)
-
-The easiest way to run the entire stack is using Docker Compose:
-
-```bash
-docker compose up --build
+```mermaid
+flowchart LR
+    Sources["CineStar + TMDB"] -->|listings and metadata| Scraper
+    Scraper -->|upload| Server["Server / API"]
+    Server <-->|read and write| Database[(SQLite)]
+    Client["Client / Caddy"] -->|HTML, CSS, JavaScript| Browser["User's browser"]
+    Browser <-->|API requests and responses| Server
+    Server -->|seating requests| CineStar
 ```
 
-This will start the server, the client, and the scraper (configured to run on a schedule).
+SQLite is managed by the server. Listings are refreshed by the scraper, not when someone opens the website.
 
-#### Local development override
+## Run locally with Docker
 
-For local testing (server exposed on `localhost:3000`, client on `localhost:8080`), run:
+Use this path to run the packaged application. For automatic updates while editing code, see [Develop locally](#develop-locally).
+
+Requires Docker with Compose and a running Docker engine. Run commands from the repository root in Bash or a compatible shell.
+
+### 1. Prepare settings
+
+On your first setup, copy the example file:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+cp .env.example .env
 ```
 
-Notes:
+If `.env` already exists, edit it instead of overwriting it. Set distinct values for `SCRAPER_SECRET` and `ANALYTICS_HASH_SALT`. Add `TMDB_API_KEY` to enable TMDB enrichment; without it, CineStar data can still be collected, but TMDB metadata will be missing.
 
-- The local override builds the client with `PUBLIC_API_URL=http://localhost:3000`.
-- The scraper is disabled by default in the local override; enable it with:
-  ```bash
-  docker compose -f docker-compose.yml -f docker-compose.local.yml --profile scraper up --build
-  ```
+### 2. Start the server and interface
 
-### Environment variables (important)
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml up --build -d
+```
 
-This repo uses environment variables in two different ways:
+`-d` runs the services in the background.
 
-- **Runtime env (server/scraper containers):** values are read at process startup by the Zod-based config loaders:
-  - [server/config/environment.js](server/config/environment.js)
-  - [scraper/config/environment.js](scraper/config/environment.js)
+- Website: [http://localhost:8080](http://localhost:8080)
+- API health: [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
-  When running via Docker Compose, these are set via `environment:` in [docker-compose.yml](docker-compose.yml) (or your platform’s equivalent, e.g. Coolify).
+A fresh database has no films yet. Populate it in the next step.
 
-- **Build-time env (client container):** the client is a static build, so `PUBLIC_API_URL` is baked in at build time. It is passed as a Docker build arg (`build.args.PUBLIC_API_URL`) and is exported during the build in [client/Dockerfile](client/Dockerfile).
+The local override supplies the browser-accessible ports and local API address.
 
-#### Scraper metadata enrichment
+### 3. Populate the database
 
-- To enable TMDB enrichment in Docker, set `TMDB_API_KEY` (recommended via a root `.env`; see `.env.example`).
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml run --build --rm scraper
+```
 
-#### Recommended way to set secrets in production
+The scraper waits for the server healthcheck, fetches and uploads listings, then exits. Look for `Scrape task completed successfully` and refresh the website. `--rm` removes the temporary container.
 
-- Set `SCRAPER_SECRET` and `ANALYTICS_HASH_SALT` in your deployment platform (Coolify) or via a root-level `.env` used by Compose for variable substitution.
-- Set `TMDB_API_KEY` in the same way for TMDB enrichment.
+Repeat this command to refresh listings. Local scraping runs once; it is not scheduled.
 
-### Manual Setup
+### 4. Inspect or stop the application
 
-1. **Install all dependencies**:
-   ```bash
-   npm run install-all
-   ```
-2. **Configure Environment Variables**:
-   - Create `.env` files in both `/server` and `/scraper` based on their respective `.env.example` files.
-   - Ensure `SCRAPER_SECRET` is identical in both files.
-3. **Start the Server**:
-   ```bash
-   npm run dev-server
-   ```
-4. **Run the Scraper** (to populate the database):
-   ```bash
-   npm run scrape
-   ```
-5. **Start the Client**:
-   ```bash
-   npm run dev-client
-   ```
+```bash
+# Show container status.
+docker compose -f docker-compose.yml -f docker-compose.local.yml ps --all
 
-## Monorepo Scripts
+# Follow server and client logs; Ctrl+C stops following, not the containers.
+docker compose -f docker-compose.yml -f docker-compose.local.yml logs -f server client
 
-- `npm run install-all` — Install all dependencies for server, scraper, and client.
-- `npm run start-server` — Start the server in production mode.
-- `npm run dev-server` — Start the server in development mode.
-- `npm run scrape` — Run the scraper script once.
-- `npm run dev-client` — Start the frontend development server.
-- `npm run build-client` — Build the frontend for production.
+# Stop and remove the local services, including a profile-started scraper.
+docker compose -f docker-compose.yml -f docker-compose.local.yml --profile scraper down
+```
 
-## Data Flow
+Redact secrets before sharing server logs.
 
-1. **Scraper** fetches data from CineStar and enriches metadata via the TMDB API.
-2. **Scraper** sends a POST request with the data to the **Server**.
-3. **Server** validates the request using `SCRAPER_SECRET` and saves data to `Database.sqlite`.
-4. **Client** fetches movie and performance data from the **Server** API to display to the user.
+`down` preserves the database volume. Adding `--volumes` deletes it and its data.
 
-## Useful config knobs
+After source-code changes, repeat the `up --build -d` command. The Docker setup copies code into images; it does not automatically pick up edits from your working directory.
 
-Common runtime tunables (server container):
+## Develop locally
 
-- `CINESTAR_API_URL` (default: `https://shop.cinestarcinemas.hr/api`)
-- `PUPPETEER_MAX_CONCURRENCY` (default: `2`)
-- `PUPPETEER_IDLE_TTL_MS` (default: `1200000`)
-- `PUPPETEER_NAV_TIMEOUT_MS` (default: `12000`)
-- `SEATING_CACHE_TTL_MS` (default: `60000`)
-- `SEATING_CACHE_MAX_ENTRIES` (default: `50`)
+Use Node.js 22 and npm. Puppeteer downloads browser binaries during installation and needs compatible OS libraries. The Docker images supply those libraries.
 
-## Research & Tools
+Avoid running this server and the Docker server simultaneously on port 3000.
 
-- `/scripts/research`: Contains utility scripts for analyzing CineStar's seating codes and other data structures.
+### 1. Install dependencies and prepare settings
+
+```bash
+npm ci --prefix server
+npm ci --prefix scraper
+npm ci --prefix client
+
+# First setup only: do not overwrite existing .env files.
+cp server/.env.example server/.env
+cp scraper/.env.example scraper/.env
+cp client/.env.example client/.env
+```
+
+Edit these files:
+
+- Set the same `SCRAPER_SECRET` in `server/.env` and `scraper/.env`.
+- Set `ANALYTICS_HASH_SALT` in `server/.env`.
+- Keep `SERVER_API_URL=http://localhost:3000/api/v1/scrape-results` in `scraper/.env`; add `TMDB_API_KEY` if you want enrichment.
+- Keep `PUBLIC_API_URL=http://localhost:3000` in `client/.env`.
+
+### 2. Start the server and client in separate terminals
+
+Server:
+
+```bash
+npm run dev-server
+```
+
+Wait for `Database synchronized successfully` or `Database recreated and schema version set` in its output. Nodemon restarts the server when its watched files change.
+
+Client, in a second terminal:
+
+```bash
+npm run dev-client
+```
+
+Open the local URL printed by Vite, normally [http://localhost:5173](http://localhost:5173). Vite updates the interface as you edit frontend code. Stop each process with Ctrl+C.
+
+### 3. Fetch listings once
+
+In a third terminal:
+
+```bash
+RUN_MODE=once npm run scrape
+```
+
+Keep `RUN_MODE=once`: the example `.env` defaults to scheduled mode without an immediate scrape.
+
+Docker and native development use separate databases by default. Populating one does not populate the other.
+
+## Configuration
+
+| Mode | Settings source |
+| --- | --- |
+| Docker Compose | Root `.env`, through the variables referenced in the Compose files. |
+| Native development | `server/.env`, `scraper/.env`, and `client/.env`. |
+
+App-specific `.env` files are excluded from Docker builds. Adding a variable to the root `.env` only affects containers if Compose passes it through.
+
+`PUBLIC_API_URL` is embedded during the client build. For Docker, change `build.args.PUBLIC_API_URL` in the Compose configuration; setting it in the root `.env` alone has no effect. Its value must be reachable from the user's browser, which cannot resolve Docker's internal `server` hostname.
+
+Server and scraper settings are read at startup. After changing their Compose environment values, use `up -d` to recreate affected containers; `restart` alone does not apply them.
+
+See [server/.env.example](server/.env.example) and [scraper/.env.example](scraper/.env.example) for additional settings, including browser limits, caching, and scheduling.
+
+## Data and persistence
+
+| Mode | Database location |
+| --- | --- |
+| Docker | `/app/data/Database.sqlite` inside the server, backed by the named volume `server_sqlite_data` (usually prefixed with the Compose project name). |
+| Native | `server/Database.sqlite`, unless `SQLITE_STORAGE` overrides it. |
+
+For an offline backup, stop the server cleanly and copy the database to separate storage. In Docker, back up the named volume while the server is stopped.
+
+Current database initialization can destroy data:
+
+- `FORCE_DB_RESET=true` drops and recreates tables on every server startup.
+- A `DB_SCHEMA_VERSION` different from the version stored in the database also drops and recreates tables. This is a reset mechanism, not a data-preserving migration.
+- Removing the Docker volume, including through `down --volumes`, removes the Docker database.
+
+Back up data before schema changes. Scraping replaces current listings; it cannot restore lost analytics history.
+
+## Checks and troubleshooting
+
+These checks are available after installing native dependencies:
+
+```bash
+npm run check --prefix client    # Svelte and TypeScript checks
+npm run lint --prefix client     # Formatting and lint checks
+npm run build-client             # Production frontend build
+npm test --prefix scraper        # TMDB matching tests using local fixtures
+```
+
+Check that the API responds:
+
+```bash
+curl -f http://localhost:3000/api/health
+```
+
+Expect JSON with `status: "OK"`.
+
+| Symptom | What to check |
+| --- | --- |
+| Website opens but has no films | Run the one-off scraper; verify upload success. Also check selected cinemas/date: valid filters can have no upcoming performances. |
+| Website cannot reach the API | Check `/api/health` and the client API address. Use both Compose files locally; rebuild the client after changing its build argument. |
+| Scraper sits waiting | It may be in scheduled mode. Use `RUN_MODE=once npm run scrape` for an immediate native run. |
+| Upload returns `401` | Server and scraper have different `SCRAPER_SECRET` values. |
+| No TMDB metadata | Check `TMDB_API_KEY` and scraper warnings. CineStar collection can succeed without enrichment. |
+
+## Deployment
+
+The base [docker-compose.yml](docker-compose.yml) starts all three services. Its scraper runs at startup and daily at 02:00 in the container's timezone.
+
+For public hosting:
+
+- Configure domain routing and HTTPS through your hosting platform or reverse proxy, routing to client port `80` and server port `3000` on the Docker network.
+- Set the client build's API address to your public API domain. It currently uses `https://api.bettercinestar.com`.
+- Supply real secrets and preserve the SQLite volume with backups.
+
+## Shared cinema catalogue
+
+Edit [shared/cinemas.json](shared/cinemas.json) to change cinema IDs, names, or cities used by all three apps. Source notes are in [shared/cinemas-sources.md](shared/cinemas-sources.md).
