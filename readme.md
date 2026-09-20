@@ -142,3 +142,9 @@ Common runtime tunables (server container):
 ## Research & Tools
 
 - `/scripts/research`: Contains utility scripts for analyzing CineStar's seating codes and other data structures.
+
+### Cinema locations
+
+`shared/cinemas.json` is the source of truth for cinema IDs, names, and cities. The server and scraper load it through their existing helpers; the frontend imports it and derives the dropdown groups. Edit this file to update locations, then rebuild/redeploy the affected apps.
+
+All Docker builds use the repository root as their context so they can include the shared data (for example, `docker build -f client/Dockerfile .`). Docker Compose already configures this.

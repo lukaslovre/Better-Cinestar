@@ -3,7 +3,7 @@
 FROM node:22-alpine AS builder
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /app/client
 
 # Set build-time argument for API URL
 ARG PUBLIC_API_URL="https://api.bettercinestar.com"
@@ -12,13 +12,14 @@ ARG PUBLIC_API_URL="https://api.bettercinestar.com"
 ENV PUBLIC_API_URL=$PUBLIC_API_URL
 
 # Copy package.json and package-lock.json first to leverage Docker cache
-COPY package.json package-lock.json ./
+COPY client/package.json client/package-lock.json ./
 
 # Install dependencies using 'ci' for clean installs based on lock file
 RUN npm ci
 
 # Copy the rest of the client application code
-COPY . .
+COPY client/ ./
+COPY shared/ /app/shared/
 
 # Build the SvelteKit application for production using adapter-static
 # This should output to the 'build' directory by default with adapter-static
@@ -35,10 +36,10 @@ FROM caddy:2-alpine
 WORKDIR /srv
 
 # Copy built static files from the builder stage
-COPY --from=builder /app/build /srv
+COPY --from=builder /app/client/build /srv
 
 # Copy Caddyfile for configuration
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY client/Caddyfile /etc/caddy/Caddyfile
 
 # Expose port 80 for the Caddy server
 EXPOSE 80

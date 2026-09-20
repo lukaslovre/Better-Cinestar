@@ -3,7 +3,7 @@
 FROM ghcr.io/puppeteer/puppeteer:24
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /app/scraper
 
 # Set environment variables for the scraper (can be overridden at runtime)
 ENV SERVER_API_URL="http://server:3000/api/v1/scrape-results"
@@ -14,13 +14,14 @@ ENV CRON_SCHEDULE="0 2 * * *"
 ENV SCRAPE_ON_START="false"
 
 # Puppeteer images come with Node.js.
-COPY package.json package-lock.json ./
+COPY scraper/package.json scraper/package-lock.json ./
 
 # Install dependencies
 RUN npm ci 
 
 # Copy the rest of the application code
-COPY . .
+COPY scraper/ ./
+COPY shared/ /app/shared/
 
 # Start the Node.js scraper
 CMD ["npm", "run", "scrape"]

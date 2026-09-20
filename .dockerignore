@@ -1,0 +1,11 @@
+.git
+**/node_modules
+**/.env
+**/.env.*
+**/*.log
+**/build
+**/dist
+**/.svelte-kit
+**/data
+**/*.sqlite
+**/tests/artifacts

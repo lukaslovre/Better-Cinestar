@@ -3,7 +3,7 @@
 FROM ghcr.io/puppeteer/puppeteer:24
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /app/server
 
 ENV PORT=3000
 
@@ -23,13 +23,14 @@ RUN mkdir -p /app/data && chown -R pptruser:pptruser /app/data
 USER pptruser
 
 # Copy root package.json and package-lock.json
-COPY --chown=pptruser:pptruser package.json package-lock.json ./
+COPY --chown=pptruser:pptruser server/package.json server/package-lock.json ./
 
 # Install only production dependencies
 RUN npm ci --only=production
 
 # Copy the server application code
-COPY --chown=pptruser:pptruser . .
+COPY --chown=pptruser:pptruser server/ ./
+COPY --chown=pptruser:pptruser shared/ /app/shared/
 
 # Expose the port the server listens on (adjust if different)
 EXPOSE 3000

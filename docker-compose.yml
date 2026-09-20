@@ -1,8 +1,8 @@
 services:
   server:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
     volumes:
       - server_sqlite_data:/app/data # Persist the SQLite database between container restarts
     expose:
@@ -35,8 +35,8 @@ services:
 
   client:
     build:
-      context: ./client
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: client/Dockerfile
       args:
         PUBLIC_API_URL: "https://api.bettercinestar.com"
     # ports:
@@ -48,8 +48,8 @@ services:
   # Scraper service (runs once and exits)
   scraper:
     build:
-      context: ./scraper
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: scraper/Dockerfile
     environment:
       - SERVER_API_URL=http://server:3000/api/v1/scrape-results
       - SCRAPER_SECRET=${SCRAPER_SECRET:-your_very_secret_string_here}
