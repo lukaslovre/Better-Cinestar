@@ -2,7 +2,10 @@ const { z } = require("zod");
 
 const envSchema = z.object({
   SERVER_API_URL: z.string().url().default("http://localhost:3000/api/v1/scrape-results"),
-  SCRAPER_SECRET: z.string(),
+  SCRAPER_SECRET: z.string().refine(
+    (value) => value.trim().length > 0 && !["your_very_secret_string_here", "change_me"].includes(value.trim()),
+    "Set SCRAPER_SECRET to a nonempty, private shared secret (placeholder values are not allowed)",
+  ),
   CINESTAR_API_URL: z.string().url().default("https://shop.cinestarcinemas.hr/api"),
 
   // Metadata enrichment (TMDB)

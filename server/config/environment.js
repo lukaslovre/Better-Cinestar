@@ -19,7 +19,10 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((v) => (typeof v === "string" && v.trim() === "" ? undefined : v)),
-  SCRAPER_SECRET: z.string(),
+  SCRAPER_SECRET: z.string().refine(
+    (value) => value.trim().length > 0 && !["your_very_secret_string_here", "change_me"].includes(value.trim()),
+    "Set SCRAPER_SECRET to a nonempty, private shared secret (placeholder values are not allowed)",
+  ),
   CINESTAR_API_URL: z.string().default("https://shop.cinestarcinemas.hr/api"),
   // Optional tuning knobs for the on-demand Puppeteer seating fetcher
   PUPPETEER_MAX_CONCURRENCY: z.coerce.number().default(2),

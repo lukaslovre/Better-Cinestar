@@ -7,7 +7,6 @@ WORKDIR /app/scraper
 
 # Set environment variables for the scraper (can be overridden at runtime)
 ENV SERVER_API_URL="http://server:3000/api/v1/scrape-results"
-ENV SCRAPER_SECRET="your_very_secret_string_here"
 ENV CINESTAR_API_URL="https://shop.cinestarcinemas.hr/api"
 ENV RUN_MODE="scheduled"
 ENV CRON_SCHEDULE="0 2 * * *" 
