@@ -6,7 +6,7 @@ BetterCinestar is a web app for browsing CineStar films and showtimes, filtering
 
 | Part | Responsibility | Technology |
 | --- | --- | --- |
-| `client/` | Builds the interface that runs in the user's browser. In Docker, Caddy serves its built files. | Svelte 5, SvelteKit, Tailwind, Vite |
+| `client/` | Browser interface; Caddy serves the Docker build. | Svelte 5, SvelteKit, Tailwind, Vite |
 | `server/` | Provides the HTTP API, stores listings, and fetches seating on demand. | Node.js, Express, Sequelize, SQLite, Puppeteer |
 | `scraper/` | Fetches CineStar listings, adds TMDB metadata, and uploads results to the server. | Node.js, Puppeteer, Axios, cron |
 | `shared/` | Keeps cinema IDs, names, and cities consistent across all three apps. | JSON |
@@ -25,19 +25,17 @@ SQLite is managed by the server. Listings are refreshed by the scraper, not when
 
 ## Run locally with Docker
 
-Use this path to run the packaged application. For automatic updates while editing code, see [Develop locally](#develop-locally).
-
-Requires Docker with Compose and a running Docker engine. Run commands from the repository root in Bash or a compatible shell.
+Requires Docker Compose. Commands run from the repository root.
 
 ### 1. Prepare settings
 
-On your first setup, copy the example file:
+Settings:
 
 ```bash
 cp .env.example .env
 ```
 
-If `.env` already exists, edit it instead of overwriting it. Set a private, nonempty `SCRAPER_SECRET`; the default placeholders are rejected and Compose requires this setting. Add `TMDB_API_KEY` to enable TMDB enrichment; without it, CineStar data can still be collected, but TMDB metadata will be missing.
+`SCRAPER_SECRET` is required; placeholders are rejected. `TMDB_API_KEY` enables optional TMDB enrichment.
 
 ### 2. Start the server and interface
 
@@ -45,14 +43,10 @@ If `.env` already exists, edit it instead of overwriting it. Set a private, none
 docker compose -f docker-compose.yml -f docker-compose.local.yml up --build -d
 ```
 
-`-d` runs the services in the background.
-
 - Website: [http://localhost:8080](http://localhost:8080)
 - API health: [http://localhost:3000/api/health](http://localhost:3000/api/health)
 
-A fresh database has no films yet. Populate it in the next step.
-
-The local override supplies the browser-accessible ports and local API address.
+The local override sets ports and the API address. A fresh database is empty.
 
 ### 3. Populate the database
 
@@ -60,9 +54,7 @@ The local override supplies the browser-accessible ports and local API address.
 docker compose -f docker-compose.yml -f docker-compose.local.yml run --build --rm scraper
 ```
 
-The scraper waits for the server healthcheck, fetches and uploads listings, then exits. Look for `Scrape task completed successfully` and refresh the website. `--rm` removes the temporary container.
-
-Repeat this command to refresh listings. Local scraping runs once; it is not scheduled.
+This fetches and uploads listings once. Local scraping is not scheduled.
 
 ### 4. Inspect or stop the application
 
@@ -70,28 +62,30 @@ Repeat this command to refresh listings. Local scraping runs once; it is not sch
 # Show container status.
 docker compose -f docker-compose.yml -f docker-compose.local.yml ps --all
 
-# Follow server and client logs; Ctrl+C stops following, not the containers.
+# Follow logs.
 docker compose -f docker-compose.yml -f docker-compose.local.yml logs -f server client
 
 # Stop and remove the local services, including a profile-started scraper.
 docker compose -f docker-compose.yml -f docker-compose.local.yml --profile scraper down
 ```
 
-Redact secrets before sharing server logs.
-
 `down` preserves the database volume. Adding `--volumes` deletes it and its data.
 
-After source-code changes, repeat the `up --build -d` command. The Docker setup copies code into images; it does not automatically pick up edits from your working directory.
+Docker source changes require `up --build -d`; there are no source bind mounts.
 
 ## Develop locally
 
-Use Node.js 24 and npm (`.nvmrc` selects the major version). Puppeteer downloads browser binaries during installation and needs compatible OS libraries. The Docker images supply those libraries.
+Requires Node.js 24 (`.nvmrc`) and npm. Puppeteer downloads Chromium during installation; Docker images include its OS libraries.
 
-Native server installs also require Python 3, `make`, and a C++ compiler: SQLite is built from source for compatibility with Ubuntu 22.04 and Debian Bookworm. The server Docker image includes this toolchain. On Debian/Ubuntu, install it with `sudo apt-get install python3 make g++` if it is missing.
-
-Avoid running this server and the Docker server simultaneously on port 3000.
+Native server installs require Python 3, `make`, and a C++ compiler for SQLite.
+On Debian/Ubuntu: `sudo apt-get install python3 make g++`. The server Docker image includes these tools.
 
 ### 1. Install dependencies and prepare settings
+
+For frontend-only work, install just the client dependencies with `npm ci --prefix client`,
+copy `client/.env.example` to `client/.env` if needed, and set
+`PUBLIC_API_URL=https://api.bettercinestar.com`. Then run `npm run dev-client`.
+This uses the public API; no local backend or scraper is needed. Full setup:
 
 ```bash
 npm ci --prefix server
@@ -104,11 +98,11 @@ cp scraper/.env.example scraper/.env
 cp client/.env.example client/.env
 ```
 
-Edit these files:
+Local settings:
 
 - Set the same `SCRAPER_SECRET` in `server/.env` and `scraper/.env`.
-- Keep `SERVER_API_URL=http://localhost:3000/api/v1/scrape-results` in `scraper/.env`; add `TMDB_API_KEY` if you want enrichment.
-- Keep `PUBLIC_API_URL=http://localhost:3000` in `client/.env`.
+- `SERVER_API_URL=http://localhost:3000/api/v1/scrape-results` in `scraper/.env`; add `TMDB_API_KEY` if you want enrichment.
+- `PUBLIC_API_URL=http://localhost:3000` in `client/.env`.
 
 ### 2. Start the server and client in separate terminals
 
@@ -118,25 +112,21 @@ Server:
 npm run dev-server
 ```
 
-Wait for `Database synchronized successfully` or `Database recreated and schema version set` in its output. Nodemon restarts the server when its watched files change.
-
 Client, in a second terminal:
 
 ```bash
 npm run dev-client
 ```
 
-Open the local URL printed by Vite, normally [http://localhost:5173](http://localhost:5173). Vite updates the interface as you edit frontend code. Stop each process with Ctrl+C.
+Client: [http://localhost:5173](http://localhost:5173). Server: `http://localhost:3000`.
 
 ### 3. Fetch listings once
-
-In a third terminal:
 
 ```bash
 RUN_MODE=once npm run scrape
 ```
 
-Keep `RUN_MODE=once`: the example `.env` defaults to scheduled mode without an immediate scrape.
+The example `.env` defaults to scheduled mode without an immediate scrape.
 
 Docker and native development use separate databases by default. Populating one does not populate the other.
 
@@ -162,52 +152,47 @@ See [server/.env.example](server/.env.example) and [scraper/.env.example](scrape
 | Docker | `/app/data/Database.sqlite` inside the server, backed by the named volume `server_sqlite_data` (usually prefixed with the Compose project name). |
 | Native | `server/Database.sqlite`, unless `SQLITE_STORAGE` overrides it. |
 
-For an offline backup, stop the server cleanly and copy the database to separate storage. In Docker, back up the named volume while the server is stopped.
+`FORCE_DB_RESET=true` or a `DB_SCHEMA_VERSION` mismatch drops and recreates the
+schema. Initialization otherwise uses Sequelize `sync({ alter: true })`.
 
-Current database initialization can destroy data:
+## Checks
 
-- `FORCE_DB_RESET=true` drops and recreates tables on every server startup.
-- A `DB_SCHEMA_VERSION` different from the version stored in the database also drops and recreates tables. This is a reset mechanism, not a data-preserving migration.
-- Removing the Docker volume, including through `down --volumes`, removes the Docker database.
-
-Back up data before schema changes. Keep the existing `DB_SCHEMA_VERSION` when upgrading an existing database unless a full reset is intended.
-
-## Checks and troubleshooting
-
-These checks are available after installing native dependencies:
+From the repository root:
 
 ```bash
-npm run check --prefix client    # Svelte and TypeScript checks
-npm run lint --prefix client     # Formatting and lint checks
-npm run build-client             # Production frontend build
-npm test --prefix scraper        # TMDB matching tests using local fixtures
+npm run check                   # All tests, frontend lint/type checks and build
+npm test                        # Server and scraper tests only
+npm test --prefix server        # Movie date aggregation regression tests
+npm run check --prefix client   # Svelte and TypeScript checks
+npm run lint --prefix client    # Formatting and lint checks
+npm run build-client            # Production frontend build
+npm test --prefix scraper       # TMDB matching tests using local fixtures
 ```
 
-Check that the API responds:
+Tests use fixtures/mocks and do not require running services or secrets.
+The frontend checks/build require `PUBLIC_API_URL` from `client/.env` or the environment,
+but do not send requests to that address.
 
-```bash
-curl -f http://localhost:3000/api/health
-```
-
-Expect JSON with `status: "OK"`.
-
-| Symptom | What to check |
-| --- | --- |
-| Website opens but has no films | Run the one-off scraper; verify upload success. Also check selected cinemas/date: valid filters can have no upcoming performances. |
-| Website cannot reach the API | Check `/api/health` and the client API address. Use both Compose files locally; rebuild the client after changing its build argument. |
-| Scraper sits waiting | It may be in scheduled mode. Use `RUN_MODE=once npm run scrape` for an immediate native run. |
-| Upload returns `401` | Server and scraper have different `SCRAPER_SECRET` values. |
-| No TMDB metadata | Check `TMDB_API_KEY` and scraper warnings. CineStar collection can succeed without enrichment. |
+Health endpoint: `GET /api/health` returns `{"status":"OK"}`.
 
 ## Deployment
 
-The base [docker-compose.yml](docker-compose.yml) starts all three services. Its scraper runs at startup and daily at 02:00 in the container's timezone.
+The hosted application uses Coolify with the root `docker-compose.yml`:
 
-For public hosting:
+| Service | Public address | Container port |
+| --- | --- | --- |
+| Client | `https://bettercinestar.com` | `80` |
+| API | `https://api.bettercinestar.com` | `3000` |
+| Scraper | None; uploads over the internal Docker network | — |
 
-- Configure domain routing and HTTPS through your hosting platform or reverse proxy, routing to client port `80` and server port `3000` on the Docker network.
-- Set the client build's API address to your public API domain. It currently uses `https://api.bettercinestar.com`.
-- Supply real secrets and preserve the SQLite volume with backups.
+Registrar: Namecheap. DNS and proxy: Cloudflare, SSL/TLS **Full (strict)**.
+VPS administration uses SSH key authentication.
+
+Hosted database settings: `DB_SCHEMA_VERSION=2`, `FORCE_DB_RESET=false`.
+The persistent server volume is mounted at `/app/data`.
+
+The base Compose file starts all three services. The scraper runs at startup and
+at 02:00 daily in the container's timezone.
 
 ## Shared cinema catalogue
 
