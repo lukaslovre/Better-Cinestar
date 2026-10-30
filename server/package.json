@@ -1,6 +1,9 @@
 {
   "name": "bettercinestar-server",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "description": "Server API for BetterCinestar",
   "main": "app.js",
   "scripts": {

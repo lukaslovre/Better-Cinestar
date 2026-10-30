@@ -1,6 +1,11 @@
+# Refresh Node.js from its official image independently of Puppeteer's release cycle.
+FROM node:24-bookworm AS node-runtime
+
 # Use the official Puppeteer image which includes Chromium and all required OS deps.
-# This avoids Alpine/Chromium dependency issues when running Puppeteer in production.
+# Both stages use Debian Bookworm; retain Puppeteer's browser and OS dependencies.
 FROM ghcr.io/puppeteer/puppeteer:24
+
+COPY --from=node-runtime /usr/local/ /usr/local/
 
 # Set the working directory inside the container
 WORKDIR /app/server
@@ -12,7 +17,7 @@ ENV PORT=3000
 
 # Install curl for healthchecks
 USER root
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 # Ensure the app directory is writable for the non-root user.
 RUN chown -R pptruser:pptruser /app
@@ -26,7 +31,7 @@ USER pptruser
 COPY --chown=pptruser:pptruser server/package.json server/package-lock.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 # Copy the server application code
 COPY --chown=pptruser:pptruser server/ ./

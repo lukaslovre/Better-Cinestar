@@ -1,6 +1,6 @@
 # ---- Builder Stage ----
-# Use a current Node.js LTS version (e.g., 20.x or 22.x)
-FROM node:22-alpine AS builder
+# Build with the project's Node.js 24 runtime.
+FROM node:24-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app/client

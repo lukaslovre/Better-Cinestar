@@ -1,5 +1,7 @@
 services:
   server:
+    # Reap Chromium child processes when the browser exits.
+    init: true
     build:
       context: .
       dockerfile: server/Dockerfile
@@ -44,6 +46,7 @@ services:
 
   # Scraper service (runs once and exits)
   scraper:
+    init: true
     build:
       context: .
       dockerfile: scraper/Dockerfile
