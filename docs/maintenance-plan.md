@@ -22,7 +22,15 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
   Aplikacija koristi Docker Compose iz `/docker-compose.yml`, granu `main`
   i konfigurirani ref `HEAD`. Aktivni commit nije potvrđen; povijest deploya je prazna.
 - Web je na `https://bettercinestar.com`, API na `https://api.bettercinestar.com`.
-  DNS i HTTP odgovori upućuju na isključen Cloudflare proxy; dashboard nije provjeren.
+  Domena ostaje registrirana na Namecheapu, a DNS je prebačen na Cloudflare Free.
+  Prema provjeri u zasebnoj sesiji 30. 10. 2026., nameserveri su
+  `laura.ns.cloudflare.com` i `memphis.ns.cloudflare.com`, status domene je
+  **Active**, a web promet prolazi kroz proxy.
+- Cloudflare DNS ima A zapise za `@`, `www` i `*` prema `91.99.8.168`, sve
+  označene **Proxied**. Wildcard pokriva `api`; MX i TXT zapisi su preneseni.
+  Namecheap DNSSEC bio je isključen; Cloudflare SSL/TLS postavljen je na
+  **Full (strict)**. Web preko HTTPS-a prikazuje današnji raspored, a za jednu
+  projekciju učitana je mapa sjedala; svježina podataka nije zasebno provjerena.
 - SSH je dostupan. Aktivni volumen završava s `_server-sqlite-data` (bez `-2`),
   montiran je na `/app/data`; produkcija koristi `DB_SCHEMA_VERSION=2` i `FORCE_DB_RESET=false`.
 - Jednokratni backup Coolify konfiguracije/ključeva, PostgreSQL-a i aplikacijske SQLite
@@ -45,21 +53,22 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
    greške provjere tipova. Docker `init` sprječava nakupljanje Chromium zombie procesa.
 4. [x] **Uklanjanje analitike:** uklonjeni middleware, endpoint, dashboard, model
    i postavke; startup ciljano i idempotentno briše povijesnu tablicu i podatke.
-   Test potvrđuje očuvanje filmova, projekcija i datuma bez promjene verzije sheme.
+   Jednokratna provjera potvrdila je očuvanje filmova, projekcija i datuma bez
+   promjene verzije sheme.
 5. [x] **Ovisnosti:** ažurirani frontend, server i scraper, uključujući migracije
    SQLitea 6, Zoda 4 i Puppeteera 25. Bez `--force` i dependency overrides.
 6. [ ] **Prvi posjet:** prikazati korisnu ponudu odmah i pojednostavniti odabir lokacije.
    Kandidati su sva kina kao početni prikaz i odabir cijelog grada jednim klikom;
    konačno ponašanje još treba dogovoriti. Sačuvati spremljene korisničke odabire.
-7. [ ] **Cloudflare:** potvrditi DNS i TLS postavke, uključiti proxy za web i API
-   te provjeriti HTTPS i svježinu podataka. Bez dodavanja analitičkog beacona.
+7. [x] **Cloudflare:** domena Active, proxy uključen, TLS Full (strict), HTTPS
+   i učitavanje rasporeda i sjedala provjereni. Bez dodavanja analitičkog beacona.
 8. [ ] **Trajno održavanje:** dopuniti README provjerenim deployment informacijama
    i dodati minimalne automatske provjere nakon što lokalne provjere prolaze.
 
 Koraci 3–5 su implementirani i provjereni na branchu.
-Koraci 6–8 odgođeni su za zaseban nastavak; README se sada usklađuje samo s
-promjenama nužnima za pokretanje. Produkcijsko brisanje stare analitike slijedi
-pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme `2`.
+Cloudflare postavljanje je dovršeno; koraci 6 i 8 ostaju otvoreni. README je
+usklađen s promjenama nužnima za pokretanje. Produkcijsko brisanje stare analitike
+slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme `2`.
 
 ## Otvorene odluke i provjera uspjeha
 
