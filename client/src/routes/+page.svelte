@@ -1,6 +1,10 @@
 <script lang="ts">
   import '../app.css'; // Import global styles
   import { PUBLIC_API_URL } from '$env/static/public';
+  import { afterNavigate, pushState, replaceState } from '$app/navigation';
+  import { page } from '$app/state';
+  import { resolve } from '$app/paths';
+  import { untrack } from 'svelte';
 
   import Navigation from '$lib/components/Navigation.svelte';
   import Dropdowns from '$lib/components/Dropdowns.svelte';
@@ -26,8 +30,12 @@
 
   // Setting up initial variables
   let showTooltipPopup: boolean = $state(false);
+  let routerReady = $state(false);
+  afterNavigate(() => {
+    routerReady = true;
+  });
   type OpenedPerformance = { movie: Movie; performance: MoviePerformance };
-  let openedPerformance: OpenedPerformance | null = $state(null);
+  let openedPerformance = $derived(page.state.openedPerformance ?? null);
   // Why not nullable: a null/undefined value would immediately resolve the await block
   // to null, which complicates the template logic.
   // eslint-disable-next-line svelte/prefer-writable-derived -- The effect owns the fetch lifecycle; deriving would change when network side effects run.
@@ -40,24 +48,12 @@
   let moviesEmptyReason: MoviesEmptyReason | null = $state(null);
 
   // Event handlers
-  $effect(() => {
-    const handlePopState = (event: PopStateEvent) => {
-      const state = event.state;
-      if (openedPerformance && (!state || !state.popupOpen)) {
-        openedPerformance = null;
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  });
-
   const handlePerformanceOpen = ({ detail }: { detail: OpenedPerformance }) => {
-    history.pushState({ popupOpen: true }, '', '');
-    openedPerformance = detail;
+    pushState('', { ...page.state, openedPerformance: detail });
   };
 
   const handlePerformanceClose = () => {
-    history.back(); // Triggers the popstate event
+    history.back(); // SvelteKit restores the previous page.state and closes the popup.
   };
 
   const setShowTooltipPopup = ({ detail }: { detail: boolean }) =>
@@ -238,9 +234,11 @@
 
   // Updating URL parameters whenever store values change
   $effect(() => {
+    if (!routerReady) return;
     const parameters = createUrlParams($cinemaOids, $selectedDate, $sortBy);
 
-    history.replaceState(null, '', `?${parameters.toString()}`);
+    // Preserve popup state without making history updates a dependency of this effect.
+    untrack(() => replaceState(resolve(`/?${parameters.toString()}`), page.state));
 
     updateLocalStorage($cinemaOids, $selectedDate, $sortBy);
   });

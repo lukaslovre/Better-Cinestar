@@ -69,12 +69,19 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
 9. [x] **Frontend lint:** riješeni nalazi za tipove, neiskorištene simbole i ključeve
    lista. Uske dokumentirane iznimke čuvaju vanjske linkove, lokalne buildere i
    postojeći način pokretanja dohvata filmova. Izgled i korisnički tokovi su očuvani.
-10. [ ] **SvelteKit history:** zamijeniti izravne `history.pushState` i
-    `history.replaceState` pozive u `+page.svelte` API-jem iz `$app/navigation`,
-    uskladiti stanje popupa i provjeriti Back/Forward. Bez novog lint pravila.
+10. [x] **SvelteKit history:** izravni `pushState`/`replaceState` zamijenjeni su
+    API-jem iz `$app/navigation`. Popup se izvodi iz `page.state` uz spremljenu
+    projekciju za Back/Forward; ažuriranje URL-a čuva to stanje i čeka inicijalizaciju
+    routera. Provjereni otvaranje, zatvaranje, Back i izvorni `history.forward()`.
+    Bez novog lint pravila.
+11. [ ] **Performanse popisa filmova (niži prioritet):** izmjeriti obradu na serveru,
+    mrežu i prikaz u pregledniku prije optimizacije. Provjeriti uzastopne upite za
+    dostupne datume po filmu i potrebu za manjim odgovorom/cacheom. Dosadašnjih
+    ~200 ms je ukupni dohvat iz klijenta, ne samo vrijeme servera; uz kompresiju je
+    u dodatnom mjerenju preneseno oko 36 KB za Zagreb (218 KB raspakiranog JSON-a).
 
 Koraci 3–5 su implementirani i provjereni na branchu.
-Cloudflare postavljanje je dovršeno; koraci 8 i 10 ostaju otvoreni. README je
+Cloudflare postavljanje je dovršeno; koraci 8 i 11 ostaju otvoreni. README je
 usklađen s promjenama nužnima za pokretanje. Produkcijsko brisanje stare analitike
 slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme `2`.
 
