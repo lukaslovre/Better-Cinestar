@@ -1,15 +1,20 @@
 import { writable } from 'svelte/store';
+import { SvelteDate } from 'svelte/reactivity';
 import { dateToYMDFormat } from '../utils/utils';
+import { cinemas } from '../utils/cinemas';
 
-const danas: string = dateToYMDFormat(new Date());
+const defaultCinemaOids = cinemas
+  .filter((cinema) => cinema.cinemaCity === 'Zagreb')
+  .map((cinema) => cinema.cinemaOid);
+const defaultSortBy = 'tmdb_rating';
 
-// Postavlja default vrednosti za store-ove
-export const cinemaOids = writable<string[]>([]);
-export const selectedDate = writable<string>(danas);
-export const sortBy = writable<string>('nationwideStart');
+// URL and saved preferences override these first-visit defaults on page load.
+export const cinemaOids = writable<string[]>([...defaultCinemaOids]);
+export const selectedDate = writable<string>(dateToYMDFormat(new SvelteDate()));
+export const sortBy = writable<string>(defaultSortBy);
 
 export function resetFiltersToDefault() {
-  cinemaOids.set([]);
-  selectedDate.set(danas);
-  sortBy.set('nationwideStart');
+  cinemaOids.set([...defaultCinemaOids]);
+  selectedDate.set(dateToYMDFormat(new SvelteDate()));
+  sortBy.set(defaultSortBy);
 }

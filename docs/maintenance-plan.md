@@ -57,9 +57,11 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
    promjene verzije sheme.
 5. [x] **Ovisnosti:** ažurirani frontend, server i scraper, uključujući migracije
    SQLitea 6, Zoda 4 i Puppeteera 25. Bez `--force` i dependency overrides.
-6. [ ] **Prvi posjet:** prikazati korisnu ponudu odmah i pojednostavniti odabir lokacije.
-   Kandidati su sva kina kao početni prikaz i odabir cijelog grada jednim klikom;
-   konačno ponašanje još treba dogovoriti. Sačuvati spremljene korisničke odabire.
+6. [x] **Prvi posjet:** početno prikazati svih pet zagrebačkih kina, danas, po ocjeni.
+   URL i spremljene postavke imaju prednost (uključujući namjerno prazan odabir).
+   U podizborniku grada dodan je zajednički odabir/uklanjanje svih njegovih kina;
+   ostali odabiri ostaju. Potpuno odabran grad ima sažetu oznaku. Help popup se ne
+   otvara automatski pri prvom posjetu. Klik na logo vraća nove zadane postavke.
 7. [x] **Cloudflare:** domena Active, proxy uključen, TLS Full (strict), HTTPS
    i učitavanje rasporeda i sjedala provjereni. Bez dodavanja analitičkog beacona.
 8. [ ] **Trajno održavanje:** dopuniti README provjerenim deployment informacijama
@@ -72,7 +74,7 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
     uskladiti stanje popupa i provjeriti Back/Forward. Bez novog lint pravila.
 
 Koraci 3–5 su implementirani i provjereni na branchu.
-Cloudflare postavljanje je dovršeno; koraci 6, 8 i 10 ostaju otvoreni. README je
+Cloudflare postavljanje je dovršeno; koraci 8 i 10 ostaju otvoreni. README je
 usklađen s promjenama nužnima za pokretanje. Produkcijsko brisanje stare analitike
 slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme `2`.
 
@@ -88,6 +90,13 @@ slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme
   startup migracija ostaje u aplikaciji za prvi deployment.
 - Formatter i ESLint sada prolaze; riješeno je početnih **38 lint nalaza**.
   Provjera tipova i build također prolaze.
+- Prvi posjet: četiri javna API dohvata po varijanti 30. 10. 2026. dala su medijan
+  **209 ms / 139 KB / 19 filmova** za Branimir i **213 ms / 218 KB / 21 film** za
+  Zagreb. Mali uzorak, vrijeme cijelog dohvata iz lokalnog curl klijenta i veličina
+  JSON-a; nije mjerenje renderiranja ni jamstvo vremena u drugim uvjetima.
+  U pregledniku provjereni početni prikaz bez popupa, spremljeno kino, prednost
+  URL-a, grupni odabir/uklanjanje i nadopuna djelomično odabranog grada bez
+  duplikata te povratak na zadane postavke klikom na logo.
 - Coolify update, Node update i npm update zasebni su zahvati. Referentne upute:
   [Coolify sigurnosno izdanje i migracija stare bete](https://github.com/coollabsio/coolify/releases/tag/v4.4.7),
   [nadogradnja instance](https://coolify.io/docs/core/instance-management/update).

@@ -1,22 +1,26 @@
 <script lang="ts">
   import { cinemaOids } from '$lib/stores/userSelection.svelte';
   import { createEventDispatcher } from 'svelte';
-  import { cinemas as cinemasData, cinemaCities } from '$lib/utils/cinemas';
+  import { cinemaCities } from '$lib/utils/cinemas';
 
   const dispatch = createEventDispatcher();
 
   export let locationDropdownOpen: { level: number; selectedCity: string | null };
 
-  $: selectedCinemasForDisplay = $cinemaOids.map(
-    (cinemaOid) =>
-      cinemasData
-        .find((cinema) => cinema.cinemaOid === cinemaOid)
-        ?.cinemaName.split(' ')[0]
+  let selectionChanged = false;
+
+  $: selectedCinemasForDisplay = cinemaCities.flatMap((city) =>
+    allCityCinemasSelected(city, $cinemaOids)
+      ? [city.cinemas.length > 1 ? `${city.city} (sva kina)` : city.city]
+      : city.cinemas
+          .filter((cinema) => $cinemaOids.includes(cinema.cinemaOid))
+          .map((cinema) => cinema.cinemaName.split(' ')[0])
   );
 
-  // Kad se zatvori dropdown, ako je odabrano vise kina i prvi put su na stranici, pokazati help popup
+  // Show help after an intentional selection, never over the first-visit results.
   $: {
-    if (locationDropdownOpen.level === 0) {
+    if (locationDropdownOpen.level === 0 && selectionChanged) {
+      selectionChanged = false;
       if ($cinemaOids.length > 1 && !localStorage.getItem('visitedWebsiteBefore')) {
         dispatch('showPerformanceInfoPopup', true);
       }
@@ -37,11 +41,26 @@
     }
   }
   function toggleCinemaSelection(cinemaOid: string) {
+    selectionChanged = true;
     const cinemaAlreadySelected = $cinemaOids.includes(cinemaOid);
 
     $cinemaOids = cinemaAlreadySelected
       ? $cinemaOids.filter((cinema) => cinema !== cinemaOid)
       : [...$cinemaOids, cinemaOid];
+  }
+  function allCityCinemasSelected(
+    city: (typeof cinemaCities)[number],
+    selectedOids: string[]
+  ) {
+    return city.cinemas.every((cinema) => selectedOids.includes(cinema.cinemaOid));
+  }
+
+  function toggleCitySelection(city: (typeof cinemaCities)[number]) {
+    selectionChanged = true;
+    const cityOids = city.cinemas.map((cinema) => cinema.cinemaOid);
+    $cinemaOids = allCityCinemasSelected(city, $cinemaOids)
+      ? $cinemaOids.filter((oid) => !cityOids.includes(oid))
+      : [...new Set([...$cinemaOids, ...cityOids])];
   }
   function checkIfSuboptionSelected(
     city: (typeof cinemaCities)[number],
@@ -151,6 +170,18 @@
             ? 'flex'
             : 'none'}
         >
+          <button
+            type="button"
+            class="option"
+            class:selected={allCityCinemasSelected(city, $cinemaOids)}
+            aria-pressed={allCityCinemasSelected(city, $cinemaOids)}
+            on:click={() => toggleCitySelection(city)}
+          >
+            <div class="checkbox">
+              <img src="images/check.svg" alt="check icon" />
+            </div>
+            <p>Sva kina — {city.city}</p>
+          </button>
           {#each city.cinemas as cinema (cinema.cinemaOid)}
             <button
               type="button"
