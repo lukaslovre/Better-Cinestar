@@ -7,7 +7,7 @@ BetterCinestar is a web app for browsing CineStar films and showtimes, filtering
 | Part | Responsibility | Technology |
 | --- | --- | --- |
 | `client/` | Builds the interface that runs in the user's browser. In Docker, Caddy serves its built files. | Svelte 5, SvelteKit, Tailwind, Vite |
-| `server/` | Provides the HTTP API, stores listings and analytics, and fetches seating on demand. | Node.js, Express, Sequelize, SQLite, Puppeteer |
+| `server/` | Provides the HTTP API, stores listings, and fetches seating on demand. | Node.js, Express, Sequelize, SQLite, Puppeteer |
 | `scraper/` | Fetches CineStar listings, adds TMDB metadata, and uploads results to the server. | Node.js, Puppeteer, Axios, cron |
 | `shared/` | Keeps cinema IDs, names, and cities consistent across all three apps. | JSON |
 
@@ -37,7 +37,7 @@ On your first setup, copy the example file:
 cp .env.example .env
 ```
 
-If `.env` already exists, edit it instead of overwriting it. Set distinct values for `SCRAPER_SECRET` and `ANALYTICS_HASH_SALT`. Add `TMDB_API_KEY` to enable TMDB enrichment; without it, CineStar data can still be collected, but TMDB metadata will be missing.
+If `.env` already exists, edit it instead of overwriting it. Set a private, nonempty `SCRAPER_SECRET`; the default placeholders are rejected and Compose requires this setting. Add `TMDB_API_KEY` to enable TMDB enrichment; without it, CineStar data can still be collected, but TMDB metadata will be missing.
 
 ### 2. Start the server and interface
 
@@ -85,7 +85,9 @@ After source-code changes, repeat the `up --build -d` command. The Docker setup 
 
 ## Develop locally
 
-Use Node.js 22 and npm. Puppeteer downloads browser binaries during installation and needs compatible OS libraries. The Docker images supply those libraries.
+Use Node.js 24 and npm (`.nvmrc` selects the major version). Puppeteer downloads browser binaries during installation and needs compatible OS libraries. The Docker images supply those libraries.
+
+Native server installs also require Python 3, `make`, and a C++ compiler: SQLite is built from source for compatibility with Ubuntu 22.04 and Debian Bookworm. The server Docker image includes this toolchain. On Debian/Ubuntu, install it with `sudo apt-get install python3 make g++` if it is missing.
 
 Avoid running this server and the Docker server simultaneously on port 3000.
 
@@ -105,7 +107,6 @@ cp client/.env.example client/.env
 Edit these files:
 
 - Set the same `SCRAPER_SECRET` in `server/.env` and `scraper/.env`.
-- Set `ANALYTICS_HASH_SALT` in `server/.env`.
 - Keep `SERVER_API_URL=http://localhost:3000/api/v1/scrape-results` in `scraper/.env`; add `TMDB_API_KEY` if you want enrichment.
 - Keep `PUBLIC_API_URL=http://localhost:3000` in `client/.env`.
 
@@ -169,7 +170,7 @@ Current database initialization can destroy data:
 - A `DB_SCHEMA_VERSION` different from the version stored in the database also drops and recreates tables. This is a reset mechanism, not a data-preserving migration.
 - Removing the Docker volume, including through `down --volumes`, removes the Docker database.
 
-Back up data before schema changes. Scraping replaces current listings; it cannot restore lost analytics history.
+Back up data before schema changes. Keep the existing `DB_SCHEMA_VERSION` when upgrading an existing database unless a full reset is intended.
 
 ## Checks and troubleshooting
 
