@@ -3,7 +3,7 @@ FROM node:24-bookworm AS node-runtime
 
 # Use an official Puppeteer image which includes Chromium and all necessary dependencies.
 # The tag identifies Puppeteer, not Node.js; both stages use Debian Bookworm.
-FROM ghcr.io/puppeteer/puppeteer:24
+FROM ghcr.io/puppeteer/puppeteer:25.16.0
 
 COPY --from=node-runtime /usr/local/ /usr/local/
 

@@ -10,7 +10,7 @@ const cinemaOidsSchema = z.preprocess(
 const dateSchema = z.union(
   [z.string().length(10, "Invalid date format"), z.literal("any")],
   {
-    errorMap: () => ({ message: "Date must be YYYY-MM-DD or 'any'" }),
+    error: "Date must be YYYY-MM-DD or 'any'",
   }
 );
 

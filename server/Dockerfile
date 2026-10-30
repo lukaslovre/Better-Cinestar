@@ -3,7 +3,7 @@ FROM node:24-bookworm AS node-runtime
 
 # Use the official Puppeteer image which includes Chromium and all required OS deps.
 # Both stages use Debian Bookworm; retain Puppeteer's browser and OS dependencies.
-FROM ghcr.io/puppeteer/puppeteer:24
+FROM ghcr.io/puppeteer/puppeteer:25.16.0
 
 COPY --from=node-runtime /usr/local/ /usr/local/
 
@@ -15,9 +15,9 @@ ENV PORT=3000
 # Note: we intentionally allow Puppeteer to download its compatible Chromium
 # during `npm ci` (the base image provides all OS dependencies).
 
-# Install curl for healthchecks
+# Install the SQLite source-build toolchain and curl for healthchecks
 USER root
-RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 # Ensure the app directory is writable for the non-root user.
 RUN chown -R pptruser:pptruser /app
@@ -28,7 +28,7 @@ RUN mkdir -p /app/data && chown -R pptruser:pptruser /app/data
 USER pptruser
 
 # Copy root package.json and package-lock.json
-COPY --chown=pptruser:pptruser server/package.json server/package-lock.json ./
+COPY --chown=pptruser:pptruser server/package.json server/package-lock.json server/.npmrc ./
 
 # Install only production dependencies
 RUN npm ci --omit=dev
