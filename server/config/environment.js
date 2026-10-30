@@ -1,5 +1,4 @@
 const { z } = require("zod");
-const crypto = require("node:crypto");
 
 function parseBooleanish(value) {
   if (typeof value === "boolean") return value;
@@ -36,9 +35,6 @@ const envSchema = z.object({
     .transform((v) => (typeof v === "string" && v.trim() === "" ? undefined : v)),
   SEATING_CACHE_TTL_MS: z.coerce.number().default(60_000),
   SEATING_CACHE_MAX_ENTRIES: z.coerce.number().default(50),
-  ANALYTICS_STORAGE_ITEMS: z.coerce.number().default(200),
-  ANALYTICS_STORAGE_TIME_MINUTES: z.coerce.number().default(10),
-  ANALYTICS_HASH_SALT: z.string().default(crypto.randomBytes(16).toString("hex")),
   // Optional DB schema version - increment when your models change in incompatible ways
   // If this value differs from the DB PRAGMA user_version the server can optionally reset the DB schema.
   DB_SCHEMA_VERSION: z.coerce.number().default(1),

@@ -92,33 +92,8 @@ const PerformanceDates = sequelize.define(
   }
 );
 
-const Analytics = sequelize.define(
-  "Analytics",
-  {
-    uniqueVisitors: DataTypes.STRING,
-    userAgent: DataTypes.STRING,
-    url: DataTypes.STRING,
-    statusCode: DataTypes.INTEGER,
-    responseTime: DataTypes.INTEGER,
-  },
-  {
-    // only allow the createdAt field and not the updatedAt
-    timestamps: true,
-    updatedAt: false,
-    indexes: [
-      {
-        fields: ["createdAt"],
-      },
-      {
-        fields: ["statusCode"],
-      },
-    ],
-  }
-);
-
 module.exports = {
   Movie,
   Performance,
   PerformanceDates,
-  Analytics,
 };

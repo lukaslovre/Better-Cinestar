@@ -31,10 +31,6 @@ const performancesQuerySchema = z.object({
   movieId: z.string().min(1, "Movie ID is required"),
 });
 
-const analyticsQuerySchema = z.object({
-  timespan: z.enum(["hour", "day", "week"]).default("hour"),
-});
-
 // Validates the incoming data from the scraper
 const movieSchema = z
   .object({
@@ -72,6 +68,5 @@ module.exports = {
   moviesQuerySchema,
   seatingQuerySchema,
   performancesQuerySchema,
-  analyticsQuerySchema,
   scrapeResultsSchema,
 };

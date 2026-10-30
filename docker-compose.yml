@@ -11,9 +11,6 @@ services:
       - SCRAPER_SECRET=${SCRAPER_SECRET:-your_very_secret_string_here}
       - SEQUELIZE_LOGGING=false
       - SQLITE_STORAGE=/app/data/Database.sqlite
-      - ANALYTICS_STORAGE_ITEMS=200
-      - ANALYTICS_STORAGE_TIME_MINUTES=10
-      - ANALYTICS_HASH_SALT=${ANALYTICS_HASH_SALT:-your_very_secret_string_here}
       - CINESTAR_API_URL=${CINESTAR_API_URL:-https://shop.cinestarcinemas.hr/api}
       - PUPPETEER_MAX_CONCURRENCY=${PUPPETEER_MAX_CONCURRENCY:-2}
       - PUPPETEER_IDLE_TTL_MS=${PUPPETEER_IDLE_TTL_MS:-1200000}

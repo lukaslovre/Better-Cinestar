@@ -4,7 +4,6 @@
   import { resetFiltersToDefault } from '$lib/stores/userSelection.svelte';
   import Hamburger from './navigation/Hamburger.svelte';
   import Faq from './navigation/Faq.svelte';
-  import { PUBLIC_API_URL } from '$env/static/public';
 
   const contactEmail = 'lovretic2002@gmail.com';
 
@@ -82,12 +81,8 @@
         >
           <p class="title">Privacy policy</p>
           <p class="text">
-            Radi brojanja jedinstvenih posjetitelja pohranjuju se kriptografski hashirane
-            IP adrese. Ne pohranjujem stvarne IP adrese i ne mogu identificirati
-            korisnike. Agregirani statistički podaci (bez osobnih informacija) dostupni su
-            javno na stranici <a href={`${PUBLIC_API_URL}/analytics`} class="text">
-              /analytics
-            </a>.
+            Aplikacija ne prikuplja vlastitu analitiku posjeta. Odabir kina, datuma i
+            sortiranja sprema se lokalno u pregledniku.
           </p>
         </section>
 

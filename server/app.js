@@ -10,12 +10,10 @@ const { dateToHHMM, dateToYYYYMMDD } = require("./utils/utils.js");
 const { getFormattedMovies } = require("./api/index.js");
 const { fetchSeating, getSeatingCacheStats } = require("./api/seating.js");
 const { getPerformancesForDateAndMovie } = require("./api/performances.js");
-const { analyticsMiddleware } = require("./middleware/analyticsMiddleware.js");
 const { browserManager } = require("./lib/browser/browserManager.js");
 const { getCinemas } = require("./utils/cinemasList.js");
 const {
   init,
-  getAggregatedAnalytics,
   saveMoviesToDatabase,
   savePerformancesToDatabase,
   savePerformanceDatesToDatabase,
@@ -25,7 +23,6 @@ const {
   moviesQuerySchema,
   seatingQuerySchema,
   performancesQuerySchema,
-  analyticsQuerySchema,
   scrapeResultsSchema,
 } = require("./schemas/index.js");
 
@@ -58,7 +55,7 @@ async function getMoviesEmptyReason() {
   return "no_performances_for_date";
 }
 
-app.get("/api/movies", analyticsMiddleware, async (req, res) => {
+app.get("/api/movies", async (req, res) => {
   const result = moviesQuerySchema.safeParse(req.query);
 
   if (!result.success) {
@@ -79,7 +76,7 @@ app.get("/api/movies", analyticsMiddleware, async (req, res) => {
   res.send(formattedMovies);
 });
 
-app.get("/api/seating", analyticsMiddleware, async (req, res) => {
+app.get("/api/seating", async (req, res) => {
   const result = seatingQuerySchema.safeParse(req.query);
 
   if (!result.success) {
@@ -113,7 +110,7 @@ app.get("/api/seating", analyticsMiddleware, async (req, res) => {
   }
 });
 
-app.get("/api/performances", analyticsMiddleware, async (req, res) => {
+app.get("/api/performances", async (req, res) => {
   const result = performancesQuerySchema.safeParse(req.query);
 
   if (!result.success) {
@@ -146,17 +143,6 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.get("/api/getAnalyticsData", async (req, res) => {
-  const result = analyticsQuerySchema.safeParse(req.query);
-
-  if (!result.success) {
-    return res.status(400).json({ errors: result.error.flatten() });
-  }
-
-  const { timespan } = result.data;
-  const analytics = await getAggregatedAnalytics(timespan);
-  res.send(analytics);
-});
 app.get("/api/getCinemasList", (req, res) => {
   res.send(getCinemas());
 });
@@ -199,7 +185,6 @@ app.post("/api/v1/scrape-results", authenticateScraper, async (req, res) => {
   }
 });
 
-app.use("/analytics", express.static(path.join(__dirname, "public", "analytics")));
 app.use(express.static(path.join(__dirname, "client", "public")));
 
 const httpServer = app.listen(configuration.PORT, () => {
