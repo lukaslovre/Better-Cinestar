@@ -3,12 +3,10 @@
   import DateDropdown from './DateDropdown.svelte';
   import SortDropdown from './SortDropdown.svelte';
 
-  let { onshowPerformanceInfoPopup } = $props();
-
   // Setting initial dropdown states
   let locationDropdownOpen = $state({
     level: 0,
-    selectedCity: null
+    selectedCity: null as string | null
   });
   let dateDropdownOpen = $state({
     value: false

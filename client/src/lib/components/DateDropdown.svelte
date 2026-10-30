@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { selectedDate } from '$lib/stores/userSelection.svelte';
   import { dateToYMDFormat, getFormattedPerformanceDateLabel } from '$lib/utils/utils';
   import { onMount } from 'svelte';
 
-  export let dateDropdownOpen;
+  export let dateDropdownOpen: { value: boolean };
 
-  const dropdownOptionValues = [];
+  const dropdownOptionValues: { text: string; value: string }[] = [];
 
   const date = new Date();
   for (let i = 0; i < 7; i++) {
@@ -81,7 +81,7 @@
     class="dropdown-options secondary-color-scheme"
     style:display={dateDropdownOpen.value ? 'flex' : 'none'}
   >
-    {#each dropdownOptionValues  as dateOption}
+    {#each dropdownOptionValues as dateOption}
       <button
         type="button"
         class="option"
@@ -96,9 +96,3 @@
     {/each}
   </div>
 </div>
-
-<style>
-  .input-container {
-    /* max-width: calc(45% - 0.5rem); */
-  }
-</style>

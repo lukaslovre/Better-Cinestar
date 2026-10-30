@@ -1,6 +1,6 @@
 <script lang="ts">
   import PerformanceFilterPopover from './performances/PerformanceFilterPopover.svelte';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher, onMount, untrack } from 'svelte';
   import {
     getFormattedPerformanceDateLabel,
     filterPerformances,
@@ -23,7 +23,9 @@
 
   let { movie, isFullscreened }: PerformancesProps = $props();
 
-  let componentLocalPerformances: MoviePerformance[] = $state(movie.performances || []);
+  let componentLocalPerformances: MoviePerformance[] = $state(
+    untrack(() => movie.performances || [])
+  );
 
   const dispatch = createEventDispatcher();
 
@@ -159,7 +161,7 @@
 
     <PerformanceFilterPopover
       on:performanceFilterChange={handlePerformanceFilterChange}
-      performances={movie.performances}
+      performances={movie.performances ?? []}
       {filteredPerformances}
       displayComponent={filterCardVisible ? 'flex' : 'none'}
     />

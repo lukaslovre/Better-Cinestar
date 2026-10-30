@@ -240,13 +240,18 @@ function getPossibleFeaturesWithAppliedFilters(
   performances: MoviePerformance[],
   filters: PerformanceFilters
 ) {
-  const possibleFeatures = {
+  const possibleFeatures: Record<
+    'videoFeatures' | 'roomFeatures' | 'audioFeatures',
+    string[]
+  > = {
     videoFeatures: [],
     roomFeatures: [],
     audioFeatures: []
   };
 
-  for (const columnName of Object.keys(possibleFeatures)) {
+  for (const columnName of Object.keys(
+    possibleFeatures
+  ) as (keyof typeof possibleFeatures)[]) {
     const filtersWithoutOneColumn = JSON.parse(JSON.stringify(filters));
 
     filtersWithoutOneColumn[columnName] = [];
@@ -256,9 +261,7 @@ function getPossibleFeaturesWithAppliedFilters(
       filtersWithoutOneColumn
     );
 
-    // @ts-ignore
     possibleFeatures[columnName] =
-      // @ts-ignore
       getGroupedPerformanceFeaturesFrom(filteredPerformances)[columnName];
   }
 

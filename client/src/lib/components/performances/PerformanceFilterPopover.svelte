@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   import {
@@ -10,12 +10,12 @@
 
   const dispatch = createEventDispatcher();
 
-  export let displayComponent; // flex/none
-  export let performances; // array of performances
-  export let filteredPerformances; // array of performances
+  export let displayComponent: string; // flex/none
+  export let performances: MoviePerformance[]; // array of performances
+  export let filteredPerformances: MoviePerformance[]; // array of performances
 
   // Initial values
-  let selectedPerformanceFilters = {
+  let selectedPerformanceFilters: PerformanceFilters = {
     videoFeatures: [],
     audioFeatures: [],
     roomFeatures: [],
@@ -23,7 +23,15 @@
     timeTo: '24:00'
   };
 
-  let columns = [
+  type FeatureCategory = 'videoFeatures' | 'roomFeatures' | 'audioFeatures';
+  type FeatureOption = { name: string; state: 'selected' | 'possible' | 'notPossible' };
+  type FilterColumn = {
+    id: FeatureCategory | 'time';
+    label: string;
+    data: FeatureOption[];
+  };
+
+  let columns: FilterColumn[] = [
     {
       id: 'videoFeatures',
       label: 'Slika',
@@ -52,26 +60,27 @@
 
   $: dispatch('performanceFilterChange', selectedPerformanceFilters);
 
-  function whenPerformancesUpdate(perf) {
+  function whenPerformancesUpdate(perf: MoviePerformance[]) {
     setInitialColumnDataValues(perf);
   }
 
-  function whenFilteredPerformancesUpdate(filteredPerf) {
+  function whenFilteredPerformancesUpdate(filteredPerf: MoviePerformance[]) {
     setColumnDataValuesOnFilterChange(filteredPerf);
   }
 
   // Functions
 
-  function setInitialColumnDataValues(perf) {
+  function setInitialColumnDataValues(perf: MoviePerformance[]) {
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].id === 'time') continue;
+      const category = columns[i].id;
+      if (category === 'time') continue;
 
-      const possibleFeatures = getGroupedPerformanceFeaturesFrom(perf)[columns[i].id];
+      const possibleFeatures = getGroupedPerformanceFeaturesFrom(perf)[category];
 
       columns[i].data = possibleFeatures.map((feature) => {
         return {
           name: feature,
-          state: selectedPerformanceFilters[columns[i].id].includes(feature)
+          state: selectedPerformanceFilters[category].includes(feature)
             ? 'selected'
             : 'possible'
         };
@@ -79,14 +88,15 @@
     }
   }
 
-  function setColumnDataValuesOnFilterChange(filteredPerf) {
+  function setColumnDataValuesOnFilterChange(filteredPerf: MoviePerformance[]) {
     for (let i = 0; i < columns.length; i++) {
-      if (columns[i].id === 'time') continue;
+      const category = columns[i].id;
+      if (category === 'time') continue;
 
       const possibleFeatures = getPossibleFeaturesWithAppliedFilters(
         performances,
         selectedPerformanceFilters
-      )[columns[i].id];
+      )[category];
 
       columns[i].data = columns[i].data.map((feature) => {
         if (!possibleFeatures.includes(feature.name)) {
@@ -104,15 +114,17 @@
 
   function updateSelectedFilters() {
     for (let i = 0; i < columns.length; i++) {
+      const category = columns[i].id;
+      if (category === 'time') continue;
       const selectedFeatures = columns[i].data
         .filter((feature) => feature.state === 'selected')
         .map((feature) => feature.name);
 
-      selectedPerformanceFilters[columns[i].id] = selectedFeatures;
+      selectedPerformanceFilters[category] = selectedFeatures;
     }
   }
 
-  function toggleOption(featureName, featureCategory) {
+  function toggleOption(featureName: string, featureCategory: FilterColumn['id']) {
     const categoryIndex = columns.findIndex((column) => column.id === featureCategory);
     const featureIndex = columns[categoryIndex].data.findIndex(
       (feature) => feature.name === featureName
@@ -132,16 +144,16 @@
   }
 
   // time input functions
-  function selectInputValue(event) {
-    const input = event.target;
+  function selectInputValue(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
     input.select();
   }
-  function parseInputWhileTyping(event) {
-    const input = event.target;
+  function parseInputWhileTyping(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
     const inputValue = input.value;
 
     // check if the user is using the backspace key
-    if (event.inputType === 'deleteContentBackward') {
+    if ((event as InputEvent).inputType === 'deleteContentBackward') {
       return;
     }
 
@@ -154,7 +166,7 @@
 
     if (inputValue.length === 2) {
       // if the current input value is larger than 24, add a colon after the first digit
-      if (inputValue > 24) {
+      if (Number(inputValue) > 24) {
         input.value = `${inputValue[0]}:${inputValue[1]}`;
       } else {
         input.value = `${inputValue}:`;
@@ -172,8 +184,8 @@
       input.value = `${hoursMaxTwoDigits}:${minutesMaxTwoDigits}`;
     }
   }
-  function checkIfValidTime(event) {
-    const input = event.target;
+  function checkIfValidTime(event: Event) {
+    const input = event.currentTarget as HTMLInputElement;
     const defaultValue = input.id === 'performanceTimeFromInput' ? '00:00' : '24:00';
 
     const previousValue =
@@ -207,7 +219,11 @@
     // set the input value to previous
     const [hours, minutes] = input.value.split(':');
 
-    if (hours > 24 || (hours == 24 && minutes != '00') || minutes > 59) {
+    if (
+      Number(hours) > 24 ||
+      (Number(hours) === 24 && minutes != '00') ||
+      Number(minutes) > 59
+    ) {
       console.log('greška', input.value);
       input.value = previousValue;
       return;
@@ -219,9 +235,9 @@
 
     // dispatchPerformanceFilterChange();
   }
-  function unfocusInput(event) {
+  function unfocusInput(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      const input = event.target;
+      const input = event.currentTarget as HTMLInputElement;
       input.blur();
     }
   }

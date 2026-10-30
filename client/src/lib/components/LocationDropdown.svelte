@@ -1,17 +1,17 @@
-<script>
+<script lang="ts">
   import { cinemaOids } from '$lib/stores/userSelection.svelte';
   import { createEventDispatcher } from 'svelte';
   import { cinemas as cinemasData, cinemaCities } from '$lib/utils/cinemas';
 
   const dispatch = createEventDispatcher();
 
-  export let locationDropdownOpen;
+  export let locationDropdownOpen: { level: number; selectedCity: string | null };
 
   $: selectedCinemasForDisplay = $cinemaOids.map(
     (cinemaOid) =>
       cinemasData
         .find((cinema) => cinema.cinemaOid === cinemaOid)
-        .cinemaName.split(' ')[0]
+        ?.cinemaName.split(' ')[0]
   );
 
   // Kad se zatvori dropdown, ako je odabrano vise kina i prvi put su na stranici, pokazati help popup
@@ -26,7 +26,7 @@
   function toggleDropdownLevelOne() {
     locationDropdownOpen.level = locationDropdownOpen.level === 0 ? 1 : 0;
   }
-  function toggleDropdownLevelTwo(city) {
+  function toggleDropdownLevelTwo(city: string) {
     const shouldOpen =
       locationDropdownOpen.level === 1 || locationDropdownOpen.selectedCity !== city;
 
@@ -36,14 +36,17 @@
       locationDropdownOpen.selectedCity = city;
     }
   }
-  function toggleCinemaSelection(cinemaOid) {
+  function toggleCinemaSelection(cinemaOid: string) {
     const cinemaAlreadySelected = $cinemaOids.includes(cinemaOid);
 
     $cinemaOids = cinemaAlreadySelected
       ? $cinemaOids.filter((cinema) => cinema !== cinemaOid)
       : [...$cinemaOids, cinemaOid];
   }
-  function checkIfSuboptionSelected(city, selectedOids) {
+  function checkIfSuboptionSelected(
+    city: (typeof cinemaCities)[number],
+    selectedOids: string[]
+  ) {
     return city.cinemas.some((cinema) => selectedOids.includes(cinema.cinemaOid));
   }
 </script>

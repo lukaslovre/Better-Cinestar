@@ -13,18 +13,21 @@
     performance: MoviePerformance;
   }
 
-  let { performanceData, onclose } = $props<{
+  let {
+    performanceData,
+    onclose
+  }: {
     performanceData: PerformanceData;
     onclose: () => void;
-  }>();
+  } = $props();
 
   let seatingAreas: SeatingArea[] = $state([]);
   let invalidskoPostoji = $state(false);
 
   // Layout state
-  let seatLocationMultiplier = 2.5;
-  let seatOffsetX = 0;
-  let seatSize = 9;
+  let seatLocationMultiplier = $state(2.5);
+  let seatOffsetX = $state(0);
+  let seatSize = $state(9);
   let seatsContainerHeight = $state('auto');
   let seatsContainerElement: HTMLElement | undefined = $state();
 
