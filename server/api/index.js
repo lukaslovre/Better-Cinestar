@@ -6,7 +6,7 @@ const {
 const { dateToYYYYMMDD, dateToHHMM } = require("../utils/utils.js");
 
 const { getMoviesByIds, sortMovies } = require("./movies");
-const { getPerformanceDatesFor } = require("../db/db.js");
+const { getPerformanceDatesForMovies } = require("../db/db.js");
 
 async function getFormattedMovies(cinemaOids, date, sortBy) {
   const present = new Date();
@@ -38,6 +38,20 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
 
   const movies = await getMoviesByIds(movieIdsFromPerformances);
 
+  const dateRows = await getPerformanceDatesForMovies(
+    cinemaOids,
+    movies.map((movie) => movie.id)
+  );
+  const datesByFilmId = new Map();
+  for (const row of dateRows) {
+    const filmId = String(row.filmId);
+    if (!datesByFilmId.has(filmId)) datesByFilmId.set(filmId, new Set());
+    const dates = datesByFilmId.get(filmId);
+    for (const date of Array.isArray(row.date) ? row.date : []) {
+      if (typeof date === "string" && date >= today) dates.add(date);
+    }
+  }
+
   // spojiti filmove sa performansama
   for (const movie of movies) {
     const performanceGroup = performancesGroupedByFilmid.find(
@@ -46,9 +60,7 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
 
     movie.performances = performanceGroup ? performanceGroup.performances : [];
 
-    movie.availableDates = (await getPerformanceDatesFor(cinemaOids, movie.id)).date
-      .filter((date) => date >= today)
-      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    movie.availableDates = [...(datesByFilmId.get(String(movie.id)) || [])].sort();
   }
 
   // sortirati filmove

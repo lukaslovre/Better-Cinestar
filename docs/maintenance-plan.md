@@ -74,14 +74,16 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
     projekciju za Back/Forward; ažuriranje URL-a čuva to stanje i čeka inicijalizaciju
     routera. Provjereni otvaranje, zatvaranje, Back i izvorni `history.forward()`.
     Bez novog lint pravila.
-11. [ ] **Performanse popisa filmova (niži prioritet):** izmjeriti obradu na serveru,
-    mrežu i prikaz u pregledniku prije optimizacije. Provjeriti uzastopne upite za
-    dostupne datume po filmu i potrebu za manjim odgovorom/cacheom. Dosadašnjih
-    ~200 ms je ukupni dohvat iz klijenta, ne samo vrijeme servera; uz kompresiju je
-    u dodatnom mjerenju preneseno oko 36 KB za Zagreb (218 KB raspakiranog JSON-a).
+11. [x] **Dohvat dostupnih datuma:** jedan zajednički SQL upit zamjenjuje uzastopne
+    upite po filmu. Datumi su sortirana unija svih odabranih kina, bez duplikata
+    i prošlih datuma; nedostajući/null datumi daju `[]` umjesto rušenja zahtjeva.
+    [Lokalni A/B eksperiment](performance-experiment.md) 31. 10. pokazao je uštedu
+    8–25 ms. Regresijske provjere i read-only HTTP/baza smoke potvrđuju uniju,
+    očuvanje ostalih podataka i tri SQL upita neovisno o broju filmova u uzorku.
+    Ukupnih ~200 ms uključuje i mrežu; isti dobitak u produkciji nije potvrđen.
 
 Koraci 3–5 su implementirani i provjereni na branchu.
-Cloudflare postavljanje je dovršeno; koraci 8 i 11 ostaju otvoreni. README je
+Cloudflare postavljanje je dovršeno; korak 8 ostaje otvoren. README je
 usklađen s promjenama nužnima za pokretanje. Produkcijsko brisanje stare analitike
 slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme `2`.
 
@@ -112,3 +114,15 @@ slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme
   za scraper. Prije produkcije provjeriti filmove, termine, sjedala i redovito osvježavanje.
 - Nema vizualnih promjena osim dogovorenog poboljšanja prvog posjeta. Dokument
   sadrži samo operativne činjenice i ciljeve; nikakve tajne ili vrijednosti ključeva.
+
+
+## Dostupni datumi više kina — lokalni ispravak 31. 10. 2026.
+
+- Potvrđena je sortirana unija datuma svih odabranih kina bez duplikata.
+  Formatter sada koristi zajednički SQL dohvat relevantnih filmova umjesto
+  jednog upita po filmu; nedostajući/null dodatni datumi daju prazan popis.
+- Četiri fokusirane regresijske provjere i read-only smoke na kopiji baze
+  prolaze za jedno/pet kina, datum/`any`, nepromijenjena ostala polja i stalan
+  broj od tri SQL upita. Prazni rezultati i lokalni HTTP odgovor također prolaze.
+- Lokalna priprema, bez commita/deploymenta. Mjerenje i ograničenja:
+  [eksperiment dohvata datuma](performance-experiment.md).

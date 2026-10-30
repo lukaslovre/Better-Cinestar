@@ -103,28 +103,20 @@ async function savePerformanceDatesToDatabase(performancesByCinemaFilmAndDates) 
 }
 
 // SELECTING
-async function getPerformanceDatesFor(cinemaOid, filmId) {
-  try {
-    const queryResult = await PerformanceDates.findOne({
-      where: {
-        cinemaOid,
-        filmId,
-      },
-    });
+async function getPerformanceDatesForMovies(cinemaOids, filmIds) {
+  if (!cinemaOids.length || !filmIds.length) return [];
 
-    return queryResult ? queryResult.toJSON() : null;
-  } catch (error) {
-    console.error(
-      `Error fetching performance dates for cinemaOid ${cinemaOid}, filmId ${filmId}:`,
-      error.message,
-    );
-    throw error;
-  }
+  const rows = await PerformanceDates.findAll({
+    attributes: ["filmId", "date"],
+    where: { cinemaOid: cinemaOids, filmId: filmIds },
+  });
+
+  return rows.map((row) => row.toJSON());
 }
 module.exports = {
   init,
   saveMoviesToDatabase,
   savePerformancesToDatabase,
   savePerformanceDatesToDatabase,
-  getPerformanceDatesFor,
+  getPerformanceDatesForMovies,
 };
