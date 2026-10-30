@@ -11,6 +11,7 @@
     $props();
 
   function groupPerformancesByCinema(performances: MoviePerformance[]) {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity -- Local builder; only its completed values are consumed.
     const groupedPerformances = new Map();
 
     for (const e of performances) {
@@ -32,12 +33,12 @@
 </script>
 
 <div class="performanceContainer">
-  {#each [...groupPerformancesByCinema(filteredPerformances)] as [groupLabel, performances]}
+  {#each [...groupPerformancesByCinema(filteredPerformances)] as [groupLabel, performances] (groupLabel)}
     <div class="performanceslabel">
       {groupLabel}
     </div>
     <div class="performanceList">
-      {#each performances as performance}
+      {#each performances as performance (performance.id)}
         <PerformanceCard {performance} onClick={() => onSelectPerformance(performance)} />
       {/each}
     </div>

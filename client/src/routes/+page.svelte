@@ -26,9 +26,11 @@
 
   // Setting up initial variables
   let showTooltipPopup: boolean = $state(false);
-  let openedPerformance: any | null = $state(null);
+  type OpenedPerformance = { movie: Movie; performance: MoviePerformance };
+  let openedPerformance: OpenedPerformance | null = $state(null);
   // Why not nullable: a null/undefined value would immediately resolve the await block
   // to null, which complicates the template logic.
+  // eslint-disable-next-line svelte/prefer-writable-derived -- The effect owns the fetch lifecycle; deriving would change when network side effects run.
   let moviesPromise: Promise<FetchMoviesResult | Movie[]> = $state(
     Promise.resolve({ noCinemasSelected: true })
   );
@@ -49,7 +51,7 @@
     return () => window.removeEventListener('popstate', handlePopState);
   });
 
-  const handlePerformanceOpen = ({ detail }: { detail: any }) => {
+  const handlePerformanceOpen = ({ detail }: { detail: OpenedPerformance }) => {
     history.pushState({ popupOpen: true }, '', '');
     openedPerformance = detail;
   };
@@ -82,6 +84,7 @@
     selectedDate: string,
     sortBy: string
   ): URLSearchParams {
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity -- Local builder; only its completed values are consumed.
     const urlParams = new URLSearchParams();
     cinemaOids.forEach((oid) => urlParams.append('cinemaOids', oid));
     urlParams.append('date', selectedDate);
@@ -178,8 +181,7 @@
   }
 
   // Toggle body overflow
-  function toggleBodyOverflow(openedPerformance: any | null) {
-    // Replace 'any' with the actual type
+  function toggleBodyOverflow(openedPerformance: OpenedPerformance | null) {
     document.body.style.overflow = openedPerformance ? 'hidden' : 'auto';
   }
 

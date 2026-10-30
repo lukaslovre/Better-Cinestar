@@ -7,6 +7,7 @@
 
   const dropdownOptionValues: { text: string; value: string }[] = [];
 
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity -- Local builder; only its completed values are consumed.
   const date = new Date();
   for (let i = 0; i < 7; i++) {
     dropdownOptionValues.push({
@@ -81,7 +82,7 @@
     class="dropdown-options secondary-color-scheme"
     style:display={dateDropdownOpen.value ? 'flex' : 'none'}
   >
-    {#each dropdownOptionValues as dateOption}
+    {#each dropdownOptionValues as dateOption (dateOption.value)}
       <button
         type="button"
         class="option"

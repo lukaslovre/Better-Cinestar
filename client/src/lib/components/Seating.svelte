@@ -34,6 +34,7 @@
   async function getSeats() {
     const { cinemaOid, id: performanceId } = performanceData.performance;
 
+    // eslint-disable-next-line svelte/prefer-svelte-reactivity -- Local builder; only its completed values are consumed.
     const urlParams = new URLSearchParams();
     urlParams.append('cinemaOid', cinemaOid!);
     urlParams.append('performanceId', performanceId);
@@ -58,7 +59,7 @@
 
     // Check if any seat is "invalidsko" (accessible seating)
     invalidskoPostoji = data.seats.some((seat) => {
-      const { invalidskoFound } = getSeatColorUtil(seat as any, seatingAreas, true);
+      const { invalidskoFound } = getSeatColorUtil(seat, seatingAreas, true);
       return invalidskoFound;
     });
 
@@ -90,8 +91,8 @@
     seatsContainerHeight = 64 + seatsHeight + 'px';
   }
 
-  function getSeatColorForSeat(seat: any) {
-    const { color } = getSeatColorUtil(seat as Seat, seatingAreas, true);
+  function getSeatColorForSeat(seat: Parameters<typeof getSeatColorUtil>[0]) {
+    const { color } = getSeatColorUtil(seat, seatingAreas, true);
     return color;
   }
 
@@ -175,7 +176,7 @@
         <Loading />
       {:then seatsData}
         <img src="/images/cinemaScreen.svg" alt="screen" id="screenImage" />
-        {#each seatsData.seats as seat}
+        {#each seatsData.seats as seat (seat)}
           <div
             class="seat"
             style:background-color={getSeatColorForSeat(seat)}
@@ -202,7 +203,7 @@
     </div>
 
     <div class="seatsLegend">
-      {#each seatingAreas as area}
+      {#each seatingAreas as area (area.id)}
         <div>
           <div
             class="seat"

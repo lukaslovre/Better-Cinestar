@@ -1,5 +1,5 @@
 export function getSeatColor(
-  seat: any,
+  seat: Pick<Seat, 'sar' | 'stat'> & Partial<Pick<Seat, 'sg'>>,
   seatingAreas: Array<{ id: number; name: string }>,
   useColors: boolean = true
 ) {

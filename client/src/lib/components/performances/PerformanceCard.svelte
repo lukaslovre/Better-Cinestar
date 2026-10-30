@@ -13,7 +13,7 @@
   </p>
 
   <div class="performanceFeature">
-    {#each performance.performanceFeatures || [] as feature}
+    {#each performance.performanceFeatures || [] as feature, index (index)}
       <p>{feature}</p>
     {/each}
   </div>

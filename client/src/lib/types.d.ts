@@ -104,7 +104,7 @@ interface MoviePerformance {
 interface PerformanceDates {
   cinemaOid?: string;
   filmId?: string;
-  date?: any; // Assuming JSON maps to any, adjust if needed - Consider string[] if it's like availableDates
+  date?: string[];
 }
 
 interface Analytics {

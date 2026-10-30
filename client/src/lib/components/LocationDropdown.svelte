@@ -89,7 +89,7 @@
       class:fadeout-1-input={locationDropdownOpen.level === 2}
       style:display={locationDropdownOpen.level >= 1 ? 'flex' : 'none'}
     >
-      {#each cinemaCities as city}
+      {#each cinemaCities as city (city.city)}
         {#if city.cinemas.length > 1}
           <button
             type="button"
@@ -142,7 +142,7 @@
     </div>
 
     <!-- Dropdown sub-options -->
-    {#each cinemaCities as city}
+    {#each cinemaCities as city (city.city)}
       {#if city.cinemas.length > 1}
         <div
           class="dropdown-options primary-color-scheme dropdown-suboptions"
@@ -151,7 +151,7 @@
             ? 'flex'
             : 'none'}
         >
-          {#each city.cinemas as cinema}
+          {#each city.cinemas as cinema (cinema.cinemaOid)}
             <button
               type="button"
               class="option"

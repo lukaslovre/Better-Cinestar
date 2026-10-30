@@ -8,6 +8,7 @@
   <div class="announcementBar" role="status" aria-live="polite">
     <div class="inner">
       {#if href}
+        <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- External destination; preserve the supplied URL. -->
         <a {href} target="_blank" rel="noopener noreferrer">{message}</a>
       {:else}
         <p>{message}</p>

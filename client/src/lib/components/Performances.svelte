@@ -4,14 +4,13 @@
   import {
     getFormattedPerformanceDateLabel,
     filterPerformances,
-    countSelectedPerformanceFilters,
-    dateToYMDFormat
+    countSelectedPerformanceFilters
   } from '../utils/utils.js';
   import {
     getPerformances,
     getPreviousAndNextPerformanceDatesForMovie
   } from '../utils/performances';
-  import { cinemaOids, selectedDate, sortBy } from '$lib/stores/userSelection.svelte';
+  import { cinemaOids, selectedDate } from '$lib/stores/userSelection.svelte';
   import PerformanceListMinimized from './performances/PerformanceListMinimized.svelte';
   import PerformanceListGrouped from './performances/PerformanceListGrouped.svelte';
   import PerformanceControls from './performances/PerformanceControls.svelte';
@@ -84,9 +83,12 @@
       loadingPerformances = true;
       const performances = await getPerformances($cinemaOids, date, movie.id);
       return performances;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // TODO: UI error display
-      console.error('Error fetching performances:', error.message);
+      console.error(
+        'Error fetching performances:',
+        error instanceof Error ? error.message : error
+      );
       return []; // Return an empty array in case of error
     } finally {
       loadingPerformances = false;
@@ -105,7 +107,7 @@
   }
 
   async function getAndSetPrevDatePerformances() {
-    const { previousDate, nextDate } = getPreviousAndNextPerformanceDatesForMovie(
+    const { previousDate } = getPreviousAndNextPerformanceDatesForMovie(
       movie.availableDates || [],
       currentPerformanceDate
     );
@@ -116,7 +118,7 @@
   }
 
   async function getAndSetNextDatePerformances() {
-    const { previousDate, nextDate } = getPreviousAndNextPerformanceDatesForMovie(
+    const { nextDate } = getPreviousAndNextPerformanceDatesForMovie(
       movie.availableDates || [],
       currentPerformanceDate
     );

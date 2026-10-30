@@ -19,7 +19,7 @@
     {performanceDateText}
   </div>
   <div class="performanceList">
-    {#each performances as performance}
+    {#each performances as performance (performance.id)}
       <PerformanceCard {performance} onClick={() => onSelectPerformance(performance)} />
     {/each}
   </div>

@@ -39,6 +39,7 @@
       <div>
         {#if tmdbRatingText}
           {#if movie.tmdb_url}
+            <!-- eslint-disable svelte/no-navigation-without-resolve -- External destination; preserve the supplied URL. -->
             <a
               href={movie.tmdb_url}
               target="_blank"
@@ -52,6 +53,7 @@
               />
               <p>{tmdbRatingText}</p>
             </a>
+            <!-- eslint-enable svelte/no-navigation-without-resolve -->
           {:else}
             <div class="ratingIconAndValue">
               <img

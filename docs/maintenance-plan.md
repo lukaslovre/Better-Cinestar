@@ -64,9 +64,15 @@ na branchu `codex/minor-ai-improvements`; produkcija još koristi `main`.
    i učitavanje rasporeda i sjedala provjereni. Bez dodavanja analitičkog beacona.
 8. [ ] **Trajno održavanje:** dopuniti README provjerenim deployment informacijama
    i dodati minimalne automatske provjere nakon što lokalne provjere prolaze.
+9. [x] **Frontend lint:** riješeni nalazi za tipove, neiskorištene simbole i ključeve
+   lista. Uske dokumentirane iznimke čuvaju vanjske linkove, lokalne buildere i
+   postojeći način pokretanja dohvata filmova. Izgled i korisnički tokovi su očuvani.
+10. [ ] **SvelteKit history:** zamijeniti izravne `history.pushState` i
+    `history.replaceState` pozive u `+page.svelte` API-jem iz `$app/navigation`,
+    uskladiti stanje popupa i provjeriti Back/Forward. Bez novog lint pravila.
 
 Koraci 3–5 su implementirani i provjereni na branchu.
-Cloudflare postavljanje je dovršeno; koraci 6 i 8 ostaju otvoreni. README je
+Cloudflare postavljanje je dovršeno; koraci 6, 8 i 10 ostaju otvoreni. README je
 usklađen s promjenama nužnima za pokretanje. Produkcijsko brisanje stare analitike
 slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme `2`.
 
@@ -80,8 +86,8 @@ slijedi pri deploymentu nove aplikacije, bez promjene produkcijske verzije sheme
   Audit: client 6 low + 2 moderate, server 2 moderate, scraper 0.
 - Jednokratni test uklanjanja analitike izvršen je tijekom provjere i potom uklonjen;
   startup migracija ostaje u aplikaciji za prvi deployment.
-- Formatter je usklađen i radi. Puna lint naredba još prijavljuje **38 ESLint nalaza**
-  u frontend kodu; njihovo čišćenje ostaje za korak 8.
+- Formatter i ESLint sada prolaze; riješeno je početnih **38 lint nalaza**.
+  Provjera tipova i build također prolaze.
 - Coolify update, Node update i npm update zasebni su zahvati. Referentne upute:
   [Coolify sigurnosno izdanje i migracija stare bete](https://github.com/coollabsio/coolify/releases/tag/v4.4.7),
   [nadogradnja instance](https://coolify.io/docs/core/instance-management/update).

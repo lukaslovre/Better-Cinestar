@@ -35,8 +35,9 @@
     <p class="infoLabel">{directorsLabel}</p>
     <div class="peopleContainer">
       {#if movie.tmdb_directors && movie.tmdb_directors.length}
-        {#each movie.tmdb_directors as director}
+        {#each movie.tmdb_directors as director (director)}
           {#if director?.profile_url}
+            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- External destination; preserve the supplied URL. -->
             <a href={director.profile_url} class="person" target="_blank" rel="noopener">
               <img
                 src={director.profile_image_url || '/images/defaultPersonImage.jpg'}
@@ -67,8 +68,9 @@
     <div class="infoContainer">
       <p class="infoLabel">Glumci</p>
       <div class="peopleContainer">
-        {#each movie.tmdb_cast as actor}
+        {#each movie.tmdb_cast as actor (actor)}
           {#if actor?.profile_url}
+            <!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- External destination; preserve the supplied URL. -->
             <a href={actor.profile_url} class="person" target="_blank" rel="noopener">
               <img
                 src={actor.profile_image_url || '/images/defaultPersonImage.jpg'}
@@ -96,6 +98,7 @@
   </div>
 
   {#if movie.tmdb_trailer_url}
+    <!-- eslint-disable svelte/no-navigation-without-resolve -- External destination; preserve the supplied URL. -->
     <a
       href={movie.tmdb_trailer_url}
       class="trailerButton"
@@ -107,6 +110,7 @@
       <span>Trailer</span>
       <span class="secondary">(youtube.com)</span>
     </a>
+    <!-- eslint-enable svelte/no-navigation-without-resolve -->
   {/if}
 </div>
 

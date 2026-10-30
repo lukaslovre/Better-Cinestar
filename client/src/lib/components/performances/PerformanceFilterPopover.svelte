@@ -65,7 +65,9 @@
   }
 
   function whenFilteredPerformancesUpdate(filteredPerf: MoviePerformance[]) {
-    setColumnDataValuesOnFilterChange(filteredPerf);
+    // The argument keeps the legacy reactive statement dependent on filtered results.
+    void filteredPerf;
+    setColumnDataValuesOnFilterChange();
   }
 
   // Functions
@@ -88,7 +90,7 @@
     }
   }
 
-  function setColumnDataValuesOnFilterChange(filteredPerf: MoviePerformance[]) {
+  function setColumnDataValuesOnFilterChange() {
     for (let i = 0; i < columns.length; i++) {
       const category = columns[i].id;
       if (category === 'time') continue;
@@ -244,12 +246,12 @@
 </script>
 
 <div id="performanceFilterCard" style:display={displayComponent}>
-  {#each columns as column}
+  {#each columns as column (column.id)}
     {#if column.id !== 'time'}
       <div class="column" id={column.id}>
         <div class="label">{column.label}</div>
         <div class="checkboxesColumn">
-          {#each column.data as feature}
+          {#each column.data as feature (feature.name)}
             <button
               class="option"
               class:selected={feature.state === 'selected'}

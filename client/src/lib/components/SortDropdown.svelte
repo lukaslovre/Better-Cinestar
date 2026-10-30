@@ -60,7 +60,7 @@
     class="dropdown-options secondary-color-scheme"
     style:display={sortDropdownOpen.value ? 'flex' : 'none'}
   >
-    {#each dropdownOptionValues as sortOption}
+    {#each dropdownOptionValues as sortOption (sortOption.value)}
       <button
         type="button"
         class="option"
