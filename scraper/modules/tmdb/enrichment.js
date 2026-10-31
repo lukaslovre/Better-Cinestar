@@ -1,5 +1,6 @@
 const { configuration } = require("../../config/environment.js");
 const { getTargetYearFromMovie } = require("./utils.js");
+const { logTmdbDecision } = require("./diagnostics.js");
 const { searchMovie, fetchMovieDetails } = require("./tmdbClient.js");
 const { pickBestMatch, computeCandidates } = require("./matching.js");
 const {
@@ -52,27 +53,61 @@ async function fetchMovieDetailsWithFallback(tmdbId) {
 async function enrichMovieWithTmdb(movie) {
   const targetYear = getTargetYearFromMovie(movie);
   const query = movie?.originalTitle || movie?.title || movie?.name;
+  const decision = {
+    targetYear,
+    query: query || null,
+    searches: [],
+    selectedId: null,
+    status: "missing_query",
+  };
+  // Internal diagnostics must not become part of the server or dry-run payload.
+  Object.defineProperty(movie, "tmdbDecision", {
+    value: decision,
+    configurable: true,
+  });
 
   if (!query) return nullEnrichment();
+
+  if (!configuration.TMDB_API_KEY) {
+    decision.status = "missing_api_key";
+    return nullEnrichment();
+  }
 
   const primaryLang = configuration.TMDB_LANGUAGE_PRIMARY;
   const fallbackLang = configuration.TMDB_LANGUAGE_FALLBACK;
 
   let search = null;
+  const firstSearch = {
+    language: fallbackLang,
+    status: "search_error",
+    candidates: [],
+  };
+  decision.searches.push(firstSearch);
   try {
     search = await searchMovie({ query, year: targetYear, language: fallbackLang });
-  } catch (e) {
-    console.warn(`[tmdb] Search failed for "${query}": ${e.message}`);
+  } catch {
+    decision.status = "search_error";
     return nullEnrichment();
   }
 
   const results = Array.isArray(search?.results) ? search.results : [];
-  // compute diagnostics for primary-language search
+  // Keep legacy candidate payload names; diagnostic searches use the actual language.
   const primaryCandidates = computeCandidates({ movie, results, targetYear });
+  Object.assign(firstSearch, {
+    status: "ok",
+    resultCount: results.length,
+    candidates: primaryCandidates,
+  });
   let match = pickBestMatch({ movie, results, targetYear });
 
   let fallbackCandidates = null;
   if (!match && primaryLang !== fallbackLang) {
+    const secondSearch = {
+      language: primaryLang,
+      status: "search_error",
+      candidates: [],
+    };
+    decision.searches.push(secondSearch);
     try {
       const searchFallback = await searchMovie({
         query,
@@ -87,8 +122,13 @@ async function enrichMovieWithTmdb(movie) {
         results: resultsFallback,
         targetYear,
       });
+      Object.assign(secondSearch, {
+        status: "ok",
+        resultCount: resultsFallback.length,
+        candidates: fallbackCandidates,
+      });
       match = pickBestMatch({ movie, results: resultsFallback, targetYear });
-    } catch (_) {
+    } catch {
       // ignore
     }
   }
@@ -101,12 +141,30 @@ async function enrichMovieWithTmdb(movie) {
       configurable: true,
       writable: true,
     });
-  } catch (_) {
+  } catch {
     // ignore if movie object cannot be extended
   }
 
-  if (!match?.id) return nullEnrichment();
+  if (!match?.id) {
+    if (decision.searches.some((s) => s.status === "search_error")) {
+      decision.status = "search_error";
+      decision.reason = "search_incomplete";
+    } else {
+      decision.status = "no_match";
+      if (decision.searches.every((s) => s.resultCount === 0)) {
+        decision.reason = "no_results";
+      } else if (decision.searches.every((s) => s.candidates.length === 0)) {
+        decision.reason = "outside_year_window";
+      } else {
+        decision.reason = "below_threshold";
+      }
+    }
+    return nullEnrichment();
+  }
 
+  decision.selectedId = match.id;
+  // If details throw, the caller keeps the source film and this selected ID.
+  decision.status = "details_error";
   const { details } = await fetchMovieDetailsWithFallback(match.id);
 
   const posterPath = details?.poster_path ?? match?.poster_path ?? null;
@@ -124,6 +182,7 @@ async function enrichMovieWithTmdb(movie) {
     configuration.TMDB_LANGUAGE_PRIMARY,
   );
 
+  decision.status = "matched";
   return {
     tmdb_movie_id: match.id,
     tmdb_url: tmdbMovieUrl(match.id),
@@ -149,23 +208,14 @@ async function fillMoviesWithTmdbData(movies) {
 
   for (let i = 0; i < movies.length; i++) {
     const movie = movies[i];
-    const name = movie?.originalTitle || movie?.title || movie?.name || "(unknown)";
-    const year = getTargetYearFromMovie(movie);
 
     try {
       const enrichment = await enrichMovieWithTmdb(movie);
       Object.assign(movie, enrichment);
-      console.log(
-        `[tmdb] ${i + 1}/${movies.length} ${name}${year ? ` (${year})` : ""} -> ${
-          movie.tmdb_movie_id ? `matched ${movie.tmdb_movie_id}` : "no match"
-        }`,
-      );
-    } catch (e) {
-      console.warn(
-        `[tmdb] ${i + 1}/${movies.length} ${name}: enrichment failed: ${e.message}`,
-      );
+    } catch {
       Object.assign(movie, nullEnrichment());
     }
+    logTmdbDecision(movie);
   }
 
   return movies;

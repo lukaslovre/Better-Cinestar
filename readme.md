@@ -155,6 +155,11 @@ See [server/.env.example](server/.env.example) and [scraper/.env.example](scrape
 `FORCE_DB_RESET=true` or a `DB_SCHEMA_VERSION` mismatch drops and recreates the
 schema. Initialization otherwise uses Sequelize `sync({ alter: true })`.
 
+TMDB enrichment logs one `[tmdb-decision]` JSON line per film with source titles/years,
+search languages, selected ID, candidate scores and the decision or failure status.
+Candidates cover the first TMDB result page after the existing year filter.
+View these in Coolify logs or with `docker compose logs scraper`.
+
 ## Checks
 
 From the repository root:
