@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '../app.css'; // Import global styles
+  import '../app.css';
   import { PUBLIC_API_URL } from '$env/static/public';
   import { afterNavigate, pushState, replaceState } from '$app/navigation';
   import { page } from '$app/state';
@@ -17,37 +17,32 @@
   import { cinemaOids, selectedDate, sortBy } from '$lib/stores/userSelection.svelte';
   import { dateToYMDFormat } from '$lib/utils/utils';
 
-  // Define types for your data - adjust these to match your actual data structures
   type MoviesEmptyReason = 'db_empty' | 'no_performances_for_date';
+  type OpenedPerformance = { movie: Movie; performance: MoviePerformance };
+  type UserSelection = {
+    cinemaOids: string[];
+    selectedDate: string;
+    sortBy: string;
+  };
+  type MoviesResult =
+    | { status: 'no_cinemas' }
+    | { status: 'error'; httpStatus?: number }
+    | { status: 'success'; movies: Movie[]; emptyReason: MoviesEmptyReason | null };
 
-  interface FetchMoviesResult {
-    noCinemasSelected?: boolean;
-    // Why this exists: previously we returned [] on HTTP errors, which made server faults
-    // indistinguishable from a valid "no movies" result.
-    fetchError?: boolean;
-    fetchErrorStatus?: number;
-  }
-
-  // Setting up initial variables
-  let showTooltipPopup: boolean = $state(false);
+  let showPerformanceInfoPopup = $state(false);
   let routerReady = $state(false);
+  let openedPerformance = $derived(page.state.openedPerformance ?? null);
+
+  // The await block always receives a promise, including before the first fetch.
+  // eslint-disable-next-line svelte/prefer-writable-derived -- The effect owns the fetch lifecycle; deriving would change when network side effects run.
+  let moviesPromise: Promise<MoviesResult> = $state(
+    Promise.resolve({ status: 'no_cinemas' })
+  );
+
   afterNavigate(() => {
     routerReady = true;
   });
-  type OpenedPerformance = { movie: Movie; performance: MoviePerformance };
-  let openedPerformance = $derived(page.state.openedPerformance ?? null);
-  // Why not nullable: a null/undefined value would immediately resolve the await block
-  // to null, which complicates the template logic.
-  // eslint-disable-next-line svelte/prefer-writable-derived -- The effect owns the fetch lifecycle; deriving would change when network side effects run.
-  let moviesPromise: Promise<FetchMoviesResult | Movie[]> = $state(
-    Promise.resolve({ noCinemasSelected: true })
-  );
 
-  // Populated from the response header when the server returns an empty list.
-  // We keep it outside the movies array to avoid changing the response shape.
-  let moviesEmptyReason: MoviesEmptyReason | null = $state(null);
-
-  // Event handlers
   const handlePerformanceOpen = ({ detail }: { detail: OpenedPerformance }) => {
     pushState('', { ...page.state, openedPerformance: detail });
   };
@@ -56,8 +51,8 @@
     history.back(); // SvelteKit restores the previous page.state and closes the popup.
   };
 
-  const setShowTooltipPopup = ({ detail }: { detail: boolean }) =>
-    (showTooltipPopup = detail);
+  const handlePerformanceInfoPopup = ({ detail }: { detail: boolean }) =>
+    (showPerformanceInfoPopup = detail);
 
   function sanitizeSelectedDate(value: string | null | undefined): string | undefined {
     if (!value) return undefined;
@@ -74,7 +69,6 @@
     return value < today ? today : value;
   }
 
-  // Create URL parameters
   function createUrlParams(
     cinemaOids: string[],
     selectedDate: string,
@@ -89,7 +83,6 @@
     return urlParams;
   }
 
-  // Update local storage
   function updateLocalStorage(
     cinemaOids: string[],
     selectedDate: string,
@@ -100,43 +93,36 @@
     localStorage.setItem('sortBy', sortBy);
   }
 
-  // Function to get values from local storage
-  function getValuesFromLocalStorage(): {
-    cinemaOids?: string[];
-    selectedDate?: string;
-    sortBy?: string;
-  } {
-    let values: { cinemaOids?: string[]; selectedDate?: string; sortBy?: string } = {};
+  function readStoredSelection(): Partial<UserSelection> {
+    const values: Partial<UserSelection> = {};
 
-    if (localStorage.getItem('cinemaOids')) {
+    const storedCinemaOids = localStorage.getItem('cinemaOids');
+    const storedDate = localStorage.getItem('selectedDate');
+    const storedSortBy = localStorage.getItem('sortBy');
+
+    if (storedCinemaOids) {
       try {
-        values.cinemaOids = JSON.parse(localStorage.getItem('cinemaOids') || '[]');
+        values.cinemaOids = JSON.parse(storedCinemaOids);
       } catch (e) {
         console.error('Error parsing cinemaOids from localStorage', e);
         values.cinemaOids = [];
       }
     }
 
-    if (localStorage.getItem('selectedDate')) {
-      const storedDate = localStorage.getItem('selectedDate');
+    if (storedDate) {
       const sanitizedDate = sanitizeSelectedDate(storedDate);
       if (sanitizedDate) values.selectedDate = sanitizedDate;
     }
 
-    if (localStorage.getItem('sortBy')) {
-      values.sortBy = localStorage.getItem('sortBy') || '';
+    if (storedSortBy) {
+      values.sortBy = storedSortBy;
     }
 
     return values;
   }
 
-  // Function to get values from URL parameters
-  function getValuesFromUrl(): {
-    cinemaOids?: string[];
-    selectedDate?: string;
-    sortBy?: string;
-  } {
-    let values: { cinemaOids?: string[]; selectedDate?: string; sortBy?: string } = {};
+  function readUrlSelection(): Partial<UserSelection> {
+    const values: Partial<UserSelection> = {};
     const urlParams = new URLSearchParams(window.location.search);
 
     if (urlParams.has('cinemaOids')) {
@@ -156,73 +142,68 @@
     return values;
   }
 
-  // Function to set store values
-  function setStoreValues() {
-    const localStorageValues = getValuesFromLocalStorage();
-    const urlValues = getValuesFromUrl();
+  function restoreSelection() {
+    const localStorageValues = readStoredSelection();
+    const urlValues = readUrlSelection();
 
     // Merge the two objects, giving priority to urlValues
     const values = { ...localStorageValues, ...urlValues };
-    console.log(values);
 
     // Ensure URL/localStorage can’t override with a past/invalid date.
     // This also lets the existing URL-sync $effect rewrite the URL.
     const sanitizedDate = sanitizeSelectedDate(values.selectedDate);
     if (sanitizedDate) values.selectedDate = sanitizedDate;
 
-    // Set the store values (triggers URL update and local storage update)
     if (values.cinemaOids) cinemaOids.set(values.cinemaOids);
     if (values.selectedDate) selectedDate.set(values.selectedDate);
     if (values.sortBy) sortBy.set(values.sortBy);
   }
 
-  // Toggle body overflow
   function toggleBodyOverflow(openedPerformance: OpenedPerformance | null) {
     document.body.style.overflow = openedPerformance ? 'hidden' : 'auto';
   }
 
-  // Fetch movies from the API
   async function fetchMovies(
     cinemaOids: string[],
     selectedDate: string,
     sortBy: string
-  ): Promise<FetchMoviesResult | Movie[]> {
+  ): Promise<MoviesResult> {
     if (cinemaOids.length === 0) {
-      moviesEmptyReason = null;
-      return { noCinemasSelected: true };
+      return { status: 'no_cinemas' };
     }
 
     const urlParams = createUrlParams(cinemaOids, selectedDate, sortBy);
     const getMoviesUrl = `${PUBLIC_API_URL}/api/movies`;
 
     try {
-      const res = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
+      const response = await fetch(`${getMoviesUrl}?${urlParams.toString()}`);
 
-      if (!res.ok) {
-        moviesEmptyReason = null;
-        console.error('Error fetching movies:', res.statusText);
-        return { fetchError: true, fetchErrorStatus: res.status };
+      if (!response.ok) {
+        console.error('Error fetching movies:', response.statusText);
+        return { status: 'error', httpStatus: response.status };
       }
 
-      const data: Movie[] = await res.json();
+      const movies: Movie[] = await response.json();
 
       // Why we use a header: we want a richer empty state without changing the JSON body.
       // This stays non-breaking for any existing consumers expecting an array.
-      const reason = res.headers.get('X-Movies-Empty-Reason') as MoviesEmptyReason | null;
-      moviesEmptyReason = data.length === 0 ? reason : null;
-
-      return data;
+      const reason = response.headers.get(
+        'X-Movies-Empty-Reason'
+      ) as MoviesEmptyReason | null;
+      return {
+        status: 'success',
+        movies,
+        emptyReason: movies.length === 0 ? reason : null
+      };
     } catch (e) {
-      moviesEmptyReason = null;
       console.error('Error fetching movies:', e);
-      return { fetchError: true };
+      return { status: 'error' };
     }
   }
 
-  // Setting store values from URL parameters and local storage on page load
-  setStoreValues();
+  restoreSelection();
 
-  // Zove fetchMovies() svaki put kad se promjeni neka vrijednost u dropdownu
+  // Fetch again whenever the selected cinemas, date, or sorting changes.
   $effect(() => {
     moviesPromise = fetchMovies($cinemaOids, $selectedDate, $sortBy);
   });
@@ -247,34 +228,33 @@
 <Navigation />
 
 <main id="content">
-  <Dropdowns on:showPerformanceInfoPopup={setShowTooltipPopup} />
+  <Dropdowns on:showPerformanceInfoPopup={handlePerformanceInfoPopup} />
 
   {#await moviesPromise}
     <Loading />
-  {:then movies}
-    {#if !Array.isArray(movies) && movies.noCinemasSelected}
+  {:then result}
+    {#if result.status === 'no_cinemas'}
       <NoResultsGif />
-    {:else if !Array.isArray(movies) && movies.fetchError}
+    {:else if result.status === 'error'}
       <p class="text-red-500">Greška pri dohvaćanju filmova, pokušajte ponovno</p>
-    {:else if Array.isArray(movies) && movies.length === 0}
-      {#if moviesEmptyReason === 'db_empty'}
+    {:else if result.movies.length === 0}
+      {#if result.emptyReason === 'db_empty'}
         <p class="text-red-500">Nema podataka u bazi (vjerojatni uzrok greška u kodu)</p>
       {:else}
         <p class="text-red-500">Nema filmova na odabrani datum</p>
       {/if}
-    {:else if Array.isArray(movies) && movies.length > 0}
-      <MovieList {movies} on:selectedPerformance={handlePerformanceOpen} />
+    {:else}
+      <MovieList movies={result.movies} on:selectedPerformance={handlePerformanceOpen} />
     {/if}
   {/await}
 </main>
 
-<!-- Popup prozori -->
 {#if openedPerformance}
   <Seating performanceData={openedPerformance} onclose={handlePerformanceClose} />
 {/if}
 
-{#if showTooltipPopup}
-  <PerformanceInfoPopup on:showPerformanceInfoPopup={setShowTooltipPopup} />
+{#if showPerformanceInfoPopup}
+  <PerformanceInfoPopup on:showPerformanceInfoPopup={handlePerformanceInfoPopup} />
 {/if}
 
 <style>
