@@ -41,14 +41,18 @@
 
 <nav>
   <div>
-    <button type="button" onclick={resetFiltersToDefault}>
+    <button
+      type="button"
+      onclick={resetFiltersToDefault}
+      aria-label="Vrati početne filtere"
+    >
       <img id="logo" src="/images/logo.png" alt="Better CineStar logo" />
     </button>
 
     <Hamburger
       isOpen={menuOpen}
       onClick={toggleMenu}
-      ariaLabel="Toggle menu"
+      ariaLabel="Izbornik"
       ariaControlsId="navigation-menu"
     />
 
@@ -69,7 +73,7 @@
             <p class="text">{contactEmail}</p>
             <button
               onclick={() => copyToClipboard(contactEmail)}
-              aria-label="Copy email to clipboard"
+              aria-label="Kopiraj email adresu"
             >
               <img src="/images/copyToClipboard.svg" alt="copy icon" />
             </button>

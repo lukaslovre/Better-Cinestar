@@ -28,11 +28,11 @@
     type="button"
     class="imageButton button"
     onclick={fullscreenCurrentMovie}
-    aria-label="Toggle movie details display"
+    aria-expanded={isFullscreened}
   >
     <img
       src={isFullscreened ? '/images/fullscreen-exit.svg' : '/images/fullscreen.svg'}
-      alt="Toggle fullscreen mode"
+      alt=""
     />
     <span class="label">{isFullscreened ? 'Manje informacija' : 'Više informacija'}</span>
   </button>

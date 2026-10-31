@@ -1,4 +1,7 @@
-<div class="loader"></div>
+<div role="status">
+  <span class="sr-only">Učitavanje...</span>
+  <div class="loader"></div>
+</div>
 
 <style>
   .loader {

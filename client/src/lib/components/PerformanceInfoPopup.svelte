@@ -1,20 +1,26 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { modal } from '$lib/utils/modal';
   const dispatch = createEventDispatcher();
+
+  function close() {
+    dispatch('showPerformanceInfoPopup', false);
+  }
 
   localStorage.setItem('visitedWebsiteBefore', 'true');
 </script>
 
 <div class="backdrop">
-  <div id="card">
+  <div
+    id="card"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Pomoć za termine"
+    tabindex="-1"
+    use:modal={close}
+  >
     <img src="/images/performancesHelp.svg" alt="performances help" />
-    <button
-      on:click={() => {
-        dispatch('showPerformanceInfoPopup', false);
-      }}
-    >
-      Kužim
-    </button>
+    <button on:click={close}> Kužim </button>
   </div>
 </div>
 

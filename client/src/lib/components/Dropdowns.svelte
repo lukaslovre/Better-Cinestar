@@ -27,10 +27,24 @@
       sortDropdownOpen.value = false;
     };
 
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      const target = event.target instanceof Element ? event.target : null;
+      const container = target?.closest('.input-container');
+      if (!container) return;
+      const trigger = container.querySelector<HTMLButtonElement>('.dropdown-element');
+      locationDropdownOpen.level = 0;
+      dateDropdownOpen.value = false;
+      sortDropdownOpen.value = false;
+      trigger?.focus();
+    };
+
     document.addEventListener('click', handleClick);
+    document.addEventListener('keydown', handleKeydown);
 
     return () => {
       document.removeEventListener('click', handleClick);
+      document.removeEventListener('keydown', handleKeydown);
     };
   });
 </script>

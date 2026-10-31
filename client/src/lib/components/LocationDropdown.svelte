@@ -73,13 +73,16 @@
 <div class="input-container">
   <!-- Label -->
   <div class="label">
-    <img class="label-icon" src="/images/locationIcon.svg" alt="location icon" />
+    <img class="label-icon" src="/images/locationIcon.svg" alt="" />
     <p class="label-text">Lokacija kina</p>
   </div>
 
   <!-- Dropdown element -->
   <button
     type="button"
+    aria-label={`Lokacija kina: ${selectedCinemasForDisplay.join(', ') || 'Odaberi kino'}`}
+    aria-expanded={locationDropdownOpen.level > 0}
+    aria-controls="location-options"
     class="dropdown-element primary-color-scheme"
     class:fadeout-1-input={locationDropdownOpen.level === 1}
     class:fadeout-2-input={locationDropdownOpen.level === 2}
@@ -102,7 +105,7 @@
   </button>
 
   <!-- Dropdown options -->
-  <div class="dropdown-options-container">
+  <div class="dropdown-options-container" id="location-options">
     <div
       class="dropdown-options primary-color-scheme"
       class:fadeout-1-input={locationDropdownOpen.level === 2}
@@ -113,6 +116,8 @@
           <button
             type="button"
             class="expandable-option"
+            aria-expanded={locationDropdownOpen.level === 2 &&
+              locationDropdownOpen.selectedCity === city.city}
             on:click={() => {
               toggleDropdownLevelTwo(city.city);
             }}
@@ -142,6 +147,7 @@
             type="button"
             class="option"
             class:selected={$cinemaOids.includes(city.cinemas[0].cinemaOid)}
+            aria-pressed={$cinemaOids.includes(city.cinemas[0].cinemaOid)}
             on:click={() => {
               toggleCinemaSelection(city.cinemas[0].cinemaOid);
             }}
@@ -151,7 +157,7 @@
                 src={locationDropdownOpen.level === 2
                   ? 'images/check-fadeout1.svg'
                   : 'images/check.svg'}
-                alt="check icon"
+                alt=""
               />
             </div>
             <p>{city.city}</p>
@@ -178,7 +184,7 @@
             on:click={() => toggleCitySelection(city)}
           >
             <div class="checkbox">
-              <img src="images/check.svg" alt="check icon" />
+              <img src="images/check.svg" alt="" />
             </div>
             <p>Sva kina — {city.city}</p>
           </button>
@@ -187,12 +193,13 @@
               type="button"
               class="option"
               class:selected={$cinemaOids.includes(cinema.cinemaOid)}
+              aria-pressed={$cinemaOids.includes(cinema.cinemaOid)}
               on:click={() => {
                 toggleCinemaSelection(cinema.cinemaOid);
               }}
             >
               <div class="checkbox">
-                <img src="images/check.svg" alt="check icon" />
+                <img src="images/check.svg" alt="" />
               </div>
               <p>{cinema.cinemaName}</p>
             </button>

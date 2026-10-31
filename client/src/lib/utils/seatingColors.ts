@@ -1,10 +1,10 @@
+export const FREE_SEAT_STATUSES = [4, 256, 260, 128];
+
 export function getSeatColor(
   seat: Pick<Seat, 'sar' | 'stat'> & Partial<Pick<Seat, 'sg'>>,
   seatingAreas: Array<{ id: number; name: string }>,
   useColors: boolean = true
 ) {
-  const FREE_STATS = [4, 256, 260, 128]; // seat.stat that represent a free seat
-
   const REGULAR_COLOR = '#80A6FF';
   const OCCUPIED_COLOR = '#373B43';
   const INVALID_COLOR = '#A1DF9F';
@@ -20,7 +20,7 @@ export function getSeatColor(
   const seatSar = seat?.sar;
 
   // Ako je slobodno (128 je u splitu slobodno??? nez)
-  if (FREE_STATS.includes(seatStat)) {
+  if (FREE_SEAT_STATUSES.includes(seatStat)) {
     // Ako se ne koriste boje, sve su plave
     if (useColors === false) return { color: REGULAR_COLOR, invalidskoFound: false };
 

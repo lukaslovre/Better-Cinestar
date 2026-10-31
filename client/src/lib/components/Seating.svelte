@@ -1,10 +1,14 @@
 <script lang="ts">
   import Loading from './Loading.svelte';
+  import { modal } from '$lib/utils/modal';
   import { cinemas } from '../utils/cinemas';
   import { getAverageHorizontalSeatDistance } from '../utils/performanceSeats';
   import { getRelativeDate } from '../utils/utils';
   import { PUBLIC_API_URL } from '$env/static/public';
-  import { getSeatColor as getSeatColorUtil } from '../utils/seatingColors';
+  import {
+    FREE_SEAT_STATUSES,
+    getSeatColor as getSeatColorUtil
+  } from '../utils/seatingColors';
   import { fly } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
 
@@ -115,11 +119,16 @@
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 </script>
 
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div id="backdrop" onclick={onclose} role="presentation">
   <div
     id="card"
     onclick={(e) => e.stopPropagation()}
-    role="presentation"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="seating-title"
+    tabindex="-1"
+    use:modal={onclose}
     in:fly={{
       y: isMobile ? 200 : 20,
       duration: 300,
@@ -133,19 +142,19 @@
       opacity: 0
     }}
   >
-    <button id="closeSeatsButton" onclick={onclose}>
-      <img src="/images/xIcon.svg" alt="close seats icon" />
+    <button id="closeSeatsButton" onclick={onclose} aria-label="Zatvori prikaz sjedala">
+      <img src="/images/xIcon.svg" alt="" />
     </button>
 
     <div id="performanceInfo">
-      <p class="movieTitle">
+      <p class="movieTitle" id="seating-title">
         {performanceData.movie.title}
         {#if performanceData.movie.ageRating && performanceData.movie.ageRating !== '0'}
           ({performanceData.movie.ageRating}+)
         {/if}
       </p>
       <div class="performanceInfoRow">
-        <img src="/images/clockIcon.svg" alt="clock icon" />
+        <img src="/images/clockIcon.svg" alt="" />
         <p>
           {formatDate(
             performanceData.performance.cinemaDate!,
@@ -154,7 +163,7 @@
         </p>
       </div>
       <div class="performanceInfoRow">
-        <img src="/images/locationIcon2.svg" alt="location icon" />
+        <img src="/images/locationIcon2.svg" alt="" />
         <p>
           {cinemas.find(
             (cinema) => cinema.cinemaOid === performanceData.performance.cinemaOid
@@ -162,7 +171,7 @@
         </p>
       </div>
       <div class="performanceInfoRow">
-        <img src="/images/clapperIcon.svg" alt="clapper icon" />
+        <img src="/images/clapperIcon.svg" alt="" />
         <p>{performanceData.performance.performanceFeatures?.join(' · ')}</p>
       </div>
     </div>
@@ -175,6 +184,12 @@
       {#await seatsPromise}
         <Loading />
       {:then seatsData}
+        <p class="sr-only" role="status">
+          Slobodnih sjedala: {seatsData.seats.filter((seat) =>
+            FREE_SEAT_STATUSES.includes(Number(seat.stat))
+          ).length} od {seatsData.seats.length}. Raspored sjedala dostupan je pri kupnji
+          karte.
+        </p>
         <img src="/images/cinemaScreen.svg" alt="screen" id="screenImage" />
         {#each seatsData.seats as seat (seat)}
           <div
@@ -235,7 +250,7 @@
       href={`https://shop.cinestarcinemas.hr/landingpage?center=${performanceData.performance.cinemaOid}&page=seatingplan&performance=${performanceData.performance.id}`}
     >
       <p>Kupi kartu na cinestar.hr</p>
-      <img src="images/linkArrow.svg" alt="arrow" />
+      <img src="images/linkArrow.svg" alt="" />
     </a>
   </div>
 </div>

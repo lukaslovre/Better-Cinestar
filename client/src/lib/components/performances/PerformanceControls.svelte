@@ -29,8 +29,13 @@
 </script>
 
 <div class="performanceManipulationContainer">
-  <button class="performanceFilter button" type="button" onclick={toggleFilter}>
-    <img src="/images/filterPerfomanceIcon.svg" alt="filter icon" />
+  <button
+    class="performanceFilter button"
+    type="button"
+    aria-label={`Filter termina (${activeFiltersCount} aktivnih)`}
+    onclick={toggleFilter}
+  >
+    <img src="/images/filterPerfomanceIcon.svg" alt="" />
     {#if activeFiltersCount > 0}
       <div class="activeFiltersCount">{activeFiltersCount}</div>
     {/if}
@@ -43,9 +48,10 @@
         availableDates,
         currentPerformanceDate
       ).previousDate === null}
+      aria-label="Prethodni datum termina"
       onclick={previousDate}
     >
-      <img src="images/leftArrow.svg" alt="left arrow" />
+      <img src="images/leftArrow.svg" alt="" />
     </button>
 
     <button
@@ -65,9 +71,10 @@
         availableDates,
         currentPerformanceDate
       ).nextDate === null}
+      aria-label="Sljedeći datum termina"
       onclick={nextDate}
     >
-      <img src="images/rightArrow.svg" alt="right arrow" />
+      <img src="images/rightArrow.svg" alt="" />
     </button>
   </div>
 </div>

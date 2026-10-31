@@ -236,12 +236,16 @@
     {#if result.status === 'no_cinemas'}
       <NoResultsGif />
     {:else if result.status === 'error'}
-      <p class="text-red-500">Greška pri dohvaćanju filmova, pokušajte ponovno</p>
+      <p class="text-red-500" role="status">
+        Greška pri dohvaćanju filmova, pokušajte ponovno
+      </p>
     {:else if result.movies.length === 0}
       {#if result.emptyReason === 'db_empty'}
-        <p class="text-red-500">Nema podataka u bazi (vjerojatni uzrok greška u kodu)</p>
+        <p class="text-red-500" role="status">
+          Nema podataka u bazi (vjerojatni uzrok greška u kodu)
+        </p>
       {:else}
-        <p class="text-red-500">Nema filmova na odabrani datum</p>
+        <p class="text-red-500" role="status">Nema filmova na odabrani datum</p>
       {/if}
     {:else}
       <MovieList movies={result.movies} on:selectedPerformance={handlePerformanceOpen} />

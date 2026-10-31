@@ -50,7 +50,7 @@
 <div class="input-container" style:max-width={windowIsWide ? '' : 'calc(45% - 0.5rem)'}>
   <!-- Label -->
   <div class="label">
-    <img class="label-icon" src="/images/dateIcon.svg" alt="sort icon" />
+    <img class="label-icon" src="/images/dateIcon.svg" alt="" />
     <p class="label-text">Datum</p>
   </div>
 
@@ -58,6 +58,9 @@
   <button
     type="button"
     id="dateDropdown"
+    aria-label={`Datum: ${selectedDateText}`}
+    aria-expanded={dateDropdownOpen.value}
+    aria-controls="date-options"
     class="dropdown-element secondary-color-scheme"
     on:click={toggleDropdown}
   >
@@ -79,6 +82,7 @@
 
   <!-- Dropdown options -->
   <div
+    id="date-options"
     class="dropdown-options secondary-color-scheme"
     style:display={dateDropdownOpen.value ? 'flex' : 'none'}
   >
@@ -87,6 +91,7 @@
         type="button"
         class="option"
         class:selected={$selectedDate === dateOption.value}
+        aria-pressed={$selectedDate === dateOption.value}
         on:click={() => {
           $selectedDate = dateOption.value;
           dateDropdownOpen.value = false;

@@ -29,13 +29,16 @@
 <div id="sortContainer" class="input-container" style:align-items="flex-end">
   <!-- Label -->
   <div class="label">
-    <img class="label-icon" src="/images/sortIcon.svg" alt="sort icon" />
+    <img class="label-icon" src="/images/sortIcon.svg" alt="" />
     <p class="label-text">Sortiranje</p>
   </div>
 
   <!-- Dropdown element -->
   <button
     type="button"
+    aria-label={`Sortiranje: ${selectedSortText}`}
+    aria-expanded={sortDropdownOpen.value}
+    aria-controls="sort-options"
     class="dropdown-element secondary-color-scheme"
     onclick={toggleDropdown}
   >
@@ -57,6 +60,7 @@
 
   <!-- Dropdown options -->
   <div
+    id="sort-options"
     class="dropdown-options secondary-color-scheme"
     style:display={sortDropdownOpen.value ? 'flex' : 'none'}
   >
@@ -65,6 +69,7 @@
         type="button"
         class="option"
         class:selected={$sortBy === sortOption.value}
+        aria-pressed={$sortBy === sortOption.value}
         onclick={() => {
           $sortBy = sortOption.value;
           sortDropdownOpen.value = false;
