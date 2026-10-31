@@ -65,6 +65,7 @@ interface Movie {
   tmdb_runtime?: number | null;
   tmdb_poster_path?: string | null;
   tmdb_poster_url?: string | null;
+  tmdb_backdrop_urls?: string[] | null;
   tmdb_cast?: Person[] | null;
   tmdb_directors?: Person[] | null;
   tmdb_trailer_url?: string | null;

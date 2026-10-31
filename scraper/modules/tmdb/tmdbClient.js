@@ -123,7 +123,8 @@ async function searchMovie({ query, year, language }) {
 async function fetchMovieDetails({ tmdbId, language }) {
   return tmdbFetchJson(`/movie/${tmdbId}`, {
     language,
-    append_to_response: "credits,videos",
+    append_to_response: "credits,videos,images",
+    include_image_language: "null",
   });
 }
 

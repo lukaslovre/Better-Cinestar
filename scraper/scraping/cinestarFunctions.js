@@ -114,6 +114,7 @@ function formatMovie(movie) {
     tmdb_runtime: null,
     tmdb_poster_path: null,
     tmdb_poster_url: null,
+    tmdb_backdrop_urls: [],
     tmdb_cast: null,
     tmdb_directors: null,
     tmdb_trailer_url: null,

@@ -21,6 +21,7 @@ function nullEnrichment() {
     tmdb_runtime: null,
     tmdb_poster_path: null,
     tmdb_poster_url: null,
+    tmdb_backdrop_urls: [],
     tmdb_cast: null,
     tmdb_directors: null,
     tmdb_trailer_url: null,
@@ -176,6 +177,12 @@ async function enrichMovieWithTmdb(movie) {
     : null;
 
   const { tmdb_cast, tmdb_directors } = mapCredits(details?.credits);
+  const backdropPaths = Array.isArray(details?.images?.backdrops)
+    ? details.images.backdrops.map((image) => image?.file_path).filter(Boolean)
+    : [];
+  const tmdb_backdrop_urls = [...new Set(backdropPaths)]
+    .slice(0, 6)
+    .map((path) => buildImageUrl(path, "w780"));
 
   const tmdb_trailer_url = pickBestTrailerUrl(
     details?.videos,
@@ -193,6 +200,7 @@ async function enrichMovieWithTmdb(movie) {
     tmdb_runtime: typeof details?.runtime === "number" ? details.runtime : null,
     tmdb_poster_path: posterPath,
     tmdb_poster_url: buildImageUrl(posterPath, configuration.TMDB_POSTER_SIZE),
+    tmdb_backdrop_urls,
     tmdb_cast,
     tmdb_directors,
     tmdb_trailer_url,

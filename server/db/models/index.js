@@ -34,6 +34,7 @@ const Movie = sequelize.define(
     tmdb_runtime: DataTypes.INTEGER,
     tmdb_poster_path: DataTypes.STRING,
     tmdb_poster_url: DataTypes.STRING,
+    tmdb_backdrop_urls: DataTypes.JSON,
     tmdb_cast: DataTypes.JSON,
     tmdb_directors: DataTypes.JSON,
     tmdb_trailer_url: DataTypes.STRING,
