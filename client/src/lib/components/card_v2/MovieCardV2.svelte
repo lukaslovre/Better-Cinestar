@@ -7,11 +7,14 @@
   interface MovieCardProps {
     movie: Movie;
     fullscreenedMovieNumber: number;
+    eagerPoster?: boolean;
   }
 
-  let { movie, fullscreenedMovieNumber }: MovieCardProps = $props();
+  let { movie, fullscreenedMovieNumber, eagerPoster = false }: MovieCardProps = $props();
 
   const isFullscreened = $derived(movie.filmNumber === fullscreenedMovieNumber);
+  const posterUrl = $derived(movie.tmdb_poster_url || movie.imageUrl);
+  let loadedPosterUrl = $state<string>();
 </script>
 
 <div
@@ -19,15 +22,22 @@
   id="movieCard-{movie.filmNumber}"
   class:fullScreenMovieCard={isFullscreened}
 >
+  <!-- Wait for the lazy image before applying its background, which would fetch eagerly. -->
   <div
     class="posterContainer"
-    style="background-image: url({movie.tmdb_poster_url || movie.imageUrl});"
+    style:background-image={eagerPoster || loadedPosterUrl === posterUrl
+      ? `url(${posterUrl})`
+      : undefined}
   >
     <div class="overlay"></div>
     <img
       class="moviePoster"
-      src={movie.tmdb_poster_url || movie.imageUrl}
+      src={posterUrl}
       alt="{movie.originalTitle} poster"
+      loading={eagerPoster ? 'eager' : 'lazy'}
+      width="500"
+      height="750"
+      onload={() => (loadedPosterUrl = posterUrl)}
     />
   </div>
 

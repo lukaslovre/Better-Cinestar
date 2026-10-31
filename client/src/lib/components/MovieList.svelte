@@ -61,10 +61,11 @@
 </script>
 
 <div id="movieCardsContainer">
-  {#each movies.filter((m) => m.performances && m.performances.length > 0) as movie (movie.id)}
+  {#each movies.filter((m) => m.performances && m.performances.length > 0) as movie, index (movie.id)}
     <MovieCardV2
       {movie}
       {fullscreenedMovieNumber}
+      eagerPoster={index === 0}
       on:setFullscreen={setFullscreen}
       on:selectedPerformance
     />
