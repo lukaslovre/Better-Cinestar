@@ -113,7 +113,7 @@ async function tmdbFetchJson(path, params = {}, options = {}) {
 async function searchMovie({ query, year, language }) {
   return tmdbFetchJson("/search/movie", {
     query,
-    include_adult: "false", //Why?
+    include_adult: "false",
     language,
     // primary_release_year: year ? String(year) : undefined,
     page: "1",
@@ -128,8 +128,16 @@ async function fetchMovieDetails({ tmdbId, language }) {
   });
 }
 
+async function fetchMovieIdentity({ tmdbId, language }) {
+  return tmdbFetchJson(`/movie/${tmdbId}`, {
+    language,
+    append_to_response: "credits,alternative_titles",
+  });
+}
+
 module.exports = {
   tmdbFetchJson,
   searchMovie,
   fetchMovieDetails,
+  fetchMovieIdentity,
 };

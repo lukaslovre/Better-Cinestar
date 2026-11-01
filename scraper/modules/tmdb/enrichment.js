@@ -1,8 +1,16 @@
 const { configuration } = require("../../config/environment.js");
-const { getTargetYearFromMovie } = require("./utils.js");
+const { getTargetYearFromMovie, parseYearFromDate } = require("./utils.js");
 const { logTmdbDecision } = require("./diagnostics.js");
-const { searchMovie, fetchMovieDetails } = require("./tmdbClient.js");
-const { pickBestMatch, computeCandidates } = require("./matching.js");
+const {
+  searchMovie,
+  fetchMovieDetails,
+  fetchMovieIdentity,
+} = require("./tmdbClient.js");
+const {
+  pickBestMatch,
+  computeCandidates,
+  matchesAlternativeTitleAndDirector,
+} = require("./matching.js");
 const {
   buildImageUrl,
   tmdbMovieUrl,
@@ -27,7 +35,6 @@ function nullEnrichment() {
     tmdb_trailer_url: null,
   };
 }
-// TODO: UNderstand this
 async function fetchMovieDetailsWithFallback(tmdbId) {
   const primary = configuration.TMDB_LANGUAGE_PRIMARY;
   const fallback = configuration.TMDB_LANGUAGE_FALLBACK;
@@ -134,6 +141,48 @@ async function enrichMovieWithTmdb(movie) {
     }
   }
 
+  let identityLookupFailed = false;
+  if (
+    !match &&
+    movie.director &&
+    targetYear &&
+    decision.searches.every((search) => search.status === "ok")
+  ) {
+    const shortlist = new Map();
+    for (const candidates of [primaryCandidates, fallbackCandidates]) {
+      for (const candidate of (candidates || [])
+        .filter((candidate) => parseYearFromDate(candidate.release_date))
+        .slice(0, 3)) {
+        shortlist.set(candidate.id, candidate);
+      }
+    }
+    const recovered = [];
+    for (const candidate of shortlist.values()) {
+      try {
+        const details = await fetchMovieIdentity({
+          tmdbId: candidate.id,
+          language: fallbackLang,
+        });
+        if (
+          matchesAlternativeTitleAndDirector({
+            movie,
+            query,
+            details,
+            targetYear,
+          })
+        ) {
+          recovered.push(candidate);
+        }
+      } catch {
+        identityLookupFailed = true;
+      }
+    }
+    if (!identityLookupFailed && recovered.length === 1) {
+      match = recovered[0];
+      decision.reason = "alternative_title_and_director";
+    }
+  }
+
   // Attach diagnostics to the movie for inclusion in dry-run artifacts / payload
   try {
     Object.defineProperty(movie, "tmdb_search_candidates", {
@@ -147,7 +196,10 @@ async function enrichMovieWithTmdb(movie) {
   }
 
   if (!match?.id) {
-    if (decision.searches.some((s) => s.status === "search_error")) {
+    if (identityLookupFailed) {
+      decision.status = "search_error";
+      decision.reason = "identity_lookup_incomplete";
+    } else if (decision.searches.some((s) => s.status === "search_error")) {
       decision.status = "search_error";
       decision.reason = "search_incomplete";
     } else {

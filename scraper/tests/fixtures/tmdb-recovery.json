@@ -1,0 +1,876 @@
+{
+  "capturedAt": "2026-11-01T13:39:58.372Z",
+  "description": "Alternative-title recovery cases with source metadata, search candidates and TMDB identity fields.",
+  "cases": [
+    {
+      "source": {
+        "filmNumber": 6637,
+        "title": "Osam i pol",
+        "originalTitle": "Otto e Mezzo",
+        "name": "Osam i pol",
+        "director": "Federico Fellini",
+        "productionYear": "1963",
+        "nationwideStart": "2026-11-23",
+        "lengthInMinutes": 138,
+        "genres": [
+          "Fantazija"
+        ]
+      },
+      "expectedTmdbId": 422,
+      "recovery": true,
+      "provenance": {
+        "sourceUrl": "https://cinestarcinemas.hr/zagreb-branimir-mingle-mall/osam-i-pol/6637"
+      },
+      "searches": [
+        {
+          "language": "en-US",
+          "results": [
+            {
+              "id": 422,
+              "title": "8½",
+              "original_title": "8½",
+              "release_date": "1963-02-14",
+              "popularity": 5.939,
+              "poster_path": "/23VIf7zNxAgaXwIlvzd3IvOd9sY.jpg"
+            }
+          ]
+        },
+        {
+          "language": "hr-HR",
+          "results": [
+            {
+              "id": 422,
+              "title": "8½",
+              "original_title": "8½",
+              "release_date": "1963-02-14",
+              "popularity": 5.939,
+              "poster_path": "/ja0uRnwFwnVFJlNMYL10orpjWtq.jpg"
+            }
+          ]
+        }
+      ],
+      "identities": {
+        "422": {
+          "id": 422,
+          "title": "8½",
+          "original_title": "8½",
+          "release_date": "1963-02-14",
+          "runtime": 139,
+          "alternative_titles": {
+            "titles": [
+              {
+                "title": "Eight and a Half",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "Otto e mezzo",
+                "iso_3166_1": "IT"
+              },
+              {
+                "title": "8.5",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "8 1/2",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "Federico Fellini's 8 1/2",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "8 és 1/2",
+                "iso_3166_1": "HU"
+              },
+              {
+                "title": "Nyolc és fél",
+                "iso_3166_1": "HU"
+              },
+              {
+                "title": "Oito e Meio",
+                "iso_3166_1": "BR"
+              },
+              {
+                "title": "Вiсiм з половиною",
+                "iso_3166_1": "UA"
+              },
+              {
+                "title": "Federico Fellini's 8½",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "Восемь с половиной",
+                "iso_3166_1": "SU"
+              },
+              {
+                "title": "Rva nakhevari",
+                "iso_3166_1": "SU"
+              },
+              {
+                "title": "Fellinis Achteinhalb",
+                "iso_3166_1": "DE"
+              },
+              {
+                "title": "Osem a pol",
+                "iso_3166_1": "SK"
+              },
+              {
+                "title": "8 1/2",
+                "iso_3166_1": "SK"
+              },
+              {
+                "title": "8 e mezzo",
+                "iso_3166_1": "IT"
+              },
+              {
+                "title": "Fellini, ocho y medio",
+                "iso_3166_1": "ES"
+              },
+              {
+                "title": "Osiem i pół",
+                "iso_3166_1": "PL"
+              },
+              {
+                "title": "8과 1/2",
+                "iso_3166_1": "KR"
+              },
+              {
+                "title": "8과 1-2",
+                "iso_3166_1": "KR"
+              },
+              {
+                "title": "8과 1／2",
+                "iso_3166_1": "KR"
+              }
+            ]
+          },
+          "credits": {
+            "crew": [
+              {
+                "name": "Federico Fellini",
+                "job": "Director"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": {
+        "title": "Sedam samuraja",
+        "originalTitle": "Shichinin no samurai",
+        "director": "Akira Kurosawa",
+        "productionYear": 1954
+      },
+      "expectedTmdbId": 346,
+      "recovery": true,
+      "provenance": {
+        "sourceUrl": "https://kinotuskanac.hr/movie/sedam-samuraja"
+      },
+      "searches": [
+        {
+          "language": "en-US",
+          "results": [
+            {
+              "id": 1725467,
+              "title": "The Truth of Nanking, Part I: The Seven “Death-Row Prisoners”",
+              "original_title": "南京の真実 第一部 七人の「死刑囚」",
+              "release_date": "2008-09-27",
+              "popularity": 1.74,
+              "poster_path": "/vXUhLMjjy2JqG3bMVb9O8bhWkfj.jpg"
+            },
+            {
+              "id": 346,
+              "title": "Seven Samurai",
+              "original_title": "七人の侍",
+              "release_date": "1954-04-26",
+              "popularity": 19.5048,
+              "poster_path": "/lOMGc8bnSwQhS4XyE1S99uH8NXf.jpg"
+            },
+            {
+              "id": 523634,
+              "title": "Akira Kurosawa: It Is Wonderful to Create: 'Seven Samurai'",
+              "original_title": "黒澤明～創ると云う事は素晴らしい～七人の侍",
+              "release_date": "2002-10-25",
+              "popularity": 1.2319,
+              "poster_path": "/tVoMvi0h1CQSgNFZUkvLUJCcOuh.jpg"
+            }
+          ]
+        },
+        {
+          "language": "hr-HR",
+          "results": [
+            {
+              "id": 1725467,
+              "title": "南京の真実 第一部 七人の「死刑囚」",
+              "original_title": "南京の真実 第一部 七人の「死刑囚」",
+              "release_date": "2008-09-27",
+              "popularity": 1.74,
+              "poster_path": "/vXUhLMjjy2JqG3bMVb9O8bhWkfj.jpg"
+            },
+            {
+              "id": 346,
+              "title": "七人の侍",
+              "original_title": "七人の侍",
+              "release_date": "1954-04-26",
+              "popularity": 19.5048,
+              "poster_path": "/8podTebyeH6sn31atpdappdgaCE.jpg"
+            },
+            {
+              "id": 523634,
+              "title": "黒澤明～創ると云う事は素晴らしい～七人の侍",
+              "original_title": "黒澤明～創ると云う事は素晴らしい～七人の侍",
+              "release_date": "2002-10-25",
+              "popularity": 1.2319,
+              "poster_path": "/tVoMvi0h1CQSgNFZUkvLUJCcOuh.jpg"
+            }
+          ]
+        }
+      ],
+      "identities": {
+        "346": {
+          "id": 346,
+          "title": "Seven Samurai",
+          "original_title": "七人の侍",
+          "release_date": "1954-04-26",
+          "runtime": 207,
+          "alternative_titles": {
+            "titles": [
+              {
+                "title": "Sieben Samurai",
+                "iso_3166_1": "DE"
+              },
+              {
+                "title": "I sette samurai",
+                "iso_3166_1": "IT"
+              },
+              {
+                "title": "A hét szamuráj",
+                "iso_3166_1": "HU"
+              },
+              {
+                "title": "Los siete samurais",
+                "iso_3166_1": "ES"
+              },
+              {
+                "title": "Os Sete Samurais",
+                "iso_3166_1": "BR"
+              },
+              {
+                "title": "Siedmiu samurajów",
+                "iso_3166_1": "PL"
+              },
+              {
+                "title": "Os Sete Samurais",
+                "iso_3166_1": "PT"
+              },
+              {
+                "title": "Седемте самураи",
+                "iso_3166_1": "BG"
+              },
+              {
+                "title": "Οι επτά σαμουράι",
+                "iso_3166_1": "GR"
+              },
+              {
+                "title": "Yedi Samuray-Kanli Pirinç",
+                "iso_3166_1": "TR"
+              },
+              {
+                "title": "Bảy Võ Sĩ",
+                "iso_3166_1": "VN"
+              },
+              {
+                "title": "Shichinin no samurai",
+                "iso_3166_1": "JP"
+              },
+              {
+                "title": "Les 7 Samouraïs",
+                "iso_3166_1": "FR"
+              },
+              {
+                "title": "七武士",
+                "iso_3166_1": "TW"
+              },
+              {
+                "title": "7인의 사무라이",
+                "iso_3166_1": "KR"
+              },
+              {
+                "title": "The Magnificent Seven",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "七武士",
+                "iso_3166_1": "CN"
+              },
+              {
+                "title": "De Zeven Samoerai",
+                "iso_3166_1": "NL"
+              },
+              {
+                "title": "De syv samuraier",
+                "iso_3166_1": "NO"
+              },
+              {
+                "title": "Seven Samurai",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "Seitsemän samuraita",
+                "iso_3166_1": "FI"
+              },
+              {
+                "title": "Седам самураја",
+                "iso_3166_1": "RS"
+              },
+              {
+                "title": "Qi Wu Shi",
+                "iso_3166_1": "CN"
+              },
+              {
+                "title": "Յոթ Սամուրայները",
+                "iso_3166_1": "AM"
+              },
+              {
+                "title": "Yeddi Samuray",
+                "iso_3166_1": "AZ"
+              }
+            ]
+          },
+          "credits": {
+            "crew": [
+              {
+                "name": "Akira Kurosawa",
+                "job": "Director"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": {
+        "title": "Kikin servis za dostavljanje",
+        "originalTitle": "Majo no takkyűbin",
+        "director": "Hayao Miyazaki",
+        "productionYear": 1989
+      },
+      "expectedTmdbId": 16859,
+      "recovery": true,
+      "provenance": {
+        "sourceUrl": "https://kinotuskanac.hr/movie/kikin-servis-za-dostavljanje"
+      },
+      "searches": [
+        {
+          "language": "en-US",
+          "results": [
+            {
+              "id": 252391,
+              "title": "Kiki's Delivery Service",
+              "original_title": "魔女の宅急便",
+              "release_date": "2014-03-01",
+              "popularity": 2.8592,
+              "poster_path": "/4okVsLYuRH9DSzLAvg44DcckkiB.jpg"
+            },
+            {
+              "id": 16859,
+              "title": "Kiki's Delivery Service",
+              "original_title": "魔女の宅急便",
+              "release_date": "1989-07-29",
+              "popularity": 18.8379,
+              "poster_path": "/Aufa4YdZIv4AXpR9rznwVA5SEfd.jpg"
+            }
+          ]
+        },
+        {
+          "language": "hr-HR",
+          "results": [
+            {
+              "id": 252391,
+              "title": "魔女の宅急便",
+              "original_title": "魔女の宅急便",
+              "release_date": "2014-03-01",
+              "popularity": 2.8592,
+              "poster_path": "/10CoovQCkra91XAmdJ0tEUo1Tc7.jpg"
+            },
+            {
+              "id": 16859,
+              "title": "Dostavna služba dobre vještice Kiki",
+              "original_title": "魔女の宅急便",
+              "release_date": "1989-07-29",
+              "popularity": 18.8379,
+              "poster_path": "/rlNKTz07MtYlIJY6zKaQedRN8HF.jpg"
+            }
+          ]
+        }
+      ],
+      "identities": {
+        "16859": {
+          "id": 16859,
+          "title": "Kiki's Delivery Service",
+          "original_title": "魔女の宅急便",
+          "release_date": "1989-07-29",
+          "runtime": 103,
+          "alternative_titles": {
+            "titles": [
+              {
+                "title": "Majo no Takkyûbin",
+                "iso_3166_1": "JP"
+              },
+              {
+                "title": "Majo no Takkyuubin",
+                "iso_3166_1": "JP"
+              },
+              {
+                "title": "Служба доставки Кікі юної відьми",
+                "iso_3166_1": "UA"
+              },
+              {
+                "title": "Відьмина експрес-пошта",
+                "iso_3166_1": "UA"
+              },
+              {
+                "title": "Kikis budservice",
+                "iso_3166_1": "NO"
+              },
+              {
+                "title": "Kiki'nin Çatdırılma Servisi",
+                "iso_3166_1": "AZ"
+              },
+              {
+                "title": "Balaca Cadı Kiki",
+                "iso_3166_1": "AZ"
+              },
+              {
+                "title": "Kiki'nin Kurye Servisi",
+                "iso_3166_1": "TR"
+              },
+              {
+                "title": "O Serviço de Entregas da Kiki",
+                "iso_3166_1": "BR"
+              },
+              {
+                "title": "Kiki: A Aprendiz de Feiticeira",
+                "iso_3166_1": "PT"
+              },
+              {
+                "title": "Kiki la petite sorcière",
+                "iso_3166_1": "FR"
+              },
+              {
+                "title": "마녀 배달부 키키",
+                "iso_3166_1": "KR"
+              },
+              {
+                "title": "Kiki Entregas a domicilio",
+                "iso_3166_1": "MX"
+              }
+            ]
+          },
+          "credits": {
+            "crew": [
+              {
+                "name": "Hayao Miyazaki",
+                "job": "Director"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "source": {
+        "filmNumber": 6546,
+        "title": "Digger",
+        "originalTitle": "Digger",
+        "name": "Digger",
+        "director": "Alejandro G. Inairritu",
+        "productionYear": "2026",
+        "nationwideStart": "2026-10-01",
+        "lengthInMinutes": 128,
+        "genres": [
+          "Triler"
+        ]
+      },
+      "expectedTmdbId": 1248832,
+      "recovery": false,
+      "provenance": {
+        "sourceSnapshot": "cinestar-live-source_2026-11-01.json"
+      },
+      "searches": [
+        {
+          "language": "en-US",
+          "results": [
+            {
+              "id": 1248832,
+              "title": "Digger",
+              "original_title": "Digger",
+              "release_date": "2026-09-28",
+              "popularity": 66.7698,
+              "poster_path": "/1ATXKrIPJyKNwnJ6lcG088Sa6zi.jpg"
+            },
+            {
+              "id": 290686,
+              "title": "Digger",
+              "original_title": "Digger",
+              "release_date": "1993-09-29",
+              "popularity": 1.1424,
+              "poster_path": "/wxxg8BupM3L0cn40sZBipBBEb5Y.jpg"
+            },
+            {
+              "id": 656272,
+              "title": "Digger",
+              "original_title": "Digger",
+              "release_date": "2021-06-17",
+              "popularity": 1.3783,
+              "poster_path": "/a4VjQ9zw291HUKz1euHpnhE00tE.jpg"
+            },
+            {
+              "id": 540911,
+              "title": "Digger",
+              "original_title": "Anawohou",
+              "release_date": "2017-09-22",
+              "popularity": 0.7777,
+              "poster_path": "/ydMfjMu34P790J6F52SWdtc208O.jpg"
+            },
+            {
+              "id": 392985,
+              "title": "Gold Digger",
+              "original_title": "Onnenonkija",
+              "release_date": "2016-03-25",
+              "popularity": 2.548,
+              "poster_path": "/tMc1IziYmla9UDLB5ihQvrPvmBO.jpg"
+            },
+            {
+              "id": 401653,
+              "title": "The Digger",
+              "original_title": "Al haffar",
+              "release_date": "2015-11-10",
+              "popularity": 4.5439,
+              "poster_path": null
+            },
+            {
+              "id": 1470370,
+              "title": "The Digger",
+              "original_title": "Tay đào đất",
+              "release_date": "2002-01-01",
+              "popularity": 1.1943,
+              "poster_path": "/aq0mZ1TFeTS1QilKIU2g8pXobAp.jpg"
+            },
+            {
+              "id": 52464,
+              "title": "Miss Gold Digger",
+              "original_title": "용의주도 미스 신",
+              "release_date": "2007-12-18",
+              "popularity": 1.4906,
+              "poster_path": "/q5D4V30fHoBo5IcHjWS5IQGhkjF.jpg"
+            },
+            {
+              "id": 217605,
+              "title": "The Grave Digger",
+              "original_title": "A sírásó",
+              "release_date": "2010-01-01",
+              "popularity": 1.4219,
+              "poster_path": null
+            },
+            {
+              "id": 1119466,
+              "title": "The Dirty Digger",
+              "original_title": "The Dirty Digger",
+              "release_date": "2007-02-20",
+              "popularity": 1.1658,
+              "poster_path": "/nATTwdrF9DbN5HjVWDnLF8lgzC6.jpg"
+            },
+            {
+              "id": 748786,
+              "title": "Grave Digger",
+              "original_title": "火线追凶之掘墓人",
+              "release_date": "2009-06-04",
+              "popularity": 0.8311,
+              "poster_path": "/cxdC8XB01ABPEMDo7eAUIYzjFZN.jpg"
+            },
+            {
+              "id": 724406,
+              "title": "The Gold-digger",
+              "original_title": "Les michetonneuses",
+              "release_date": "2020-08-05",
+              "popularity": 5.8261,
+              "poster_path": "/rm4UZ9DLXF06npLZMOTNTBNpWhk.jpg"
+            },
+            {
+              "id": 443615,
+              "title": "Grave Digger Domination",
+              "original_title": "Grave Digger Domination",
+              "release_date": "1997-11-11",
+              "popularity": 0.6022,
+              "poster_path": "/4gqeUdF1SI3BYpeepYXLBDwk4aZ.jpg"
+            },
+            {
+              "id": 296496,
+              "title": "Gold Digger Killer",
+              "original_title": "Gold Digger Killer",
+              "release_date": "2007-01-01",
+              "popularity": 1.2015,
+              "poster_path": "/oscPytK6jC0Zg6FvfVXjs4jFoqz.jpg"
+            },
+            {
+              "id": 1319713,
+              "title": "Grave Digger",
+              "original_title": "Grave Digger",
+              "release_date": "2023-09-16",
+              "popularity": 0.4219,
+              "poster_path": null
+            },
+            {
+              "id": 839727,
+              "title": "Secrets of a Gold Digger Killer",
+              "original_title": "Secrets of a Gold Digger Killer",
+              "release_date": "2021-06-13",
+              "popularity": 2.0314,
+              "poster_path": "/ldOV6UCkAJXKRlD6qH2Xszg4gPM.jpg"
+            },
+            {
+              "id": 1313403,
+              "title": "The Bigger Digger",
+              "original_title": "The Bigger Digger",
+              "release_date": "1974-08-01",
+              "popularity": 1.0531,
+              "poster_path": null
+            },
+            {
+              "id": 925081,
+              "title": "Gold Digger of Weepah",
+              "original_title": "Gold Digger of Weepah",
+              "release_date": "1927-10-02",
+              "popularity": 1.957,
+              "poster_path": "/iaiz71GU0fXJfPpykvbIkDSQWtp.jpg"
+            },
+            {
+              "id": 1660851,
+              "title": "The gold digger",
+              "original_title": "The gold digger",
+              "release_date": "",
+              "popularity": 0.8191,
+              "poster_path": null
+            },
+            {
+              "id": 1059918,
+              "title": "The Grave Digger",
+              "original_title": "Kẻ Đào Mồ",
+              "release_date": "2022-07-01",
+              "popularity": 1.1364,
+              "poster_path": "/bDYK43sqkfieOMEs4I3wY81pc22.jpg"
+            }
+          ]
+        },
+        {
+          "language": "hr-HR",
+          "results": [
+            {
+              "id": 1248832,
+              "title": "Digger",
+              "original_title": "Digger",
+              "release_date": "2026-09-28",
+              "popularity": 66.7698,
+              "poster_path": "/1ATXKrIPJyKNwnJ6lcG088Sa6zi.jpg"
+            },
+            {
+              "id": 290686,
+              "title": "Digger",
+              "original_title": "Digger",
+              "release_date": "1993-09-29",
+              "popularity": 1.1424,
+              "poster_path": "/wxxg8BupM3L0cn40sZBipBBEb5Y.jpg"
+            },
+            {
+              "id": 656272,
+              "title": "Digger",
+              "original_title": "Digger",
+              "release_date": "2021-06-17",
+              "popularity": 1.3783,
+              "poster_path": "/sYurH4BVI7eSrJTITU3he9MQvOV.jpg"
+            },
+            {
+              "id": 1119466,
+              "title": "The Dirty Digger",
+              "original_title": "The Dirty Digger",
+              "release_date": "2007-02-20",
+              "popularity": 1.1658,
+              "poster_path": "/nATTwdrF9DbN5HjVWDnLF8lgzC6.jpg"
+            },
+            {
+              "id": 443615,
+              "title": "Grave Digger Domination",
+              "original_title": "Grave Digger Domination",
+              "release_date": "1997-11-11",
+              "popularity": 0.6022,
+              "poster_path": "/4gqeUdF1SI3BYpeepYXLBDwk4aZ.jpg"
+            },
+            {
+              "id": 296496,
+              "title": "Gold Digger Killer",
+              "original_title": "Gold Digger Killer",
+              "release_date": "2007-01-01",
+              "popularity": 1.2015,
+              "poster_path": "/oscPytK6jC0Zg6FvfVXjs4jFoqz.jpg"
+            },
+            {
+              "id": 1319713,
+              "title": "Grave Digger",
+              "original_title": "Grave Digger",
+              "release_date": "2023-09-16",
+              "popularity": 0.4219,
+              "poster_path": null
+            },
+            {
+              "id": 839727,
+              "title": "Secrets of a Gold Digger Killer",
+              "original_title": "Secrets of a Gold Digger Killer",
+              "release_date": "2021-06-13",
+              "popularity": 2.0314,
+              "poster_path": "/ldOV6UCkAJXKRlD6qH2Xszg4gPM.jpg"
+            },
+            {
+              "id": 1313403,
+              "title": "The Bigger Digger",
+              "original_title": "The Bigger Digger",
+              "release_date": "1974-08-01",
+              "popularity": 1.0531,
+              "poster_path": null
+            },
+            {
+              "id": 925081,
+              "title": "Gold Digger of Weepah",
+              "original_title": "Gold Digger of Weepah",
+              "release_date": "1927-10-02",
+              "popularity": 1.957,
+              "poster_path": "/iaiz71GU0fXJfPpykvbIkDSQWtp.jpg"
+            },
+            {
+              "id": 1660851,
+              "title": "The gold digger",
+              "original_title": "The gold digger",
+              "release_date": "",
+              "popularity": 0.8191,
+              "poster_path": null
+            },
+            {
+              "id": 797577,
+              "title": "Grave Digger The Video",
+              "original_title": "Grave Digger The Video",
+              "release_date": "1990-01-01",
+              "popularity": 0.6143,
+              "poster_path": "/65QYTFnIZ3b7XfCo9HQUk0ObmPS.jpg"
+            },
+            {
+              "id": 503431,
+              "title": "Grave Digger - 25 To Live",
+              "original_title": "Grave Digger - 25 To Live",
+              "release_date": "2005-10-14",
+              "popularity": 1.0957,
+              "poster_path": "/kkomi0BpdokEanh5QcbIUpzSx2P.jpg"
+            },
+            {
+              "id": 634131,
+              "title": "The Digger Carries On",
+              "original_title": "The Digger Carries On",
+              "release_date": "1919-09-25",
+              "popularity": 0.4582,
+              "poster_path": null
+            },
+            {
+              "id": 417658,
+              "title": "Grave Digger 25th Anniversary",
+              "original_title": "Grave Digger 25th Anniversary",
+              "release_date": "2007-01-01",
+              "popularity": 0.4052,
+              "poster_path": null
+            },
+            {
+              "id": 314207,
+              "title": "Here Comes A... Digger",
+              "original_title": "Here Comes A... Digger",
+              "release_date": "2005-09-01",
+              "popularity": 0.4363,
+              "poster_path": null
+            },
+            {
+              "id": 480878,
+              "title": "If I Were A Digger",
+              "original_title": "If I Were A Digger",
+              "release_date": "2008-02-01",
+              "popularity": 0.6643,
+              "poster_path": "/p2i9X0J0SIiG8mvU1s7kL8v1MS3.jpg"
+            },
+            {
+              "id": 443623,
+              "title": "GD20: Grave Digger 20th Anniversary",
+              "original_title": "GD20: Grave Digger 20th Anniversary",
+              "release_date": "2002-01-01",
+              "popularity": 0.6298,
+              "poster_path": "/qk9Npg1mGOr9EqcuAs5jLlZT07N.jpg"
+            },
+            {
+              "id": 987459,
+              "title": "Gold Digger: The Time Raft",
+              "original_title": "Gold Digger: The Time Raft",
+              "release_date": "2001-11-01",
+              "popularity": 0.4541,
+              "poster_path": "/qicZftttEiL9Bjxot2iyBaUZ51G.jpg"
+            },
+            {
+              "id": 254590,
+              "title": "Grave Digger: Tunes of Wacken - Live",
+              "original_title": "Grave Digger: Tunes of Wacken - Live",
+              "release_date": "2002-03-25",
+              "popularity": 0.7314,
+              "poster_path": null
+            }
+          ]
+        }
+      ],
+      "identities": {
+        "1248832": {
+          "id": 1248832,
+          "title": "Digger",
+          "original_title": "Digger",
+          "release_date": "2026-09-28",
+          "runtime": 129,
+          "alternative_titles": {
+            "titles": [
+              {
+                "title": "डिगर",
+                "iso_3166_1": "IN"
+              },
+              {
+                "title": "Judy",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "ดิกเกอร์",
+                "iso_3166_1": "TH"
+              },
+              {
+                "title": "Blah, Blah, Blah",
+                "iso_3166_1": "US"
+              },
+              {
+                "title": "Digeris",
+                "iso_3166_1": "LT"
+              }
+            ]
+          },
+          "credits": {
+            "crew": [
+              {
+                "name": "Alejandro G. Iñárritu",
+                "job": "Director"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

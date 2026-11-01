@@ -111,7 +111,36 @@ function pickBestMatch({ movie, results, targetYear }) {
   };
 }
 
+function matchesAlternativeTitleAndDirector({
+  movie,
+  query,
+  details,
+  targetYear,
+}) {
+  const title = normalizeTitle(query);
+  const directors = String(movie?.director || "")
+    .split(/[,;&/]|\s+(?:i|and)\s+/i)
+    .map(normalizeTitle)
+    .filter(Boolean);
+  const candidateYear = parseYearFromDate(details?.release_date);
+  if (!title || directors.length === 0 || !targetYear || !candidateYear)
+    return false;
+  if (Math.abs(targetYear - candidateYear) > 2) return false;
+
+  const aliases = details?.alternative_titles?.titles || [];
+  const crew = details?.credits?.crew || [];
+  return (
+    aliases.some((alias) => normalizeTitle(alias.title) === title) &&
+    crew.some(
+      (person) =>
+        person.job === "Director" &&
+        directors.includes(normalizeTitle(person.name)),
+    )
+  );
+}
+
 module.exports = {
   pickBestMatch,
   computeCandidates,
+  matchesAlternativeTitleAndDirector,
 };
