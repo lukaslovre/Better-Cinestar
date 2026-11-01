@@ -1,31 +1,34 @@
-const assert = require("assert");
-
+const assert = require("node:assert/strict");
+const test = require("node:test");
 const { pickBestMatch } = require("../modules/tmdb/matching.js");
 const { getTargetYearFromMovie } = require("../modules/tmdb/utils.js");
 
-(function test_getTargetYearFromMovie() {
-  assert.strictEqual(
-    getTargetYearFromMovie({ nationwideStart: "1999-03-31" }),
-    1999,
+test("matching year prefers production year and falls back to source dates", () => {
+  assert.equal(
+    getTargetYearFromMovie({ productionYear: "2010", nationwideStart: "2026-11-30" }),
+    2010,
   );
-  assert.strictEqual(getTargetYearFromMovie({ productionYear: "2021" }), 2021);
-  assert.strictEqual(getTargetYearFromMovie({}), null);
+  assert.equal(getTargetYearFromMovie({ productionYear: 2021 }), 2021);
+  assert.equal(getTargetYearFromMovie({ nationwideStart: "1999-03-31" }), 1999);
+  for (const productionYear of [undefined, null, "", "unknown", "2026.5", 0, 1800]) {
+    assert.equal(
+      getTargetYearFromMovie({ productionYear, nationwideStart: "2026-11-30" }),
+      2026,
+    );
+  }
+  assert.equal(getTargetYearFromMovie({ releaseDate: "2001-06-06" }), 2001);
+  assert.equal(getTargetYearFromMovie({}), null);
+});
 
-  console.log("OK: getTargetYearFromMovie extracts years");
-})();
-
-(function test_pickBestMatch_prefers_exact_title_and_year() {
+test("exact Matrix title and year beat a sequel", () => {
   const movie = {
     originalTitle: "The Matrix",
     title: "Matrix",
     nationwideStart: "1999-03-31",
   };
-
-  const targetYear = getTargetYearFromMovie(movie);
-
   const results = [
     {
-      id: 1,
+      id: 604,
       title: "The Matrix Reloaded",
       original_title: "The Matrix Reloaded",
       release_date: "2003-05-15",
@@ -41,26 +44,21 @@ const { getTargetYearFromMovie } = require("../modules/tmdb/utils.js");
       poster_path: "/y.jpg",
     },
   ];
+  assert.equal(
+    pickBestMatch({ movie, results, targetYear: getTargetYearFromMovie(movie) })?.id,
+    603,
+  );
+});
 
-  const match = pickBestMatch({ movie, results, targetYear });
-  assert.ok(match);
-  assert.strictEqual(match.id, 603);
-
-  console.log("OK: pickBestMatch selects expected TMDB result");
-})();
-
-(function test_pickBestMatch_respects_year_window() {
+test("year window distinguishes Dune adaptations", () => {
   const movie = {
     originalTitle: "Dune",
     title: "Dune",
     nationwideStart: "2021-09-03",
   };
-
-  const targetYear = getTargetYearFromMovie(movie);
-
   const results = [
     {
-      id: 111,
+      id: 841,
       title: "Dune",
       original_title: "Dune",
       release_date: "1984-12-14",
@@ -68,7 +66,7 @@ const { getTargetYearFromMovie } = require("../modules/tmdb/utils.js");
       poster_path: "/a.jpg",
     },
     {
-      id: 222,
+      id: 438631,
       title: "Dune",
       original_title: "Dune",
       release_date: "2021-09-15",
@@ -76,10 +74,8 @@ const { getTargetYearFromMovie } = require("../modules/tmdb/utils.js");
       poster_path: "/b.jpg",
     },
   ];
-
-  const match = pickBestMatch({ movie, results, targetYear });
-  assert.ok(match);
-  assert.strictEqual(match.id, 222);
-
-  console.log("OK: pickBestMatch prefers within ±2-year window");
-})();
+  assert.equal(
+    pickBestMatch({ movie, results, targetYear: getTargetYearFromMovie(movie) })?.id,
+    438631,
+  );
+});

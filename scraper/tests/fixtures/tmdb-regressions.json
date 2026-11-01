@@ -1,0 +1,1725 @@
+{
+  "description": "Verified real regression cases and positive controls, with frozen TMDB search candidates and identity evidence for each expected ID.",
+  "cases": [
+    {
+      "name": "2010 re-release, not The Inception of Seeking",
+      "source": {
+        "filmNumber": 6639,
+        "title": "Inception",
+        "name": "Inception",
+        "originalTitle": "Inception",
+        "nationwideStart": "2026-11-30",
+        "productionYear": "2010",
+        "genres": [
+          "SF"
+        ],
+        "director": "Christopher Nolan",
+        "lengthInMinutes": 148
+      },
+      "expectedTmdbId": 27205,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/27205",
+        "releaseDate": "2010-07-15",
+        "directors": [
+          "Christopher Nolan"
+        ],
+        "runtime": 148
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 27205,
+          "title": "Inception",
+          "original_title": "Inception",
+          "release_date": "2010-07-15",
+          "popularity": 50.2179,
+          "poster_path": "/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg"
+        },
+        {
+          "id": 542438,
+          "title": "Bikini Inception",
+          "original_title": "Bikini Inception",
+          "release_date": "2015-05-19",
+          "popularity": 3.3645,
+          "poster_path": "/mNASlEOFX2c9upxaSbgeKFvIr1L.jpg"
+        },
+        {
+          "id": 1359046,
+          "title": "Inception",
+          "original_title": "Эхлэл",
+          "release_date": "1980-01-23",
+          "popularity": 0.9012,
+          "poster_path": null
+        },
+        {
+          "id": 64956,
+          "title": "Inception: The Cobol Job",
+          "original_title": "Inception: The Cobol Job",
+          "release_date": "2010-12-07",
+          "popularity": 1.63,
+          "poster_path": "/sNxqwtyHMNQwKWoFYDqcYTui5Ok.jpg"
+        },
+        {
+          "id": 613092,
+          "title": "The Crack: Inception",
+          "original_title": "El crack cero",
+          "release_date": "2019-10-04",
+          "popularity": 1.3129,
+          "poster_path": "/kzgPu2CMxBr4YZZxC1Off4cUfR9.jpg"
+        },
+        {
+          "id": 250845,
+          "title": "WWA The Inception",
+          "original_title": "WWA The Inception",
+          "release_date": "2001-10-26",
+          "popularity": 0.8213,
+          "poster_path": null
+        },
+        {
+          "id": 1644507,
+          "title": "The Kawayoku Inception",
+          "original_title": "The Kawayoku Inception",
+          "release_date": "2020-03-01",
+          "popularity": 0.4598,
+          "poster_path": "/sBFzjkDW8Lusa5wk7XFPo0vHJP3.jpg"
+        },
+        {
+          "id": 1524492,
+          "title": "The Inception of Seeking",
+          "original_title": "伊始之尋",
+          "release_date": "2025-05-17",
+          "popularity": 0.7602,
+          "poster_path": "/bNIQyISwardLN2vtYtnasMRVPQk.jpg"
+        },
+        {
+          "id": 1747666,
+          "title": "Insha Allah: An inception at closure",
+          "original_title": "Insha Allah: An inception at closure",
+          "release_date": "",
+          "popularity": 0.9392,
+          "poster_path": "/7Wn58hXRfUjMasXTOHcB8Ra7W0Z.jpg"
+        },
+        {
+          "id": 350632,
+          "title": "The Inception of Dramatic Representation",
+          "original_title": "Nātyārambham",
+          "release_date": "",
+          "popularity": 0.4113,
+          "poster_path": null
+        },
+        {
+          "id": 973484,
+          "title": "Inception: Music from the Motion Picture",
+          "original_title": "Inception: Music from the Motion Picture",
+          "release_date": "2010-12-07",
+          "popularity": 0.4218,
+          "poster_path": "/7uM4DyRVAcgagvhZoWrkrqMPbqV.jpg"
+        },
+        {
+          "id": 1370380,
+          "title": "Syndrome Halla, the Inception of Croatian Professional Film – Born to Die",
+          "original_title": "Sindrom Halla, začetak hrvatskog profesionalnog filma – rođenog da umre",
+          "release_date": "2017-01-01",
+          "popularity": 0.8977,
+          "poster_path": null
+        }
+      ]
+    },
+    {
+      "name": "Satoshi Kon animation, not Bolero Paprika",
+      "source": {
+        "filmNumber": 6638,
+        "title": "Paprika",
+        "name": "Paprika",
+        "originalTitle": "Paprika",
+        "nationwideStart": "2026-11-30",
+        "productionYear": "2006",
+        "genres": [
+          "SF"
+        ],
+        "director": "Satoshi Kon",
+        "lengthInMinutes": 90
+      },
+      "expectedTmdbId": 4977,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/4977",
+        "releaseDate": "2006-10-01",
+        "directors": [
+          "Satoshi Kon"
+        ],
+        "runtime": 90
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 4977,
+          "title": "Paprika",
+          "original_title": "パプリカ",
+          "release_date": "2006-10-01",
+          "popularity": 9.4237,
+          "poster_path": "/nHJljo2Pi7XimYEgV9hvRchQWmg.jpg"
+        },
+        {
+          "id": 493397,
+          "title": "Paprika",
+          "original_title": "Paprika",
+          "release_date": "2018-04-03",
+          "popularity": 0.7087,
+          "poster_path": "/4pDR74lCUfRzX4rFVwkgwRgBVZz.jpg"
+        },
+        {
+          "id": 539832,
+          "title": "Paprika",
+          "original_title": "Paprika",
+          "release_date": "1933-12-01",
+          "popularity": 0.8048,
+          "poster_path": null
+        },
+        {
+          "id": 315646,
+          "title": "Paprika",
+          "original_title": "Paprika",
+          "release_date": "1959-03-28",
+          "popularity": 0.7095,
+          "poster_path": null
+        },
+        {
+          "id": 492038,
+          "title": "Paprika",
+          "original_title": "Paprika",
+          "release_date": "1932-11-04",
+          "popularity": 0.9534,
+          "poster_path": "/xrTbwqIwy3fJRWo289JUq75oYWX.jpg"
+        },
+        {
+          "id": 1179987,
+          "title": "Paprika",
+          "original_title": "Paprika",
+          "release_date": "1933-11-01",
+          "popularity": 0.8348,
+          "poster_path": "/i6l1wgR6inLOBpg3TdrAj0Oo7ic.jpg"
+        },
+        {
+          "id": 952042,
+          "title": "Anal Paprika",
+          "original_title": "Anal Paprika",
+          "release_date": "1999-10-14",
+          "popularity": 0.924,
+          "poster_path": "/pL3AaRo5owpKgAFd2h74kW0Z133.jpg"
+        },
+        {
+          "id": 340351,
+          "title": "Hot Paprika",
+          "original_title": "Hot Paprika",
+          "release_date": "1935-12-12",
+          "popularity": 0.8525,
+          "poster_path": null
+        },
+        {
+          "id": 1058508,
+          "title": "Paprika",
+          "original_title": "パプリカ",
+          "release_date": "2019-01-01",
+          "popularity": 0.4288,
+          "poster_path": null
+        },
+        {
+          "id": 1642933,
+          "title": "Bolero Paprika",
+          "original_title": "Bolero Paprika",
+          "release_date": "",
+          "popularity": 0.4472,
+          "poster_path": "/67KXmfqODNtkMO6HVSRvLM1t4Y8.jpg"
+        },
+        {
+          "id": 180693,
+          "title": "Zeb vs. Paprika",
+          "original_title": "Zeb vs. Paprika",
+          "release_date": "1924-03-16",
+          "popularity": 0.8079,
+          "poster_path": "/fdowvdJVjEu5WpDiyLaKefuPrBM.jpg"
+        },
+        {
+          "id": 350565,
+          "title": "Cream, Chocolate and... Paprika",
+          "original_title": "Crema, cioccolata e... Paprika",
+          "release_date": "1981-08-15",
+          "popularity": 1.3505,
+          "poster_path": "/a19JDUGmWYllOAS45KAzbaJ0XfY.jpg"
+        },
+        {
+          "id": 1330686,
+          "title": "Paprika Western",
+          "original_title": "Paprika Western",
+          "release_date": "2006-10-01",
+          "popularity": 0.8359,
+          "poster_path": "/efVebdQebZShlMzhEw6erByUnGU.jpg"
+        },
+        {
+          "id": 302737,
+          "title": "Popcorn und Paprika",
+          "original_title": "Popcorn und Paprika",
+          "release_date": "1984-01-01",
+          "popularity": 0.8015,
+          "poster_path": "/9FHufZB1BdnYUbNwzN8IW75VT4H.jpg"
+        },
+        {
+          "id": 646291,
+          "title": "Paprika Feast",
+          "original_title": "구천리 마을잔치",
+          "release_date": "2011-06-24",
+          "popularity": 0.7283,
+          "poster_path": "/aFuFiT0Xxv3d3ONU7DmGnr9yka0.jpg"
+        },
+        {
+          "id": 952045,
+          "title": "Anal Paprika 2: Vampire Killers",
+          "original_title": "Anal Paprika 2: Vampire Killers",
+          "release_date": "2000-10-06",
+          "popularity": 0.942,
+          "poster_path": "/hncPjNJdEPc1rydemEcjUQ71kak.jpg"
+        },
+        {
+          "id": 1534405,
+          "title": "Paprika：The Art of Fantasy",
+          "original_title": "Paprika： 幻想の美術",
+          "release_date": "2007-05-23",
+          "popularity": 0.6304,
+          "poster_path": "/vbmQnLXMNmW92drmTqFbcEypGDf.jpg"
+        },
+        {
+          "id": 1534408,
+          "title": "Paprika:  The Dream CG World",
+          "original_title": "Paprika: 夢のCG世界",
+          "release_date": "2007-05-23",
+          "popularity": 0.4341,
+          "poster_path": "/frioUEDpc0G0wfzP9QyRwEIqPFo.jpg"
+        },
+        {
+          "id": 952054,
+          "title": "Anal Paprika 3: Menage-A-Death",
+          "original_title": "Anal Paprika 3: Menage-A-Death",
+          "release_date": "2001-05-06",
+          "popularity": 1.0625,
+          "poster_path": "/hncPjNJdEPc1rydemEcjUQ71kak.jpg"
+        },
+        {
+          "id": 652785,
+          "title": "Tsutsui and Kon's Paprika",
+          "original_title": "夢・2人のパプリカ",
+          "release_date": "2007-05-23",
+          "popularity": 0.8162,
+          "poster_path": "/y2h4hzOYzTrzxyomzxomIhWAksO.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Hitchcock original, not the 2024 animated remake",
+      "source": {
+        "filmNumber": 6636,
+        "title": "Opsjednut",
+        "name": "Opsjednut",
+        "originalTitle": "Spellbound",
+        "nationwideStart": "2026-11-23",
+        "productionYear": "1945",
+        "genres": [
+          "Triler"
+        ],
+        "director": "Alfred Hitchcock",
+        "lengthInMinutes": 111
+      },
+      "expectedTmdbId": 4174,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/4174",
+        "releaseDate": "1945-10-31",
+        "directors": [
+          "Alfred Hitchcock"
+        ],
+        "runtime": 111
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 592983,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2024-11-22",
+          "popularity": 6.4365,
+          "poster_path": "/4dSrwXJNKtMtlkwJPgZMkjjuHvD.jpg"
+        },
+        {
+          "id": 4174,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "1945-10-31",
+          "popularity": 6.2022,
+          "poster_path": "/dPAox7jGScLBvxKLeRptJIBF7v.jpg"
+        },
+        {
+          "id": 92499,
+          "title": "Spellbound",
+          "original_title": "오싹한 연애",
+          "release_date": "2011-12-01",
+          "popularity": 1.9993,
+          "poster_path": "/5kiUh29bcQe66Mjs98O31vGwlUr.jpg"
+        },
+        {
+          "id": 727114,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2020-10-05",
+          "popularity": 0.95,
+          "poster_path": "/dwdwhvJxStylbPCVfczU7CR6WIV.jpg"
+        },
+        {
+          "id": 16636,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2002-11-13",
+          "popularity": 1.2041,
+          "poster_path": "/whPFGfqZayYOU5f5mx0GdXZOgpi.jpg"
+        },
+        {
+          "id": 1228963,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2022-10-31",
+          "popularity": 1.0859,
+          "poster_path": "/nTNYoSxKPNylHiPdbwerkYWIwMn.jpg"
+        },
+        {
+          "id": 1396253,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2024-12-02",
+          "popularity": 3.1223,
+          "poster_path": "/jdQOEVvxFaHapgklrvMecMWoCJu.jpg"
+        },
+        {
+          "id": 824326,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2021-05-01",
+          "popularity": 0.9247,
+          "poster_path": "/iF1iePgIcUAJIS9gWa2RjF33e0b.jpg"
+        },
+        {
+          "id": 753562,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "1916-05-17",
+          "popularity": 0.703,
+          "poster_path": null
+        },
+        {
+          "id": 162247,
+          "title": "The Spell of Amy Nugent",
+          "original_title": "Spellbound",
+          "release_date": "1941-05-10",
+          "popularity": 0.9426,
+          "poster_path": "/r6VQA2TAOJhAMIfKFroKl7SdZO9.jpg"
+        },
+        {
+          "id": 845136,
+          "title": "Spellbound",
+          "original_title": "Bergtagen",
+          "release_date": "1995-02-11",
+          "popularity": 0.965,
+          "poster_path": null
+        },
+        {
+          "id": 525276,
+          "title": "Spellbound",
+          "original_title": "De si jolies sorcières...",
+          "release_date": "2001-02-05",
+          "popularity": 1.3352,
+          "poster_path": "/d75pVBGk1rmCjxVsyLrcZoWUN8e.jpg"
+        },
+        {
+          "id": 266786,
+          "title": "Spellbound Hound",
+          "original_title": "Spellbound Hound",
+          "release_date": "1950-03-16",
+          "popularity": 2.5159,
+          "poster_path": "/myyhV7wG5IwDOt9wuKi0eZ3UPWz.jpg"
+        },
+        {
+          "id": 667691,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2023-02-01",
+          "popularity": 1.0148,
+          "poster_path": "/cvPhGYcn4JOW4dXr9ldODIWJlXj.jpg"
+        },
+        {
+          "id": 529334,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2016-08-03",
+          "popularity": 0.6217,
+          "poster_path": "/qo6L5ZBfjGclaLud33kTuXBBgvU.jpg"
+        },
+        {
+          "id": 903675,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2021-03-28",
+          "popularity": 0.4314,
+          "poster_path": "/tzRZBkmHyKpHEPP0kQe2dCRuY7P.jpg"
+        },
+        {
+          "id": 427858,
+          "title": "Jubaku: Spellbound",
+          "original_title": "金融腐蝕列島〔呪縛〕",
+          "release_date": "1999-09-18",
+          "popularity": 1.7269,
+          "poster_path": "/nn4MZj2xnPBRKPQFpjddUW249Q6.jpg"
+        },
+        {
+          "id": 318707,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2014-01-01",
+          "popularity": 0.4093,
+          "poster_path": null
+        },
+        {
+          "id": 633187,
+          "title": "The Spellbound",
+          "original_title": "Les envoûtés",
+          "release_date": "2019-12-11",
+          "popularity": 0.9907,
+          "poster_path": "/wXEMVpKcegzk5SR0QKE3JljlnIF.jpg"
+        },
+        {
+          "id": 757152,
+          "title": "Spellbound",
+          "original_title": "Spellbound",
+          "release_date": "2020-10-28",
+          "popularity": 0.4066,
+          "poster_path": "/4P0VTUASQC7qr828jrC9t7frTgd.jpg"
+        }
+      ]
+    },
+    {
+      "name": "2001 re-release previously filtered out",
+      "source": {
+        "filmNumber": 6635,
+        "title": "Mulholland Drive",
+        "name": "Mulholland Drive",
+        "originalTitle": "Mulholland Drive",
+        "nationwideStart": "2026-11-16",
+        "productionYear": "2001",
+        "genres": [
+          "Triler"
+        ],
+        "director": "David Lynch",
+        "lengthInMinutes": 147
+      },
+      "expectedTmdbId": 1018,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/1018",
+        "releaseDate": "2001-06-06",
+        "directors": [
+          "David Lynch"
+        ],
+        "runtime": 147
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 1018,
+          "title": "Mulholland Drive",
+          "original_title": "Mulholland Drive",
+          "release_date": "2001-06-06",
+          "popularity": 15.9219,
+          "poster_path": "/x7A59t6ySylr1L7aubOQEA480vM.jpg"
+        },
+        {
+          "id": 669330,
+          "title": "Return to Mulholland Drive",
+          "original_title": "Retour à Mulholland Drive",
+          "release_date": "2003-06-17",
+          "popularity": 0.8407,
+          "poster_path": "/205WQbfskjaBhF6Or19KExqBXJu.jpg"
+        },
+        {
+          "id": 576701,
+          "title": "Sunset over Mulholland Drive",
+          "original_title": "Sunset over Hollywood",
+          "release_date": "2019-05-23",
+          "popularity": 1.0119,
+          "poster_path": "/zTZAYQxrbZoyRYiIVAAjckm6LL3.jpg"
+        },
+        {
+          "id": 205803,
+          "title": "The Making of ‘Mulholland Drive’",
+          "original_title": "The Making of ‘Mulholland Drive’",
+          "release_date": "2004-04-05",
+          "popularity": 1.0091,
+          "poster_path": "/wJeDoWlDKhhtAgsriXkRVk9N0Iw.jpg"
+        },
+        {
+          "id": 1106624,
+          "title": "Mulholland Drive - Ein Hollywood-Mythos",
+          "original_title": "Mulholland Drive - Ein Hollywood-Mythos",
+          "release_date": "2010-02-20",
+          "popularity": 0.9338,
+          "poster_path": null
+        },
+        {
+          "id": 770956,
+          "title": "Patrick Kielty's Mulholland Drive",
+          "original_title": "Patrick Kielty's Mulholland Drive",
+          "release_date": "2016-01-26",
+          "popularity": 1.4302,
+          "poster_path": "/1qMcFwoE3VobuWpKgUbfgKW526D.jpg"
+        }
+      ]
+    },
+    {
+      "name": "1939 film, not OZ Academy wrestling",
+      "source": {
+        "filmNumber": 6634,
+        "title": "Čarobnjak iz Oza",
+        "name": "Čarobnjak iz Oza",
+        "originalTitle": "The Wizard of Oz",
+        "nationwideStart": "2026-11-16",
+        "productionYear": "1939",
+        "genres": [
+          "Obiteljski"
+        ],
+        "director": "Victor Fleming",
+        "lengthInMinutes": 102
+      },
+      "expectedTmdbId": 630,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/630",
+        "releaseDate": "1939-08-21",
+        "directors": [
+          "Victor Fleming"
+        ],
+        "runtime": 102
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 630,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "1939-08-21",
+          "popularity": 16.9303,
+          "poster_path": "/uCC3j4pV9eOZwzDUWp2ilbcTf1f.jpg"
+        },
+        {
+          "id": 1168821,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "2023-09-11",
+          "popularity": 1.6342,
+          "poster_path": "/tVAHSd8Q6gVcn3CgtaNLAb6CpaE.jpg"
+        },
+        {
+          "id": 20910,
+          "title": "The Muppets' Wizard of Oz",
+          "original_title": "The Muppets' Wizard of Oz",
+          "release_date": "2005-05-20",
+          "popularity": 2.1573,
+          "poster_path": "/gpPaN0kRKDVX9Vj8VgxsJyvxe8T.jpg"
+        },
+        {
+          "id": 415009,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "1991-01-01",
+          "popularity": 1.0936,
+          "poster_path": "/j7oz4iVVOXnxSjkmPhfTNY4qow1.jpg"
+        },
+        {
+          "id": 47508,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "1925-02-12",
+          "popularity": 1.7519,
+          "poster_path": "/l7bVLGopGoTwmuirB0WZdUc47ns.jpg"
+        },
+        {
+          "id": 553682,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "1991-10-12",
+          "popularity": 0.9366,
+          "poster_path": "/yAEgXqpMnqTiTZF60ov1vPbGG9X.jpg"
+        },
+        {
+          "id": 1120828,
+          "title": "Workteams & the Wizard of Oz",
+          "original_title": "Workteams & the Wizard of Oz",
+          "release_date": "1993-01-01",
+          "popularity": 1.6012,
+          "poster_path": "/z6s8Zy1KyrNmMaUilDsTig7WHof.jpg"
+        },
+        {
+          "id": 72972,
+          "title": "Tom and Jerry & The Wizard of Oz",
+          "original_title": "Tom and Jerry & The Wizard of Oz",
+          "release_date": "2011-08-13",
+          "popularity": 3.7682,
+          "poster_path": "/yGMytVwulyLuYuTTfuNxC7UKYm1.jpg"
+        },
+        {
+          "id": 62937,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "1933-06-19",
+          "popularity": 1.3258,
+          "poster_path": "/kI2VTnfiumP9Du9xoHTKP2c0OCu.jpg"
+        },
+        {
+          "id": 276081,
+          "title": "The Wonderful Wizard of Oz",
+          "original_title": "The Wonderful Wizard of Oz",
+          "release_date": "1987-01-01",
+          "popularity": 1.143,
+          "poster_path": "/ienbqHGYFcxMfm7wGqTaNpJx223.jpg"
+        },
+        {
+          "id": 1461702,
+          "title": "The Wizard of Oz",
+          "original_title": "The Wizard of Oz",
+          "release_date": "1964-01-01",
+          "popularity": 0.9555,
+          "poster_path": "/cEuE1TsOkTJWGsmRalkxsLaDPmA.jpg"
+        },
+        {
+          "id": 1122380,
+          "title": "The Making of the Wizard of Oz",
+          "original_title": "The Making of the Wizard of Oz",
+          "release_date": "1979-01-01",
+          "popularity": 0.987,
+          "poster_path": "/voJokQEUbtuXxb0PffD24zDalLj.jpg"
+        },
+        {
+          "id": 795157,
+          "title": "The Wonderful Wizard Of Oz",
+          "original_title": "The Wonderful Wizard Of Oz",
+          "release_date": "",
+          "popularity": 1.6405,
+          "poster_path": "/bSN6X3NZ8ni5KveU5za6ItsMKKp.jpg"
+        },
+        {
+          "id": 53759,
+          "title": "The Wonderful Wizard of Oz",
+          "original_title": "The Wonderful Wizard of Oz",
+          "release_date": "1910-03-24",
+          "popularity": 1.1197,
+          "poster_path": "/axF2YapTvgJP5fRhdL1sFdSPPOh.jpg"
+        },
+        {
+          "id": 1267672,
+          "title": "The Wizard of OZ",
+          "original_title": "The Wizard of OZ",
+          "release_date": "2021-07-21",
+          "popularity": 0.6332,
+          "poster_path": null
+        },
+        {
+          "id": 222960,
+          "title": "The Wizard of Oz",
+          "original_title": "オズの魔法使い",
+          "release_date": "1982-10-06",
+          "popularity": 1.6504,
+          "poster_path": "/2diOj0JNk8hyMh5t3lDwQaw3aDt.jpg"
+        },
+        {
+          "id": 830858,
+          "title": "The WonderGrove Wizard of Oz",
+          "original_title": "The WonderGrove Wizard of Oz",
+          "release_date": "2019-08-25",
+          "popularity": 1.2636,
+          "poster_path": "/7cWXfWjiMX8UApccUrEzKcvvYit.jpg"
+        },
+        {
+          "id": 1054019,
+          "title": "The Wonderful Wizard of Oz",
+          "original_title": "The Wonderful Wizard of Oz",
+          "release_date": "2021-09-17",
+          "popularity": 0.9011,
+          "poster_path": "/8LxRZo6N2abUaRJzhBEW7PqSpvX.jpg"
+        },
+        {
+          "id": 531629,
+          "title": "The Wizard of Oz on Ice",
+          "original_title": "The Wizard of Oz on Ice",
+          "release_date": "1996-02-27",
+          "popularity": 1.1889,
+          "poster_path": "/nNj1LkmZfudqJ5h1qLFOGXSyiBK.jpg"
+        },
+        {
+          "id": 1456048,
+          "title": "OZ Academy The Wizard of OZ 2025",
+          "original_title": "OZアカデミー女子プロレス新宿大会～The Wizard of OZ 2025～",
+          "release_date": "2025-01-05",
+          "popularity": 1.0688,
+          "poster_path": "/aociNRJYjUDTfUVwGbiC1xBVMhs.jpg"
+        }
+      ]
+    },
+    {
+      "name": "1920 re-release previously filtered out",
+      "source": {
+        "filmNumber": 6633,
+        "title": "Kabinet doktora Caligarija",
+        "name": "Kabinet doktora Caligarija",
+        "originalTitle": "Das Cabinet des Dr Caligari",
+        "nationwideStart": "2026-11-02",
+        "productionYear": "1920",
+        "genres": [
+          "Horor"
+        ],
+        "director": "Robert Wiene",
+        "lengthInMinutes": 76
+      },
+      "expectedTmdbId": 234,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/234",
+        "releaseDate": "1920-02-27",
+        "directors": [
+          "Robert Wiene"
+        ],
+        "runtime": 77
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 234,
+          "title": "The Cabinet of Dr. Caligari",
+          "original_title": "Das Cabinet des Dr. Caligari",
+          "release_date": "1920-02-27",
+          "popularity": 6.4635,
+          "poster_path": "/myK9DeIsXWGKgUTZyGXg2IfFk0W.jpg"
+        },
+        {
+          "id": 109133,
+          "title": "The Cabinet of Caligari",
+          "original_title": "The Cabinet of Caligari",
+          "release_date": "1962-05-25",
+          "popularity": 1.6941,
+          "poster_path": "/1RlWkmxgdjGrAzCM5hVBbxtEOGV.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Wes Craven original, not Freddy Comes",
+      "source": {
+        "filmNumber": 6632,
+        "title": "Strava u ulici Brijestova",
+        "name": "Strava u ulici Brijestova",
+        "originalTitle": "A Nightmare on Elm Street",
+        "nationwideStart": "2026-11-02",
+        "productionYear": "1984",
+        "genres": [
+          "Horor"
+        ],
+        "director": "Wes Craven",
+        "lengthInMinutes": 91
+      },
+      "expectedTmdbId": 377,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/377",
+        "releaseDate": "1984-11-09",
+        "directors": [
+          "Wes Craven"
+        ],
+        "runtime": 91
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 377,
+          "title": "A Nightmare on Elm Street",
+          "original_title": "A Nightmare on Elm Street",
+          "release_date": "1984-11-09",
+          "popularity": 25.3325,
+          "poster_path": "/wGTpGGRMZmyFCcrY2YoxVTIBlli.jpg"
+        },
+        {
+          "id": 23437,
+          "title": "A Nightmare on Elm Street",
+          "original_title": "A Nightmare on Elm Street",
+          "release_date": "2010-04-30",
+          "popularity": 12.168,
+          "poster_path": "/nsmW28GcNabCUZfP5YtUEe8Li0f.jpg"
+        },
+        {
+          "id": 10160,
+          "title": "A Nightmare on Elm Street: The Dream Child",
+          "original_title": "A Nightmare on Elm Street: The Dream Child",
+          "release_date": "1989-08-11",
+          "popularity": 6.6067,
+          "poster_path": "/kizvpgXQfrAgN8FhOd87LbKk6kO.jpg"
+        },
+        {
+          "id": 10131,
+          "title": "A Nightmare on Elm Street 4: The Dream Master",
+          "original_title": "A Nightmare on Elm Street 4: The Dream Master",
+          "release_date": "1988-08-19",
+          "popularity": 7.1147,
+          "poster_path": "/boStYG7jKdoIZTduiOOsUVknD13.jpg"
+        },
+        {
+          "id": 10014,
+          "title": "A Nightmare on Elm Street Part 2: Freddy's Revenge",
+          "original_title": "A Nightmare on Elm Street Part 2: Freddy's Revenge",
+          "release_date": "1985-11-01",
+          "popularity": 12.0206,
+          "poster_path": "/53kxYw0G3o55yJ23K7s7KMaOyAM.jpg"
+        },
+        {
+          "id": 10072,
+          "title": "A Nightmare on Elm Street 3: Dream Warriors",
+          "original_title": "A Nightmare on Elm Street 3: Dream Warriors",
+          "release_date": "1987-02-27",
+          "popularity": 4.8168,
+          "poster_path": "/qbtZewU6EGvxi8yFVzwZ31NijLX.jpg"
+        },
+        {
+          "id": 1731080,
+          "title": "Untitled A Nightmare on Elm Street Film",
+          "original_title": "Untitled A Nightmare on Elm Street Film",
+          "release_date": "",
+          "popularity": 2.7499,
+          "poster_path": null
+        },
+        {
+          "id": 1459441,
+          "title": "A Nightmare on Elm Street: Freddy Comes",
+          "original_title": "A Nightmare on Elm Street: Freddy Comes",
+          "release_date": "2024-10-26",
+          "popularity": 0.7317,
+          "poster_path": "/98pqg1DlTT1GLbYh3koujoechzV.jpg"
+        },
+        {
+          "id": 754715,
+          "title": "Never Sleep Again: The Making of ‘A Nightmare on Elm Street’",
+          "original_title": "Never Sleep Again: The Making of ‘A Nightmare on Elm Street’",
+          "release_date": "2006-09-26",
+          "popularity": 1.0634,
+          "poster_path": "/9qF78inoM8pOJp0KR3BTgDQtEC9.jpg"
+        },
+        {
+          "id": 1322587,
+          "title": "Resurrection of a Nightmare (A Nightmare on Elm Street Fan Film)",
+          "original_title": "Resurrection of a Nightmare (A Nightmare on Elm Street Fan Film)",
+          "release_date": "",
+          "popularity": 0.5547,
+          "poster_path": "/avOVmWyIzGOIgDP89o2WwBDsTSj.jpg"
+        },
+        {
+          "id": 1365835,
+          "title": "A Nightmare on Elm Street 3: The Fan Film Recreation",
+          "original_title": "A Nightmare on Elm Street 3: The Fan Film Recreation",
+          "release_date": "1989-01-01",
+          "popularity": 0.4266,
+          "poster_path": "/3WhbdXan0tVmqzSNoFK2LlgRUek.jpg"
+        },
+        {
+          "id": 321066,
+          "title": "Scream, Queen! My Nightmare on Elm Street",
+          "original_title": "Scream, Queen! My Nightmare on Elm Street",
+          "release_date": "2019-04-05",
+          "popularity": 1.4495,
+          "poster_path": "/9CPjyKFKz4gNWE116mLB744pmj6.jpg"
+        },
+        {
+          "id": 11596,
+          "title": "Wes Craven's New Nightmare",
+          "original_title": "Wes Craven's New Nightmare",
+          "release_date": "1994-10-13",
+          "popularity": 8.2,
+          "poster_path": "/q5BWxfL1x34nyYSvA3Qo5odleGW.jpg"
+        },
+        {
+          "id": 11284,
+          "title": "Freddy's Dead: The Final Nightmare",
+          "original_title": "Freddy's Dead: The Final Nightmare",
+          "release_date": "1991-09-05",
+          "popularity": 8.3963,
+          "poster_path": "/e4qh58n2WaG4Gyh9VhjOUeN9Mhv.jpg"
+        }
+      ]
+    },
+    {
+      "name": "1976 anniversary screening, not I Play Rocky",
+      "source": {
+        "filmNumber": 6640,
+        "title": "Rocky - 50th Anniversary",
+        "name": "Rocky - 50th Anniversary",
+        "originalTitle": "Rocky",
+        "nationwideStart": "2026-11-07",
+        "productionYear": "1976",
+        "genres": [
+          "Akcijski"
+        ],
+        "director": "John G. Avildsen",
+        "lengthInMinutes": 119
+      },
+      "expectedTmdbId": 1366,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/1366",
+        "releaseDate": "1976-12-03",
+        "directors": [
+          "John G. Avildsen"
+        ],
+        "runtime": 120
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 1366,
+          "title": "Rocky",
+          "original_title": "Rocky",
+          "release_date": "1976-12-03",
+          "popularity": 16.8952,
+          "poster_path": "/raayaQ9WTUGolsYHPWc2bGonu58.jpg"
+        },
+        {
+          "id": 1246,
+          "title": "Rocky Balboa",
+          "original_title": "Rocky Balboa",
+          "release_date": "2006-12-20",
+          "popularity": 8.4483,
+          "poster_path": "/byBlJvZwCqgtIwrZNv0pyE974jC.jpg"
+        },
+        {
+          "id": 1367,
+          "title": "Rocky II",
+          "original_title": "Rocky II",
+          "release_date": "1979-06-15",
+          "popularity": 8.1405,
+          "poster_path": "/nMaiiu0CzT77U4JZkUYV7KqdAjK.jpg"
+        },
+        {
+          "id": 1371,
+          "title": "Rocky III",
+          "original_title": "Rocky III",
+          "release_date": "1982-05-28",
+          "popularity": 8.2923,
+          "poster_path": "/uqw16i2kmwVqkJHzjzbDU4xZ0Pl.jpg"
+        },
+        {
+          "id": 1374,
+          "title": "Rocky IV",
+          "original_title": "Rocky IV",
+          "release_date": "1985-11-21",
+          "popularity": 7.8553,
+          "poster_path": "/2MHUit4H6OK5adcOjnCN6suCKOl.jpg"
+        },
+        {
+          "id": 1375,
+          "title": "Rocky V",
+          "original_title": "Rocky V",
+          "release_date": "1990-11-16",
+          "popularity": 6.5772,
+          "poster_path": "/qCARerjCFZOEeLiVdomhwRYlDSn.jpg"
+        },
+        {
+          "id": 1286656,
+          "title": "I Play Rocky",
+          "original_title": "I Play Rocky",
+          "release_date": "2026-11-06",
+          "popularity": 10.4638,
+          "poster_path": "/xE5tY3lppZUyG7WKKThsuYHuAHr.jpg"
+        },
+        {
+          "id": 36685,
+          "title": "The Rocky Horror Picture Show",
+          "original_title": "The Rocky Horror Picture Show",
+          "release_date": "1975-08-14",
+          "popularity": 14.8081,
+          "poster_path": "/3pyE6ZqDbuJi7zrNzzQzcKTWdmN.jpg"
+        },
+        {
+          "id": 717956,
+          "title": "Rocky",
+          "original_title": "রকি",
+          "release_date": "2013-04-26",
+          "popularity": 1.8818,
+          "poster_path": "/nRBVamHlLej5lC2qO0kdL9LK6Zr.jpg"
+        },
+        {
+          "id": 636901,
+          "title": "Rocky",
+          "original_title": "ராக்கி",
+          "release_date": "2021-12-23",
+          "popularity": 1.5743,
+          "poster_path": "/40RJvWXMjXj7csOdZ9FP5Za0Ytm.jpg"
+        },
+        {
+          "id": 481179,
+          "title": "Rocky",
+          "original_title": "Martin Kellermans Rocky",
+          "release_date": "2008-10-14",
+          "popularity": 1.0122,
+          "poster_path": "/hoS7DTR1vZhiSizhcC20JqGYjGw.jpg"
+        },
+        {
+          "id": 305341,
+          "title": "Rocky",
+          "original_title": "रॉकी",
+          "release_date": "1981-04-25",
+          "popularity": 1.1147,
+          "poster_path": "/a2PbWcFgrDiuLs1YWfkke04MJh.jpg"
+        },
+        {
+          "id": 587443,
+          "title": "Rocky",
+          "original_title": "ರಾಕಿ",
+          "release_date": "2008-12-25",
+          "popularity": 1.4959,
+          "poster_path": "/3YYY6T9HnPs8HJL0E12zpAzNdEx.jpg"
+        },
+        {
+          "id": 877119,
+          "title": "Rocky",
+          "original_title": "Rocky",
+          "release_date": "1948-01-17",
+          "popularity": 2.4269,
+          "poster_path": "/iPUZlfz01BHn6lzZ6tUUJonyjKV.jpg"
+        },
+        {
+          "id": 376873,
+          "title": "Rocky Handsome",
+          "original_title": "रॉकी हैंडसम",
+          "release_date": "2016-03-25",
+          "popularity": 1.3323,
+          "poster_path": "/x6jfeYy7KTBk4eS0kMUHTd4sGtZ.jpg"
+        },
+        {
+          "id": 247810,
+          "title": "Rocky Road",
+          "original_title": "Akmeņainais ceļš",
+          "release_date": "1983-01-03",
+          "popularity": 2.146,
+          "poster_path": "/oHqPck2rtd9kPq1my9W1y1vtEjh.jpg"
+        },
+        {
+          "id": 888123,
+          "title": "Rocky",
+          "original_title": "रॉकी",
+          "release_date": "2019-03-08",
+          "popularity": 1.336,
+          "poster_path": "/5RACL391AKyD2oUCvOJ6SzW5zup.jpg"
+        },
+        {
+          "id": 591374,
+          "title": "Rocky Soil",
+          "original_title": "Skalna ziemia",
+          "release_date": "1956-01-01",
+          "popularity": 0.7214,
+          "poster_path": null
+        },
+        {
+          "id": 60375,
+          "title": "Rocky VI",
+          "original_title": "Rock'y VI",
+          "release_date": "1986-06-14",
+          "popularity": 1.1498,
+          "poster_path": "/yCeabh22fxbiKPhiyWLWYpoRaiA.jpg"
+        },
+        {
+          "id": 292906,
+          "title": "Rocky Road",
+          "original_title": "Rocky Road",
+          "release_date": "2001-02-14",
+          "popularity": 3.4263,
+          "poster_path": null
+        }
+      ]
+    },
+    {
+      "name": "2023 premiere within two years of source production year 2025",
+      "source": {
+        "filmNumber": 6530,
+        "title": "Vau vau zvijezda 3: Bitka bendova",
+        "name": "Vau vau zvijezda 3: Bitka bend",
+        "originalTitle": "Rock Dog 3",
+        "nationwideStart": "2026-08-13",
+        "productionYear": "2025",
+        "genres": [
+          "Animirani"
+        ],
+        "director": "Anthony Bell",
+        "lengthInMinutes": 90
+      },
+      "expectedTmdbId": 1054972,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/1054972",
+        "releaseDate": "2023-02-02",
+        "directors": [
+          "Anthony Bell"
+        ],
+        "runtime": 90
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 1054972,
+          "title": "Rock Dog 3: Battle the Beat",
+          "original_title": "Rock Dog 3: Battle the Beat",
+          "release_date": "2023-02-02",
+          "popularity": 2.9212,
+          "poster_path": "/39Hr1FKfqqvx0umS60PCCWtBOKd.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Keep the 2026 live-action Moana, not the 2016 animation",
+      "source": {
+        "filmNumber": 6513,
+        "title": "Vaiana",
+        "name": "Vaiana",
+        "originalTitle": "Moana",
+        "nationwideStart": "2026-07-09",
+        "productionYear": "2026",
+        "genres": [
+          "Obiteljski"
+        ],
+        "director": "Thomas Kail",
+        "lengthInMinutes": 115
+      },
+      "expectedTmdbId": 1108427,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/1108427",
+        "releaseDate": "2026-07-08",
+        "directors": [
+          "Thomas Kail"
+        ],
+        "runtime": 115
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 1108427,
+          "title": "Moana",
+          "original_title": "Moana",
+          "release_date": "2026-07-08",
+          "popularity": 82.9289,
+          "poster_path": "/gaet1xQ2nxrG0V1Ep9T20ZMNEIC.jpg"
+        },
+        {
+          "id": 1241982,
+          "title": "Moana 2",
+          "original_title": "Moana 2",
+          "release_date": "2024-11-21",
+          "popularity": 29.1143,
+          "poster_path": "/aLVkiINlIeCkcZIzb7XHzPYgO6L.jpg"
+        },
+        {
+          "id": 277834,
+          "title": "Moana",
+          "original_title": "Moana",
+          "release_date": "2016-10-13",
+          "popularity": 6.0929,
+          "poster_path": "/m5MDZOIFEFlxGiLuAzWzFSsWcye.jpg"
+        },
+        {
+          "id": 268516,
+          "title": "The Four of Moana",
+          "original_title": "Moana",
+          "release_date": "1959-03-25",
+          "popularity": 1.5793,
+          "poster_path": "/f8aiGSzPGFXNLNjfjsMEinrCiGl.jpg"
+        },
+        {
+          "id": 45890,
+          "title": "Moana",
+          "original_title": "Moana",
+          "release_date": "2009-11-01",
+          "popularity": 1.2436,
+          "poster_path": "/nEDFaNVqmLl2UeUYvvkKDSge5Ed.jpg"
+        },
+        {
+          "id": 94727,
+          "title": "Moana",
+          "original_title": "Moana",
+          "release_date": "1926-01-07",
+          "popularity": 1.3545,
+          "poster_path": "/dkSM2bfwYaqY0k6cEFwej1LRWAk.jpg"
+        },
+        {
+          "id": 1763692,
+          "title": "Moana Roa",
+          "original_title": "Moana Roa",
+          "release_date": "1951-10-02",
+          "popularity": 1.025,
+          "poster_path": "/gGfB1UuB9zo5xsF5WdlSJTsOCQP.jpg"
+        },
+        {
+          "id": 1647287,
+          "title": "Moana 3",
+          "original_title": "Moana 3",
+          "release_date": "",
+          "popularity": 3.9098,
+          "poster_path": null
+        },
+        {
+          "id": 1243917,
+          "title": "Moana double face",
+          "original_title": "Moana double face",
+          "release_date": "2015-08-12",
+          "popularity": 0.5702,
+          "poster_path": "/1Ey6HLW9fimtUw0M45fmV9exZU5.jpg"
+        },
+        {
+          "id": 1478164,
+          "title": "Mana Moana Mana Tangata",
+          "original_title": "Mana Moana Mana Tangata",
+          "release_date": "2025-07-13",
+          "popularity": 0.9416,
+          "poster_path": "/mKMrjWILj4hYxKLwX00vimwC6s7.jpg"
+        },
+        {
+          "id": 900833,
+          "title": "Ala Moana Boys",
+          "original_title": "Ala Moana Boys",
+          "release_date": "2022-07-11",
+          "popularity": 0.6325,
+          "poster_path": "/8wiW6AEISe9KSveSNl2n4MM7Z4s.jpg"
+        },
+        {
+          "id": 1812353,
+          "title": "Mauri Moana",
+          "original_title": "Mauri Moana",
+          "release_date": "2024-10-01",
+          "popularity": 0.2341,
+          "poster_path": "/AhNOwGvkCfNMxaz3aISPfqVmywZ.jpg"
+        },
+        {
+          "id": 1196711,
+          "title": "Moana, Virgin of the Amazon",
+          "original_title": "La Grande Savana",
+          "release_date": "1955-12-22",
+          "popularity": 0.6657,
+          "poster_path": "/yzKzYPpDWf8r0kASYKl3AbJNjTh.jpg"
+        },
+        {
+          "id": 1579875,
+          "title": "~ Mā te Moana ~",
+          "original_title": "~ Mā te Moana ~",
+          "release_date": "2024-01-01",
+          "popularity": 0.4,
+          "poster_path": null
+        },
+        {
+          "id": 1195573,
+          "title": "Moana Sing-Along",
+          "original_title": "Moana Sing-Along",
+          "release_date": "",
+          "popularity": 0.4444,
+          "poster_path": null
+        },
+        {
+          "id": 1520952,
+          "title": "Vahine I Te Moana",
+          "original_title": "Vahine I Te Moana",
+          "release_date": "2017-11-02",
+          "popularity": 0.4419,
+          "poster_path": "/arS24NrLgkPvl4bPu9trEa2YGWM.jpg"
+        },
+        {
+          "id": 1749875,
+          "title": "Vaka Moana: Ancestors of the Future",
+          "original_title": "Vaka Moana: Ancestors of the Future",
+          "release_date": "2026-08-08",
+          "popularity": 0.9458,
+          "poster_path": null
+        },
+        {
+          "id": 1638645,
+          "title": "We, the Voyagers: Our Moana",
+          "original_title": "We, the Voyagers: Our Moana",
+          "release_date": "2022-11-10",
+          "popularity": 0.4115,
+          "poster_path": "/vlsyhybEp8WpsrgeU71u22u5KPL.jpg"
+        },
+        {
+          "id": 980158,
+          "title": "Moana Jackson: Portrait of a Quiet Revolutionary",
+          "original_title": "Moana Jackson: Portrait of a Quiet Revolutionary",
+          "release_date": "2022-05-13",
+          "popularity": 0.8044,
+          "poster_path": "/axvkWyaW20Ic2YR4S6Ed8rkswod.jpg"
+        },
+        {
+          "id": 1576752,
+          "title": "Lanu Moana is the Warmest Colour",
+          "original_title": "Lanu Moana is the Warmest Colour",
+          "release_date": "",
+          "popularity": 0.5437,
+          "poster_path": null
+        }
+      ]
+    },
+    {
+      "name": "Keep the year window: reject Ramayana from 1976",
+      "source": {
+        "filmNumber": 6621,
+        "title": "Ramajana",
+        "name": "Ramajana",
+        "originalTitle": "Ramayana",
+        "nationwideStart": "2026-11-05",
+        "productionYear": "2026",
+        "genres": [
+          "Akcija"
+        ],
+        "director": "Nitesh Tiwari",
+        "lengthInMinutes": 195
+      },
+      "expectedTmdbId": 656908,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/656908",
+        "releaseDate": "2026-11-04",
+        "directors": [
+          "Nitesh Tiwari"
+        ],
+        "runtime": 195
+      },
+      "snapshot": "2026-11-01 live source and TMDB search",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 656908,
+          "title": "Ramayana: Rise of a Legend",
+          "original_title": "रामायणम्",
+          "release_date": "2026-11-04",
+          "popularity": 26.0211,
+          "poster_path": "/cK6xaYrb498y2rmMRSZmRKaCXKL.jpg"
+        },
+        {
+          "id": 54892,
+          "title": "Ramayana: The Epic",
+          "original_title": "Ramayana: The Epic",
+          "release_date": "2010-10-15",
+          "popularity": 1.8832,
+          "poster_path": "/925qJjlQYgRUbE4lwnLwZuXSeBX.jpg"
+        },
+        {
+          "id": 84092,
+          "title": "Ramayana: The Legend of Prince Rama",
+          "original_title": "Ramayana: The Legend of Prince Rama",
+          "release_date": "1997-11-03",
+          "popularity": 3.3994,
+          "poster_path": "/yqcdzIgsYdaIY2CNtDyWshuLdq0.jpg"
+        },
+        {
+          "id": 1449061,
+          "title": "Ramayana/Legong",
+          "original_title": "Ramayana/Legong",
+          "release_date": "1995-06-08",
+          "popularity": 0.8639,
+          "poster_path": "/60C3ZHQyqDWI2zV2DAuIz0HNdn9.jpg"
+        },
+        {
+          "id": 1228328,
+          "title": "The Ramayana",
+          "original_title": "The Ramayana",
+          "release_date": "1965-01-01",
+          "popularity": 0.6001,
+          "poster_path": "/1HHfV8S8CIdmsKmf6u4iieSYaq8.jpg"
+        },
+        {
+          "id": 1174248,
+          "title": "Kaliyuga Ramayana",
+          "original_title": "Kaliyuga Ramayana",
+          "release_date": "",
+          "popularity": 0.4194,
+          "poster_path": null
+        },
+        {
+          "id": 1383500,
+          "title": "Ramayana: Part Two",
+          "original_title": "रामायण: द्वितीय भाग",
+          "release_date": "",
+          "popularity": 2.5357,
+          "poster_path": null
+        },
+        {
+          "id": 1252019,
+          "title": "Ramayana",
+          "original_title": "Рамаяна",
+          "release_date": "1976-06-06",
+          "popularity": 2.3515,
+          "poster_path": "/bk7Y6vlm7eKb051iWUWuiCmDBMd.jpg"
+        },
+        {
+          "id": 777478,
+          "title": "Ramayana",
+          "original_title": "ラーマーヤナ",
+          "release_date": "1942-01-01",
+          "popularity": 0.684,
+          "poster_path": "/yJLZlDg9DB8ljTChVbThbuDw75w.jpg"
+        },
+        {
+          "id": 1809572,
+          "title": "The Vision of Ramayana",
+          "original_title": "The Vision of Ramayana",
+          "release_date": "",
+          "popularity": 0.4726,
+          "poster_path": null
+        },
+        {
+          "id": 1658406,
+          "title": "Valmiki Ramayana",
+          "original_title": "वाल्मीकि रामायण",
+          "release_date": "",
+          "popularity": 1.0966,
+          "poster_path": null
+        },
+        {
+          "id": 420488,
+          "title": "Idolle Ramayana",
+          "original_title": "ಇದೊಳ್ಳೆ ರಾಮಾಯಣ",
+          "release_date": "2016-10-07",
+          "popularity": 0.6657,
+          "poster_path": "/wsBfEb1hBEuVfiQd3jpFY8ZxcZU.jpg"
+        },
+        {
+          "id": 622144,
+          "title": "The Spirit of Ramayana",
+          "original_title": "บุษบา",
+          "release_date": "2019-07-25",
+          "popularity": 0.7841,
+          "poster_path": "/eIkbPjfSZXCmfCnICrK85ki2gmd.jpg"
+        },
+        {
+          "id": 80940,
+          "title": "Ramayanam",
+          "original_title": "రామాయణం",
+          "release_date": "1996-04-14",
+          "popularity": 1.8867,
+          "poster_path": "/bFh2qgNXuh8vLVvGshwBxnjbl2Y.jpg"
+        },
+        {
+          "id": 1276585,
+          "title": "Sampoorna Ramayanam",
+          "original_title": "సంపూర్ణ రామాయణం",
+          "release_date": "1972-03-16",
+          "popularity": 0.7705,
+          "poster_path": "/7hWTLTChw2au4fNVqnrt77MGl31.jpg"
+        },
+        {
+          "id": 957568,
+          "title": "Enga Veetu Ramayanam",
+          "original_title": "Enga Veetu Ramayanam",
+          "release_date": "1987-01-01",
+          "popularity": 0.5553,
+          "poster_path": "/bG962KkScguu5KoerK3dG6hMs5P.jpg"
+        },
+        {
+          "id": 1696840,
+          "title": "Intinti Ramayanam",
+          "original_title": "ఇంటింటి రామాయణం",
+          "release_date": "1979-06-23",
+          "popularity": 1.0689,
+          "poster_path": "/r6uwmUOjYYTrwbcw7DtxiyApAUd.jpg"
+        },
+        {
+          "id": 467510,
+          "title": "Sampoorna Ramayanam",
+          "original_title": "சம்பூர்ண ராமாயணம்",
+          "release_date": "1958-04-14",
+          "popularity": 1.0004,
+          "poster_path": "/y6o2f3fAd95WkMW2XVonLJI7VkB.jpg"
+        },
+        {
+          "id": 1099450,
+          "title": "Intinti Ramayanam",
+          "original_title": "ఇంటింటి రామాయణం",
+          "release_date": "2023-06-09",
+          "popularity": 0.8012,
+          "poster_path": "/me4Ie36Y6pKD2y7BkDhTrMW3gcw.jpg"
+        },
+        {
+          "id": 55089,
+          "title": "Sampoorna Ramayanam",
+          "original_title": "संपूर्ण रामायण",
+          "release_date": "1961-01-01",
+          "popularity": 0.6878,
+          "poster_path": "/vpRz84X6UXDDGBx87KZXAfcS7MN.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Giselle work title after broadcaster/season prefix",
+      "source": {
+        "filmNumber": 6152,
+        "title": "Giselle - Uživo",
+        "name": "Giselle - Uživo",
+        "originalTitle": "Giselle",
+        "nationwideStart": "2026-03-03",
+        "productionYear": "2026",
+        "genres": [
+          "Balet"
+        ],
+        "lengthInMinutes": 210
+      },
+      "expectedTmdbId": 1482365,
+      "evidence": {
+        "tmdbTitle": "Royal Ballet & Opera 2025/26: Giselle",
+        "releaseDate": "2026-03-03",
+        "runtime": 210,
+        "directors": [],
+        "tmdbUrl": "https://www.themoviedb.org/movie/1482365"
+      },
+      "snapshot": "2026-02-05 archived, already year-filtered candidates",
+      "searchLanguage": "not retained in archived payload",
+      "results": [
+        {
+          "id": 1482365,
+          "title": "Royal Ballet & Opera 2025/26: Giselle",
+          "original_title": "Royal Ballet & Opera 2025/26: Giselle",
+          "release_date": "2026-03-03",
+          "popularity": 0.0357,
+          "poster_path": "/pYjzu4ubAX8JuGkdzDp6OKc9T56.jpg"
+        }
+      ]
+    },
+    {
+      "name": "2026 Woolf Works transmission, not the 2024 recording",
+      "source": {
+        "filmNumber": 6151,
+        "title": "Djela inspirirana Virginijom Woolf - Uživo",
+        "name": "Djela inspirirana V.W. - Uživo",
+        "originalTitle": "Woolf Works",
+        "nationwideStart": "2026-02-09",
+        "productionYear": "2026",
+        "genres": [
+          "Balet"
+        ],
+        "lengthInMinutes": 210
+      },
+      "expectedTmdbId": 1483685,
+      "evidence": {
+        "tmdbTitle": "Royal Ballet & Opera 2025/26: Woolf Works",
+        "releaseDate": "2026-02-09",
+        "runtime": 0,
+        "directors": [],
+        "tmdbUrl": "https://www.themoviedb.org/movie/1483685"
+      },
+      "snapshot": "2026-02-05 source, TMDB fetched 2026-11-01",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 446900,
+          "title": "Woolf Works",
+          "original_title": "Woolf Works",
+          "release_date": "2017-02-08",
+          "popularity": 0.8524,
+          "poster_path": "/tFHBpzAuEOGkCYpK0bKn2nI9IKe.jpg"
+        },
+        {
+          "id": 1309260,
+          "title": "Woolf Works",
+          "original_title": "Woolf Works",
+          "release_date": "2024-06-25",
+          "popularity": 0.6725,
+          "poster_path": "/pLoNXGBCfCpCamPYVZQ6K2wNkm1.jpg"
+        },
+        {
+          "id": 1483685,
+          "title": "Royal Ballet & Opera 2025/26: Woolf Works",
+          "original_title": "Royal Ballet & Opera 2025/26: Woolf Works",
+          "release_date": "2026-02-09",
+          "popularity": 0.4156,
+          "poster_path": "/mAQXkFFCUpCYdlUnmidR7vc9BW7.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Keep the correctly matched RBO Magic Flute",
+      "source": {
+        "filmNumber": 6154,
+        "title": "Čarobna frula",
+        "name": "Čarobna frula",
+        "originalTitle": "The Magic Flute",
+        "nationwideStart": "2026-04-21",
+        "productionYear": "2026",
+        "genres": [
+          "Opera"
+        ],
+        "lengthInMinutes": 210
+      },
+      "expectedTmdbId": 1483693,
+      "evidence": {
+        "tmdbTitle": "Royal Ballet & Opera 2025/26: The Magic Flute",
+        "releaseDate": "2026-04-21",
+        "runtime": 210,
+        "directors": [
+          "David McVicar"
+        ],
+        "tmdbUrl": "https://www.themoviedb.org/movie/1483693"
+      },
+      "snapshot": "2026-02-05 archived, already year-filtered candidates",
+      "searchLanguage": "not retained in archived payload",
+      "results": [
+        {
+          "id": 1483693,
+          "title": "Royal Ballet & Opera 2025/26: The Magic Flute",
+          "original_title": "Royal Ballet & Opera 2025/26: The Magic Flute",
+          "release_date": "2026-04-21",
+          "popularity": 0.0595,
+          "poster_path": "/ff62NuReokkFchk3zJmapEesyPz.jpg"
+        }
+      ]
+    },
+    {
+      "name": "Keep a correct fuzzy match: Pets on Train / Pets on a Train",
+      "source": {
+        "filmNumber": 6174,
+        "title": "Šape u akciji",
+        "name": "Šape u akciji",
+        "originalTitle": "Pets on Train",
+        "nationwideStart": "2025-10-16",
+        "productionYear": "2025",
+        "genres": [
+          "Animirani"
+        ],
+        "director": "Benoît Daffis, Jean-Christian Tassy",
+        "lengthInMinutes": 89
+      },
+      "expectedTmdbId": 1107216,
+      "evidence": {
+        "tmdbUrl": "https://www.themoviedb.org/movie/1107216",
+        "releaseDate": "2025-07-02",
+        "directors": [
+          "Jean-Christian Tassy",
+          "Benoît Daffis"
+        ],
+        "runtime": 86
+      },
+      "snapshot": "2026-02-05 source, TMDB fetched 2026-11-01",
+      "searchLanguage": "en-US",
+      "results": [
+        {
+          "id": 1107216,
+          "title": "Pets on a Train",
+          "original_title": "Falcon Express",
+          "release_date": "2025-07-02",
+          "popularity": 5.4043,
+          "poster_path": "/b10qy1KwrfmH0MGS2rBUJ0BxgYB.jpg"
+        }
+      ]
+    }
+  ]
+}

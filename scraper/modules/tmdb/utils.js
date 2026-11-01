@@ -46,14 +46,14 @@ function parseYearFromDate(dateStr) {
 
 // Best-effort extraction of a year to use for matching.
 function getTargetYearFromMovie(movie) {
-  // CineStar payload often has `nationwideStart` like YYYY-MM-DD
-  const yearFromNationwideStart = parseYearFromDate(movie?.nationwideStart);
-  if (yearFromNationwideStart) return yearFromNationwideStart;
-
+  // A local cinema start may be a re-release decades after the film's production.
   const yearFromProductionYear = Number(movie?.productionYear);
-  if (Number.isFinite(yearFromProductionYear) && yearFromProductionYear > 1800) {
+  if (Number.isInteger(yearFromProductionYear) && yearFromProductionYear > 1800) {
     return yearFromProductionYear;
   }
+
+  const yearFromNationwideStart = parseYearFromDate(movie?.nationwideStart);
+  if (yearFromNationwideStart) return yearFromNationwideStart;
 
   const yearFromReleaseDate = parseYearFromDate(movie?.releaseDate);
   if (yearFromReleaseDate) return yearFromReleaseDate;

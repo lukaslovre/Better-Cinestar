@@ -3,6 +3,17 @@ const { normalizeTitle, tokenize, jaccard, parseYearFromDate } = require("./util
 function scoreCandidateBreakdown({ movie, tmdbItem, targetYear }) {
   const cineTitles = [movie?.originalTitle, movie?.title, movie?.name].filter(Boolean);
   const tmdbTitles = [tmdbItem?.original_title, tmdbItem?.title].filter(Boolean);
+  // Compare the work title in Royal Ballet & Opera season listings.
+  if (
+    Array.isArray(movie?.genres) &&
+    movie.genres.some((genre) => genre === "Opera" || genre === "Balet")
+  ) {
+    tmdbTitles.push(
+      ...tmdbTitles.map((title) =>
+        title.replace(/^Royal Ballet (?:&|and) Opera \d{4}\/\d{2}:\s*/i, ""),
+      ),
+    );
+  }
 
   const bestTitleScore = (() => {
     let best = 0;

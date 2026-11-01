@@ -128,6 +128,11 @@ RUN_MODE=once npm run scrape
 
 The example `.env` defaults to scheduled mode without an immediate scrape.
 
+CineStar `/films` requests use `CENTER-OID` and the explicit browser User-Agent in
+[cinestarFunctions.js](scraper/scraping/cinestarFunctions.js). On 2026-11-01, a local
+probe with Chromium's default User-Agent received Cloudflare HTTP 403; the same
+browser and endpoint returned HTTP 200 with the scraper's User-Agent.
+
 Docker and native development use separate databases by default. Populating one does not populate the other.
 
 ## Configuration
@@ -191,7 +196,7 @@ The hosted application uses Coolify with the root `docker-compose.yml`:
 | Scraper | None; uploads over the internal Docker network | — |
 
 Registrar: Namecheap. DNS and proxy: Cloudflare, SSL/TLS **Full (strict)**.
-VPS administration uses SSH key authentication.
+VPS SSH access: `ssh bettercinestar-vps`, using the local `~/.ssh/config` alias and key authentication.
 
 Hosted database settings: `DB_SCHEMA_VERSION=2`, `FORCE_DB_RESET=false`.
 The persistent server volume is mounted at `/app/data`.
