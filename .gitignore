@@ -6,3 +6,6 @@ Database.sqlite
 
 # Generated diagnostics artifacts
 scraper/tests/artifacts/
+
+# Private, machine/hosting-specific notes
+*.local.md

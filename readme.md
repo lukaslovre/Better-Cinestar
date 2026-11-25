@@ -188,7 +188,7 @@ Health endpoint: `GET /api/health` returns `{"status":"OK"}`.
 
 ## Deployment
 
-The hosted application uses Coolify with the root `docker-compose.yml`:
+The hosted application is deployed with the root `docker-compose.yml`:
 
 | Service | Public address | Container port |
 | --- | --- | --- |
@@ -196,10 +196,6 @@ The hosted application uses Coolify with the root `docker-compose.yml`:
 | API | `https://api.bettercinestar.com` | `3000` |
 | Scraper | None; uploads over the internal Docker network | — |
 
-Registrar: Namecheap. DNS and proxy: Cloudflare, SSL/TLS **Full (strict)**.
-VPS SSH access: `ssh bettercinestar-vps`, using the local `~/.ssh/config` alias and key authentication.
-
-Hosted database settings: `DB_SCHEMA_VERSION=2`, `FORCE_DB_RESET=false`.
 The persistent server volume is mounted at `/app/data`.
 
 The base Compose file starts all three services. The scraper runs at startup and
