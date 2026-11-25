@@ -7,44 +7,21 @@
 
   let faqItems: FaqItem[] = $state([
     {
-      question: 'Jesu li prikazani filmovi i termini isti kao na cinestaru?',
+      question: 'Je li ovo službena Cinestar stranica?',
       answer:
-        'Da, informacije o filmovima i terminima prikazivanja preuzimaju se direktno iz Cinestar-ovog API-ja, osiguravajući točnost i usklađenost s ponudom u kinima.'
+        'Ne, neovisan projekt. Gumb "Kupi kartu" vodi na odabrani termin na Cinestaru.'
     },
     {
-      question: 'Koliko su točne informacije na ovoj web stranici?',
-      answer:
-        'Osnovni podaci, uključujući popis filmova, raspored prikazivanja i informacije o sjedalima, preuzimaju se sa službenih Cinestarovih izvora. Dodatni detalji (opis, glumci, redatelji, trailer i ocjena) dolaze preko TMDB API-ja. Ako TMDB ne pronađe film ili ako neki podatak nedostaje, prikazat će se osnovni Cinestar podaci.'
+      question: 'Odakle su podaci?',
+      answer: 'Raspored i sjedala s Cinestara, ocjene i opisi s TMDB-a.'
     },
     {
-      question: 'Koliko često se ažuriraju podaci na ovoj web stranici?',
-      answer:
-        'Svi podaci se ažuriraju jednom dnevno (trenutno u 02:00). Termini i raspored dolaze iz Cinestar izvora, a dodatni podaci se osvježavaju preko TMDB-a.'
-    },
-    {
-      question: 'Zašto je opis ponekad na engleskom?',
-      answer:
-        'Primarni jezik je hrvatski, ali ako TMDB nema opis na hrvatskom za određeni film, koristi se engleska verzija.'
+      question: 'Koliko su svježi?',
+      answer: 'Raspored se osvježava svaki dan oko 4 ujutro, sjedala uživo.'
     },
     {
       question: 'Zašto nema filmova nakon srijede?',
-      answer:
-        'Cinestar objavljuje novi raspored filmova svake srijede. Ako ih nema na ovoj stranici, nema ni na cinestaru.'
-    },
-    {
-      question: 'Kako se određuje raspored i dostupnost sjedala?',
-      answer:
-        'Raspored sjedala i informacije o njihovoj dostupnosti automatski se preuzimaju s Cinestarove službene web stranice u trenutku kada odaberete prikazivanje, osiguravajući da su informacije uvijek aktualne i precizne.'
-    },
-    {
-      question: 'Postoje li planovi za dodavanje novih značajki?',
-      answer:
-        'Nemam više ideja, ako imate prijedloge za poboljšanja ili nove funkcije, slobodno mi pošaljite e-mail.'
-    },
-    {
-      question: 'Mogu li kontribuirati ovom projektu?',
-      answer:
-        'Da, s obzirom da nemam puno vremena za ovaj projekt, svaka pomoć je dobrodošla. GitHub link je dolje.'
+      answer: 'Cinestar objavljuje novi raspored srijedom.'
     }
   ]);
 </script>
