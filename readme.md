@@ -6,7 +6,7 @@ BetterCinestar is a web app for browsing CineStar films and showtimes, filtering
 
 | Part | Responsibility | Technology |
 | --- | --- | --- |
-| `client/` | Browser interface; Caddy serves the Docker build. | Svelte 5, SvelteKit, Tailwind, Vite |
+| `client/` | Browser interface; pages are rendered on the server by SvelteKit (adapter-node). | Svelte 5, SvelteKit, Tailwind, Vite |
 | `server/` | Provides the HTTP API, stores listings, and fetches seating on demand. | Node.js, Express, Sequelize, SQLite, Puppeteer |
 | `scraper/` | Fetches CineStar listings, adds TMDB metadata, and uploads results to the server. | Node.js, Puppeteer, Axios, cron |
 | `shared/` | Keeps cinema IDs, names, and cities consistent across all three apps. | JSON |
@@ -16,7 +16,8 @@ flowchart LR
     Sources["CineStar + TMDB"] -->|listings and metadata| Scraper
     Scraper -->|upload| Server["Server / API"]
     Server <-->|read and write| Database[(SQLite)]
-    Client["Client / Caddy"] -->|HTML, CSS, JavaScript| Browser["User's browser"]
+    Client["Client / SvelteKit (Node)"] -->|rendered HTML, CSS, JavaScript| Browser["User's browser"]
+    Client -->|API requests during rendering| Server
     Browser <-->|API requests and responses| Server
     Server -->|seating requests| CineStar
 ```
@@ -144,7 +145,7 @@ Docker and native development use separate databases by default. Populating one 
 
 App-specific `.env` files are excluded from Docker builds. Adding a variable to the root `.env` only affects containers if Compose passes it through.
 
-`PUBLIC_API_URL` is embedded during the client build. For Docker, change `build.args.PUBLIC_API_URL` in the Compose configuration; setting it in the root `.env` alone has no effect. Its value must be reachable from the user's browser, which cannot resolve Docker's internal `server` hostname.
+`PUBLIC_API_URL` is embedded during the client build. For Docker, change `build.args.PUBLIC_API_URL` in the Compose configuration; setting it in the root `.env` alone has no effect. Its value must be reachable from the user's browser, which cannot resolve Docker's internal `server` hostname. Server-side rendering uses the runtime variable `API_INTERNAL_URL` (Compose sets `http://server:3000`) and falls back to `PUBLIC_API_URL`.
 
 Server and scraper settings are read at startup. After changing their Compose environment values, use `up -d` to recreate affected containers; `restart` alone does not apply them.
 
@@ -202,7 +203,7 @@ Hosted database settings: `DB_SCHEMA_VERSION=2`, `FORCE_DB_RESET=false`.
 The persistent server volume is mounted at `/app/data`.
 
 The base Compose file starts all three services. The scraper runs at startup and
-at 02:00 daily in the container's timezone.
+at 04:00 daily, Europe/Zagreb time.
 
 ## Shared cinema catalogue
 

@@ -21,25 +21,31 @@ RUN npm ci
 COPY client/ ./
 COPY shared/ /app/shared/
 
-# Build the SvelteKit application for production using adapter-static
-# This should output to the 'build' directory by default with adapter-static
+# Build the SvelteKit application for production (adapter-node writes to 'build')
 RUN npm run build
 
+# ---- Runtime Stage ----
+# adapter-node output: renders pages on the server and serves the static assets.
+FROM node:24-alpine
 
+WORKDIR /app
 
-# ---- Caddy Web Server Stage ----
-    
-# Use the official Caddy image to serve the static files
-FROM caddy:2-alpine
+ENV NODE_ENV=production \
+    PORT=80 \
+    TZ=Europe/Zagreb
 
-# Set the working directory inside the Caddy container
-WORKDIR /srv
+# Only runtime dependencies; the server bundle imports packages listed in "dependencies".
+COPY client/package.json client/package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
 
-# Copy built static files from the builder stage
-COPY --from=builder /app/client/build /srv
+COPY --from=builder /app/client/build ./build
 
-# Copy Caddyfile for configuration
-COPY client/Caddyfile /etc/caddy/Caddyfile
+# Docker lets non-root processes bind to low ports inside the container.
+USER node
 
-# Expose port 80 for the Caddy server
 EXPOSE 80
+
+HEALTHCHECK --interval=1m30s --timeout=10s --start-period=15s --retries=5 \
+  CMD wget -q --spider http://127.0.0.1:80/robots.txt || exit 1
+
+CMD ["node", "build"]

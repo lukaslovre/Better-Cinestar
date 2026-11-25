@@ -24,7 +24,7 @@ const envSchema = z.object({
   TMDB_LANGUAGE_FALLBACK: z.string().default("en-US"),
 
   RUN_MODE: z.enum(["once", "scheduled"]).default("scheduled"),
-  CRON_SCHEDULE: z.string().default("0 2 * * *"),
+  CRON_SCHEDULE: z.string().default("0 4 * * *"),
   SCRAPE_ON_START: z
     .enum(["true", "false"])
     .default("false")

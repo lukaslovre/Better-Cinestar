@@ -1,19 +1,20 @@
+import {
+  addDaysYMD,
+  daysBetweenYMD,
+  formatYMD,
+  todayYMD,
+  zagrebMinutesOfDay
+} from './time';
+
 /**
  * Formats a performance date into a user-friendly string.
  * Returns relative terms like 'Danas' (Today) or 'Sutra' (Tomorrow) for dates close to the current date,
  * 'Prošlost' (Past) for past dates, or a formatted date string (e.g., "Uto, 6. Svi") for future dates.
  *
- * @param {Date} performanceDate - The date of the performance.
- * @returns {string} A formatted string representing the performance date.
+ * @param performanceDate - The performance date as "YYYY-MM-DD" (Zagreb calendar day).
  */
-function getFormattedPerformanceDateLabel(performanceDate: Date): string {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  // Calculate the difference between the performance date and today
-  const dateDiffMilliseconds = performanceDate.getTime() - today.getTime();
-  const millisecondsInADay = 1000 * 60 * 60 * 24;
-  const dateDiffDays = Math.floor(dateDiffMilliseconds / millisecondsInADay);
+function getFormattedPerformanceDateLabel(performanceDate: string): string {
+  const dateDiffDays = daysBetweenYMD(todayYMD(), performanceDate);
 
   if (dateDiffDays < 0) {
     return 'Prošlost';
@@ -26,7 +27,7 @@ function getFormattedPerformanceDateLabel(performanceDate: Date): string {
   }
 
   // For dates further in the future, format them
-  return performanceDate.toLocaleDateString('hr-HR', {
+  return formatYMD(performanceDate, {
     weekday: 'short',
     month: 'short',
     day: 'numeric'
@@ -34,24 +35,15 @@ function getFormattedPerformanceDateLabel(performanceDate: Date): string {
 }
 
 /**
- * Calculates a relative date/time string compared to the current moment.
+ * Calculates a relative date/time string compared to the current moment in Zagreb.
  * Examples: "prije 2 dana", "jučer", "za 1h 30m", "sutra", "za 5 dana".
  * For today's date, it shows the remaining hours and minutes until the given time.
  *
- * @param {Date} date - The date of the event.
- * @param {string} time - The time of the event in "HH:MM" format.
- * @returns {string} A relative date/time string.
+ * @param date - The date of the event as "YYYY-MM-DD".
+ * @param time - The time of the event in "HH:MM" format.
  */
-export function getRelativeDate(date: Date, time: string): string {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set today to the beginning of the day for day comparison
-
-  const performanceDay = new Date(date); // Create a new date object to avoid modifying the original
-  performanceDay.setHours(0, 0, 0, 0);
-
-  const dayDiffMilliseconds = performanceDay.getTime() - today.getTime();
-  const millisecondsInADay = 1000 * 60 * 60 * 24;
-  const dayDiffDays = Math.floor(dayDiffMilliseconds / millisecondsInADay);
+export function getRelativeDate(date: string, time: string): string {
+  const dayDiffDays = daysBetweenYMD(todayYMD(), date);
 
   if (dayDiffDays < -1) {
     return `prije ${Math.abs(dayDiffDays)} dana`;
@@ -61,19 +53,13 @@ export function getRelativeDate(date: Date, time: string): string {
   }
   if (dayDiffDays === 0) {
     // It's today, calculate the time difference from now
-    const now = new Date();
     const [hours, minutes] = time.split(':').map((x) => parseInt(x));
+    const timeDiffMinutes = hours * 60 + minutes - zagrebMinutesOfDay();
 
-    const performanceDateTime = new Date(date);
-    performanceDateTime.setHours(hours, minutes, 0, 0);
-
-    const timeDiffMilliseconds = performanceDateTime.getTime() - now.getTime();
-
-    if (timeDiffMilliseconds < 0) {
+    if (timeDiffMinutes < 0) {
       return 'Prošlo';
     }
 
-    const timeDiffMinutes = Math.floor(timeDiffMilliseconds / (1000 * 60));
     const timeDiffHours = Math.floor(timeDiffMinutes / 60);
     const timeDiffMinutesRemaining = timeDiffMinutes % 60;
 
@@ -94,11 +80,10 @@ export function getRelativeDate(date: Date, time: string): string {
   return `za ${dayDiffDays} dana`;
 }
 
-function dateToYMDFormat(date: Date): string {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`;
+/** The next `count` Zagreb calendar days, starting today, as "YYYY-MM-DD". */
+function getUpcomingDates(count: number): string[] {
+  const today = todayYMD();
+  return Array.from({ length: count }, (_, i) => addDaysYMD(today, i));
 }
 
 function countSelectedPerformanceFilters(filters: PerformanceFilters): number {
@@ -314,5 +299,5 @@ export {
   getGroupedPerformanceFeaturesFrom,
   getPossibleFeaturesWithAppliedFilters,
   countFeatureOccurences,
-  dateToYMDFormat
+  getUpcomingDates
 };

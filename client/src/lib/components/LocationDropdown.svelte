@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { cinemaOids } from '$lib/stores/userSelection.svelte';
+  import { getUserSelection } from '$lib/stores/userSelection.svelte';
   import { createEventDispatcher } from 'svelte';
   import { cinemaCities } from '$lib/utils/cinemas';
 
   const dispatch = createEventDispatcher();
+  const { cinemaOids } = getUserSelection();
 
   export let locationDropdownOpen: { level: number; selectedCity: string | null };
 

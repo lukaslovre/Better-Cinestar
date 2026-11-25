@@ -25,6 +25,8 @@ services:
         PUBLIC_API_URL: "http://localhost:3000"
     ports:
       - "8080:80"
+    environment:
+      - ORIGIN=http://localhost:8080
 
   scraper:
     # Keep scraper off by default locally; enable when needed.

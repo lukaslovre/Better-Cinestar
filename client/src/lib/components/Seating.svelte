@@ -4,6 +4,7 @@
   import { cinemas } from '../utils/cinemas';
   import { getAverageHorizontalSeatDistance } from '../utils/performanceSeats';
   import { getRelativeDate } from '../utils/utils';
+  import { formatYMD } from '../utils/time';
   import { PUBLIC_API_URL } from '$env/static/public';
   import {
     FREE_SEAT_STATUSES,
@@ -107,11 +108,10 @@
       month: '2-digit'
     };
 
-    const date = new Date(dateString);
-    const localeString = date.toLocaleDateString('hr-HR', options);
+    const localeString = formatYMD(dateString, options);
     const formattedDate = localeString.replace(/\s+/g, '').replace(/,/g, ' ');
 
-    const relativeDate = getRelativeDate(date, time);
+    const relativeDate = getRelativeDate(dateString, time);
 
     return time + ', ' + formattedDate + ' (' + relativeDate + ')';
   }

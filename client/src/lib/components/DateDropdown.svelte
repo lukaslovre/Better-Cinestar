@@ -1,53 +1,29 @@
 <script lang="ts">
-  import { selectedDate } from '$lib/stores/userSelection.svelte';
-  import { dateToYMDFormat, getFormattedPerformanceDateLabel } from '$lib/utils/utils';
-  import { onMount } from 'svelte';
+  import { getUserSelection } from '$lib/stores/userSelection.svelte';
+  import { getFormattedPerformanceDateLabel, getUpcomingDates } from '$lib/utils/utils';
 
   export let dateDropdownOpen: { value: boolean };
 
-  const dropdownOptionValues: { text: string; value: string }[] = [];
+  const { selectedDate } = getUserSelection();
 
-  // eslint-disable-next-line svelte/prefer-svelte-reactivity -- Local builder; only its completed values are consumed.
-  const date = new Date();
-  for (let i = 0; i < 7; i++) {
-    dropdownOptionValues.push({
+  const dropdownOptionValues: { text: string; value: string }[] = [
+    ...getUpcomingDates(7).map((date) => ({
       text: getFormattedPerformanceDateLabel(date),
-      value: dateToYMDFormat(date)
-    });
-
-    date.setDate(date.getDate() + 1);
-  }
-
-  dropdownOptionValues.push({ text: 'Sve', value: 'any' });
+      value: date
+    })),
+    { text: 'Sve', value: 'any' }
+  ];
 
   // set the selected date to the value in the store
   $: selectedDateText =
-    $selectedDate === 'any'
-      ? 'Sve'
-      : getFormattedPerformanceDateLabel(new Date($selectedDate));
+    $selectedDate === 'any' ? 'Sve' : getFormattedPerformanceDateLabel($selectedDate);
 
   function toggleDropdown() {
     dateDropdownOpen.value = !dateDropdownOpen.value;
   }
-
-  // add a resize event listener
-  let windowIsWide = window.innerWidth > 1200;
-  onMount(() => {
-    windowIsWide = window.innerWidth > 1200;
-
-    const handleResize = () => {
-      windowIsWide = window.innerWidth > 1200;
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  });
 </script>
 
-<div class="input-container" style:max-width={windowIsWide ? '' : 'calc(45% - 0.5rem)'}>
+<div class="input-container date-container">
   <!-- Label -->
   <div class="label">
     <img class="label-icon" src="/images/dateIcon.svg" alt="" />
@@ -102,3 +78,11 @@
     {/each}
   </div>
 </div>
+
+<style>
+  @media (max-width: 1200px) {
+    .date-container {
+      max-width: calc(45% - 0.5rem);
+    }
+  }
+</style>

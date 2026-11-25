@@ -14,7 +14,7 @@ WORKDIR /app/scraper
 ENV SERVER_API_URL="http://server:3000/api/v1/scrape-results"
 ENV CINESTAR_API_URL="https://shop.cinestarcinemas.hr/api"
 ENV RUN_MODE="scheduled"
-ENV CRON_SCHEDULE="0 2 * * *" 
+ENV CRON_SCHEDULE="0 4 * * *" 
 ENV SCRAPE_ON_START="false"
 
 # Keep installs and browser downloads writable by the image's non-root user.

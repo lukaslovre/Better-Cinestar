@@ -2,6 +2,8 @@ import cinemaData from '../../../../shared/cinemas.json';
 
 export interface CinemaLocation {
   cinemaOid: string;
+  /** Stable, URL-friendly id used in `?kino=` (the API keeps using the OID). */
+  slug: string;
   cinemaName: string;
   cinemaCity: string;
 }

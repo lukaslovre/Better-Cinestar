@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { sortBy } from '$lib/stores/userSelection.svelte';
+  import { getUserSelection } from '$lib/stores/userSelection.svelte';
 
   type SortOptionValue = 'nationwideStart' | 'tmdb_rating' | 'genre' | 'tmdb_runtime';
 
   interface SortDropdownOpen {
     value: boolean;
   }
+
+  const { sortBy } = getUserSelection();
 
   let { sortDropdownOpen }: { sortDropdownOpen: SortDropdownOpen } = $props();
 

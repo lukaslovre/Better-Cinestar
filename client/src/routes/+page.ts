@@ -1,1 +1,0 @@
-export const ssr = false; // Disable SSR for this route (because of accessing the 'window' object)

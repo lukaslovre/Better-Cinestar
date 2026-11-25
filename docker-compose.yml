@@ -10,6 +10,7 @@ services:
     expose:
       - "3000" # Expose port 3000 to other containers in the same network
     environment:
+      - TZ=Europe/Zagreb # Log timestamps only; the code computes Zagreb time explicitly
       - SCRAPER_SECRET=${SCRAPER_SECRET:?Set SCRAPER_SECRET to a private shared secret}
       - SEQUELIZE_LOGGING=false
       - SQLITE_STORAGE=/app/data/Database.sqlite
@@ -38,8 +39,13 @@ services:
       dockerfile: client/Dockerfile
       args:
         PUBLIC_API_URL: "https://api.bettercinestar.com"
-    # ports:
-    #   - "8080:80" # Map port 8080 on the host to port 80 in the container
+    # Node (adapter-node) renders the pages; it listens on port 80 like the old Caddy image.
+    expose:
+      - "80"
+    environment:
+      - ORIGIN=https://bettercinestar.com
+      # Server-side rendering calls the API over the internal Docker network.
+      - API_INTERNAL_URL=http://server:3000
     depends_on:
       - server
     restart: unless-stopped
@@ -51,13 +57,14 @@ services:
       context: .
       dockerfile: scraper/Dockerfile
     environment:
+      - TZ=Europe/Zagreb
       - SERVER_API_URL=http://server:3000/api/v1/scrape-results
       - SCRAPER_SECRET=${SCRAPER_SECRET:?Set SCRAPER_SECRET to a private shared secret}
       - TMDB_API_KEY=${TMDB_API_KEY:-}
       # Set RUN_MODE to 'once' to run the scraper once and exit, or 'scheduled' to run on a schedule
       - RUN_MODE=scheduled
       # Set the cron schedule for periodic runs (only used if RUN_MODE=scheduled)
-      - CRON_SCHEDULE=0 2 * * * # Every day at 2 AM
+      - CRON_SCHEDULE=0 4 * * * # Every day at 04:00 Europe/Zagreb
       - SCRAPE_ON_START=${SCRAPE_ON_START:-true}
     depends_on:
       server:

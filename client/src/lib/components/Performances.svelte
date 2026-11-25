@@ -10,7 +10,7 @@
     getPerformances,
     getPreviousAndNextPerformanceDatesForMovie
   } from '../utils/performances';
-  import { cinemaOids, selectedDate } from '$lib/stores/userSelection.svelte';
+  import { getUserSelection } from '$lib/stores/userSelection.svelte';
   import PerformanceListMinimized from './performances/PerformanceListMinimized.svelte';
   import PerformanceListGrouped from './performances/PerformanceListGrouped.svelte';
   import PerformanceControls from './performances/PerformanceControls.svelte';
@@ -21,6 +21,7 @@
   }
 
   let { movie, isFullscreened }: PerformancesProps = $props();
+  const { cinemaOids, selectedDate } = getUserSelection();
 
   let componentLocalPerformances: MoviePerformance[] = $state(
     untrack(() => movie.performances || [])
@@ -37,7 +38,7 @@
   let currentPerformanceDate = $derived(componentLocalPerformances[0]?.cinemaDate);
   let performanceDateText = $derived(
     currentPerformanceDate
-      ? getFormattedPerformanceDateLabel(new Date(currentPerformanceDate))
+      ? getFormattedPerformanceDateLabel(currentPerformanceDate)
       : 'No date selected'
   ); // TODO: I think this should be a utility function used in the children components and removed from here
 

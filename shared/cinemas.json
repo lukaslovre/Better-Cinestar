@@ -1,81 +1,97 @@
 [
   {
     "cinemaOid": "10000000014OCPXCOG",
+    "slug": "branimir-mingle-mall",
     "cinemaName": "Branimir mingle mall",
     "cinemaCity": "Zagreb"
   },
   {
     "cinemaOid": "20000000014FEPADHG",
+    "slug": "avenue-mall",
     "cinemaName": "Avenue mall",
     "cinemaCity": "Zagreb"
   },
   {
     "cinemaOid": "37000000014FEPADHG",
+    "slug": "arena-centar",
     "cinemaName": "Arena centar",
     "cinemaCity": "Zagreb"
   },
   {
     "cinemaOid": "B7000000014FEPADHG",
+    "slug": "z-centar",
     "cinemaName": "Z centar",
     "cinemaCity": "Zagreb"
   },
   {
     "cinemaOid": "87000000014FEPADHG",
+    "slug": "kaptol-boutique",
     "cinemaName": "Kaptol boutique",
     "cinemaCity": "Zagreb"
   },
   {
     "cinemaOid": "57000000014FEPADHG",
+    "slug": "dvori-lapad",
     "cinemaName": "Dvori lapad",
     "cinemaCity": "Dubrovnik"
   },
   {
     "cinemaOid": "27000000014FEPADHG",
+    "slug": "portanova-centar",
     "cinemaName": "Portanova centar",
     "cinemaCity": "Osijek"
   },
   {
     "cinemaOid": "A7000000014FEPADHG",
+    "slug": "max-city",
     "cinemaName": "Max city",
     "cinemaCity": "Pula"
   },
   {
     "cinemaOid": "40000000014FEPADHG",
+    "slug": "tower-center",
     "cinemaName": "Tower Center",
     "cinemaCity": "Rijeka"
   },
   {
     "cinemaOid": "67000000014FEPADHG",
+    "slug": "supernova-colosseum",
     "cinemaName": "Supernova Colosseum",
     "cinemaCity": "Slavonski Brod"
   },
   {
     "cinemaOid": "17000000014FEPADHG",
+    "slug": "joker-centar",
     "cinemaName": "Joker centar",
     "cinemaCity": "Split"
   },
   {
     "cinemaOid": "97000000014FEPADHG",
+    "slug": "mall-of-split",
     "cinemaName": "Mall of split",
     "cinemaCity": "Split"
   },
   {
     "cinemaOid": "47000000014FEPADHG",
+    "slug": "lumini-centar",
     "cinemaName": "Lumini centar",
     "cinemaCity": "Varaždin"
   },
   {
     "cinemaOid": "77000000014FEPADHG",
+    "slug": "k-centar-golubica",
     "cinemaName": "K centar golubica",
     "cinemaCity": "Vukovar"
   },
   {
     "cinemaOid": "D4000000014FEPADHG",
+    "slug": "city-galleria",
     "cinemaName": "City galleria",
     "cinemaCity": "Zadar"
   },
   {
     "cinemaOid": "07000000014FEPADHG",
+    "slug": "dalmare-centar",
     "cinemaName": "Dalmare centar",
     "cinemaCity": "Šibenik"
   }

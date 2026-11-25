@@ -153,20 +153,27 @@ async function enrichMovies(movies) {
       });
     }
 
-    const job = new CronJob(CRON_SCHEDULE, async () => {
-      console.log(`[scheduler] Triggered at ${new Date().toISOString()}`);
-      try {
-        await performScrape();
-        console.log(
-          `[scheduler] Scrape task completed successfully at ${new Date().toISOString()}`,
-        );
-      } catch (err) {
-        console.error(
-          `[scheduler] Scrape task failed at ${new Date().toISOString()}:`,
-          err,
-        );
-      }
-    });
+    // Run in Croatian time; the default schedule avoids the 02:00-03:00 DST switch hour.
+    const job = new CronJob(
+      CRON_SCHEDULE,
+      async () => {
+        console.log(`[scheduler] Triggered at ${new Date().toISOString()}`);
+        try {
+          await performScrape();
+          console.log(
+            `[scheduler] Scrape task completed successfully at ${new Date().toISOString()}`,
+          );
+        } catch (err) {
+          console.error(
+            `[scheduler] Scrape task failed at ${new Date().toISOString()}:`,
+            err,
+          );
+        }
+      },
+      null,
+      false,
+      "Europe/Zagreb",
+    );
     job.start();
     console.log("[startup] Scheduler started. Waiting for next scheduled run...");
   }
