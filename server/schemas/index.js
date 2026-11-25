@@ -4,14 +4,14 @@ const cinemaOidSchema = z.string().length(18, "Invalid cinema OID format");
 
 const cinemaOidsSchema = z.preprocess(
   (val) => (Array.isArray(val) ? val : [val]),
-  z.array(cinemaOidSchema).nonempty("At least one cinema OID is required")
+  z.array(cinemaOidSchema).nonempty("At least one cinema OID is required"),
 );
 
 const dateSchema = z.union(
   [z.string().length(10, "Invalid date format"), z.literal("any")],
   {
     error: "Date must be YYYY-MM-DD or 'any'",
-  }
+  },
 );
 
 const moviesQuerySchema = z.object({

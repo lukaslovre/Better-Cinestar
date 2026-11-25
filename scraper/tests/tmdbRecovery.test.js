@@ -1,8 +1,6 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const {
-  matchesAlternativeTitleAndDirector,
-} = require("../modules/tmdb/matching.js");
+const { matchesAlternativeTitleAndDirector } = require("../modules/tmdb/matching.js");
 const { createTestEnricher } = require("./helpers/tmdbEnrichment.js");
 const { cases } = require("./fixtures/tmdb-recovery.json");
 
@@ -13,16 +11,12 @@ async function enrich(entry, overrides = {}) {
       calls.searches.push({ query, language });
       assert.equal(query, entry.source.originalTitle);
       return {
-        results: entry.searches.find((search) => search.language === language)
-          .results,
+        results: entry.searches.find((search) => search.language === language).results,
       };
     },
     async fetchMovieIdentity({ tmdbId }) {
       calls.identities.push(tmdbId);
-      assert.ok(
-        entry.identities[tmdbId],
-        `Missing identity fixture: ${tmdbId}`,
-      );
+      assert.ok(entry.identities[tmdbId], `Missing identity fixture: ${tmdbId}`);
       return entry.identities[tmdbId];
     },
     async fetchMovieDetails({ tmdbId }) {
@@ -80,10 +74,7 @@ test("alternative title requires the director and a dated candidate within the y
       },
     },
   ]) {
-    assert.equal(
-      matchesAlternativeTitleAndDirector({ ...args, ...change }),
-      false,
-    );
+    assert.equal(matchesAlternativeTitleAndDirector({ ...args, ...change }), false);
   }
   assert.equal(
     matchesAlternativeTitleAndDirector({

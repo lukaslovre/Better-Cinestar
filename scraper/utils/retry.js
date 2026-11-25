@@ -26,7 +26,7 @@ async function withRetry(fn, options = {}) {
       }
 
       console.warn(
-        `[Retry] Attempt ${attempt}/${retries} failed. Retrying in ${currentDelay}ms... Error: ${error.message}`
+        `[Retry] Attempt ${attempt}/${retries} failed. Retrying in ${currentDelay}ms... Error: ${error.message}`,
       );
 
       await new Promise((resolve) => setTimeout(resolve, currentDelay));

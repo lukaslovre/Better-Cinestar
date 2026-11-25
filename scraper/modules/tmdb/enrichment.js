@@ -1,11 +1,7 @@
 const { configuration } = require("../../config/environment.js");
 const { getTargetYearFromMovie, parseYearFromDate } = require("./utils.js");
 const { logTmdbDecision } = require("./diagnostics.js");
-const {
-  searchMovie,
-  fetchMovieDetails,
-  fetchMovieIdentity,
-} = require("./tmdbClient.js");
+const { searchMovie, fetchMovieDetails, fetchMovieIdentity } = require("./tmdbClient.js");
 const {
   pickBestMatch,
   computeCandidates,

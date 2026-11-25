@@ -5,7 +5,8 @@ const { configuration } = require("./environment");
 
 const defaultStoragePath = path.join(__dirname, "../Database.sqlite");
 const storagePath =
-  (typeof configuration.SQLITE_STORAGE === "string" && configuration.SQLITE_STORAGE.trim()) ||
+  (typeof configuration.SQLITE_STORAGE === "string" &&
+    configuration.SQLITE_STORAGE.trim()) ||
   (typeof process.env.SQLITE_STORAGE === "string" && process.env.SQLITE_STORAGE.trim()) ||
   defaultStoragePath;
 

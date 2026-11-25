@@ -18,8 +18,12 @@ async function init() {
 
     // Read configuration and optional schema/version flags
     const { configuration } = require("../config/environment.js");
-    const expectedSchemaVersion = Number(configuration.DB_SCHEMA_VERSION ?? process.env.DB_SCHEMA_VERSION ?? 1);
-    const forceReset = configuration.FORCE_DB_RESET || (String(process.env.FORCE_DB_RESET || "").toLowerCase() === "true");
+    const expectedSchemaVersion = Number(
+      configuration.DB_SCHEMA_VERSION ?? process.env.DB_SCHEMA_VERSION ?? 1,
+    );
+    const forceReset =
+      configuration.FORCE_DB_RESET ||
+      String(process.env.FORCE_DB_RESET || "").toLowerCase() === "true";
 
     // Read current DB schema version from SQLite PRAGMA user_version
     const [rows] = await sequelize.query("PRAGMA user_version;");

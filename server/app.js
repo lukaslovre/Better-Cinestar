@@ -34,7 +34,7 @@ init();
 app.use(
   cors({
     exposedHeaders: ["X-Movies-Empty-Reason"],
-  })
+  }),
 );
 app.set("trust proxy", true); // trust the reverse proxy (nginx) to set the x-forwarded-for header
 app.use(express.json({ limit: "20mb" })); // Increase the limit for JSON payloads, as of writing this a SQLite database is 3mb after scraping
@@ -86,22 +86,24 @@ app.get("/api/seating", async (req, res) => {
   const { cinemaOid, performanceId } = result.data;
 
   const startedAt = Date.now();
-  console.log(`[seating] Request start cinemaOid=${cinemaOid} performanceId=${performanceId}`);
+  console.log(
+    `[seating] Request start cinemaOid=${cinemaOid} performanceId=${performanceId}`,
+  );
 
   try {
     const seating = await fetchSeating(cinemaOid, performanceId);
     console.log(
-      `[seating] Request OK cinemaOid=${cinemaOid} performanceId=${performanceId} (${Date.now() - startedAt}ms)`
+      `[seating] Request OK cinemaOid=${cinemaOid} performanceId=${performanceId} (${Date.now() - startedAt}ms)`,
     );
     res.send(seating);
   } catch (error) {
     console.error(
       `[seating] Failed for cinemaOid=${cinemaOid} performanceId=${performanceId}:`,
-      error
+      error,
     );
 
     console.log(
-      `[seating] Request FAIL cinemaOid=${cinemaOid} performanceId=${performanceId} (${Date.now() - startedAt}ms)`
+      `[seating] Request FAIL cinemaOid=${cinemaOid} performanceId=${performanceId} (${Date.now() - startedAt}ms)`,
     );
 
     res.status(502).json({
@@ -129,7 +131,7 @@ app.get("/api/performances", async (req, res) => {
     date,
     today,
     currentTime,
-    movieId
+    movieId,
   );
 
   res.send(performances);
@@ -171,7 +173,7 @@ app.post("/api/v1/scrape-results", authenticateScraper, async (req, res) => {
     const { movies, performances, performanceDates } = result.data;
 
     console.log(
-      `Received ${movies.length} movies, ${performances.length} performances, ${performanceDates.length} performance dates.`
+      `Received ${movies.length} movies, ${performances.length} performances, ${performanceDates.length} performance dates.`,
     );
     await saveMoviesToDatabase(movies);
     await savePerformancesToDatabase(performances);

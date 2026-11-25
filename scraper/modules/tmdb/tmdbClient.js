@@ -35,11 +35,7 @@ async function tmdbFetchJson(path, params = {}, options = {}) {
   });
   url.search = searchParams.toString();
 
-  const {
-    maxRetries = 5,
-    initialBackoffMs = 500,
-    maxBackoffMs = 30_000,
-  } = options;
+  const { maxRetries = 5, initialBackoffMs = 500, maxBackoffMs = 30_000 } = options;
 
   let attempt = 0;
   let backoffMs = initialBackoffMs;

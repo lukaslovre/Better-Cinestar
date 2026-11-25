@@ -85,7 +85,9 @@ async function cinestarApiViaBrowser(endpoint, cinemaOid) {
     }
 
     if (!response.ok()) {
-      const error = new Error(`Cinestar API request failed with status ${response.status()}`);
+      const error = new Error(
+        `Cinestar API request failed with status ${response.status()}`,
+      );
       error.status = response.status();
       throw error;
     }
@@ -124,11 +126,15 @@ async function fetchSeating(cinemaOid, performanceId) {
       try {
         return await cinestarApiViaBrowser(
           `/performances/${performanceId}/seatingplan`,
-          cinemaOid
+          cinemaOid,
         );
       } catch (error) {
         // If the browser crashed/disconnected, restart once and retry.
-        if (String(error?.message || "").toLowerCase().includes("disconnected")) {
+        if (
+          String(error?.message || "")
+            .toLowerCase()
+            .includes("disconnected")
+        ) {
           await browserManager.restart("disconnected");
         }
         throw error;
@@ -137,7 +143,7 @@ async function fetchSeating(cinemaOid, performanceId) {
     {
       retries: 1,
       shouldRetry: isRetryableCinestarError,
-    }
+    },
   );
 
   const formattedSeating = formatSeating(data);

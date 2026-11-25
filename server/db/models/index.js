@@ -41,7 +41,7 @@ const Movie = sequelize.define(
   },
   {
     timestamps: false,
-  }
+  },
 );
 
 const Performance = sequelize.define(
@@ -78,7 +78,7 @@ const Performance = sequelize.define(
   },
   {
     timestamps: false,
-  }
+  },
 );
 
 const PerformanceDates = sequelize.define(
@@ -90,7 +90,7 @@ const PerformanceDates = sequelize.define(
   },
   {
     timestamps: false,
-  }
+  },
 );
 
 module.exports = {

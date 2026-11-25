@@ -33,7 +33,7 @@ function groupPerformancesByFilmid(performances) {
 
   for (const performance of performances) {
     const performanceGroup = performancesGroupedByFilmid.find(
-      (p) => p.filmId === performance.filmId
+      (p) => p.filmId === performance.filmId,
     );
 
     if (!performanceGroup) {
@@ -52,7 +52,7 @@ function groupPerformancesByFilmid(performances) {
 function filterPerformancesByEarliestDate(
   performancesGroupedByFilmid,
   today,
-  currentTime
+  currentTime,
 ) {
   for (const group of performancesGroupedByFilmid) {
     let firstAppearingDate = "9999-99-99";
@@ -115,7 +115,7 @@ async function getPerformancesForDateAndMovie(
   date,
   today,
   currentTime,
-  movieId
+  movieId,
 ) {
   let whereClause = {
     cinemaOid: {

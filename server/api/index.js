@@ -20,7 +20,7 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
     cinemaOids,
     date,
     today,
-    currentTime
+    currentTime,
   );
 
   // grupirati performanse po filmu
@@ -33,14 +33,14 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
 
   // nabaviti filmove
   const movieIdsFromPerformances = performancesGroupedByFilmid.map(
-    (group) => group.filmId
+    (group) => group.filmId,
   );
 
   const movies = await getMoviesByIds(movieIdsFromPerformances);
 
   const dateRows = await getPerformanceDatesForMovies(
     cinemaOids,
-    movies.map((movie) => movie.id)
+    movies.map((movie) => movie.id),
   );
   const datesByFilmId = new Map();
   for (const row of dateRows) {
@@ -55,7 +55,7 @@ async function getFormattedMovies(cinemaOids, date, sortBy) {
   // spojiti filmove sa performansama
   for (const movie of movies) {
     const performanceGroup = performancesGroupedByFilmid.find(
-      (group) => group.filmId === movie.id
+      (group) => group.filmId === movie.id,
     );
 
     movie.performances = performanceGroup ? performanceGroup.performances : [];
