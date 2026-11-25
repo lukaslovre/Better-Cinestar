@@ -120,6 +120,8 @@
     flex-direction: column;
     align-items: flex-start;
     row-gap: 1.5rem;
+    /* Separate the details from the genre/runtime stats above. */
+    margin-top: 1.5rem;
   }
   .movieExtraInfo .infoContainer {
     width: 100%;
